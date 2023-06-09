@@ -9,6 +9,7 @@
 <li class="menu__entry"><a href="{{ site.url }}">home</a></li>
 <li class="menu__entry"><a href="{{ site.url }}/projects">projects</a></li>
 <li class="menu__entry"><a href="{{ site.url }}/posts">posts</a></li>
+<li class="menu__entry"><a href="{{ site.url }}/2023/06/09/maths.html">maths</a></li>
 </ul>
 </div>
 <ul class="social-links">
@@ -39,4 +40,14 @@
     </a>
 {% endif %}
 </ul>
+   <!-- for mathjax support -->
+    {% if page.usemathjax %}
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+      </script>
+      <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    {% endif %}
+    
 </header>
