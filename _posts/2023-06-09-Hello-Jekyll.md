@@ -24,8 +24,13 @@ For Mathjax support, I followed [this link](http://webdocs.cs.ualberta.ca/~ziche
 which does allow some math like $$\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2$$, but I find it a little odd. 
 Should probably be possible to copy the setup from Math.SE.
 
-Most things seem to work. Exceptions:
-  - I tried to simply write a new tag into existence by using it ('maths') but it does not automatically work. 
-Will need to fix next time I have time to work on this.
-  - Somehow, mousing over some of the project cards makes them disappear. 
-  Not entirely sure I can fix it myself, but maybe I can disable the mouseover animation.
+I tried to simply write a new tag into existence by using it ('maths') but it does not seem to automatically work. 
+So I have manually added a page for the maths tag at `/pages/tags/maths.html`.
+  
+Somehow, mousing over some of the project cards makes them disappear. 
+Not entirely sure I can fix it myself, but maybe I can disable the mouseover animation.
+
+# 2023-06-10: Fleshing out some pages
+
+The first issue of the day is that I don't know how to override the width setting for images, or how to make them appear inline. 
+My current workaround to make the image smaller, since I have multiple to show, is to place the images in a table.
