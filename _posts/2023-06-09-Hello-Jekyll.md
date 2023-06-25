@@ -2,9 +2,10 @@
 layout: post
 title: Hello Jekyll -  A log of my experience setting this site up.
 date: 2023-06-09
+updated: 2023-06-10
 tags: [Jekyll]
-splash_img_source: /assets/img/books-1204029_1920.jpg
-splash_img_caption: Representative image. Image by <a href="https://pixabay.com/users/luboshouska-198496/">LubosHouska</a> on Pixabay.
+splash_img_source: /assets/img/hellojekyll.png
+splash_img_caption: Editing the repo in Neovim.
 usemathjax: true
 ---
 
@@ -34,3 +35,9 @@ Not entirely sure I can fix it myself, but maybe I can disable the mouseover ani
 
 The first issue of the day is that I don't know how to override the width setting for images, or how to make them appear inline. 
 My current workaround to make the image smaller, since I have multiple to show, is to place the images in a table.
+
+# 2023-06-13: Mathjax doesn't work correctly
+In the above the $$\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2$$ renders fine only locally. Here's a test with the backslash:
+\\(\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\\)
+which also works locally. Display math also seems to work, which is good:
+\\[\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\\]
