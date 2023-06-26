@@ -4,8 +4,8 @@ title: Comments on the Two Crystal Balls problem
 date: 2023-06-26
 # updated: 2023-06-26
 tags: [coding, maths]
-splash_img_source: /assets/img/hellojekyll.png
-splash_img_caption: Editing the repo in Neovim.
+splash_img_source: /assets/img/crystalballs.png
+splash_img_caption: 
 usemathjax: true
 ---
 
