@@ -11,7 +11,7 @@ usemathjax: true
 
 
 
-# 2023-06-09: Setting up site with Jekyll template
+## 2023-06-09: Setting up site with Jekyll template
 
 I needed `bundle add webrick` as stated in 
  [Github's own docs](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll)
@@ -31,19 +31,19 @@ So I have manually added a page for the maths tag at `/pages/tags/maths.html`.
 Somehow, mousing over some of the project cards makes them disappear. 
 Not entirely sure I can fix it myself, but maybe I can disable the mouseover animation.
 
-# 2023-06-10: Fleshing out some pages
+## 2023-06-10: Fleshing out some pages
 
 The first issue of the day is that I don't know how to override the width setting for images, or how to make them appear inline. 
 My current workaround to make the image smaller, since I have multiple to show, is to place the images in a table.
 
-# 2023-06-13: Mathjax doesn't work correctly
+## 2023-06-13: Mathjax doesn't work correctly
 In the above the $$\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2$$ renders fine only locally. Here's a test with the backslash:
 \\(\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\\)
 which also works locally. Display math with `\[...\]` also seems to work locally. \\[\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\\]. But only locally.
 
 Need to figure out how to make it work...
 
-# 2023-06-26: Mathjax is working correctly
+## 2023-06-26: Mathjax is working correctly
 I followed the [Mathjax 3 documentation](https://docs.mathjax.org/en/latest/web/start.html) and it now works. 
 I'm using the configuration block from [this part](https://docs.mathjax.org/en/latest/options/input/tex.html?highlight=displaymath#the-configuration-block) of the docs. 
 Specifically, in `_includes/header.html`, I have put
