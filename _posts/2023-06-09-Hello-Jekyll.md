@@ -2,7 +2,7 @@
 layout: post
 title: Hello Jekyll -  A log of my experience setting this site up.
 date: 2023-06-09
-updated: 2023-06-10
+updated: 2023-06-26
 tags: [Jekyll]
 splash_img_source: /assets/img/hellojekyll.png
 splash_img_caption: Editing the repo in Neovim.
@@ -39,5 +39,6 @@ My current workaround to make the image smaller, since I have multiple to show, 
 # 2023-06-13: Mathjax doesn't work correctly
 In the above the $$\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2$$ renders fine only locally. Here's a test with the backslash:
 \\(\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\\)
-which also works locally. Display math also seems to work, which is good:
-\\[\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\\]
+which also works locally. Display math with `\[...\]` also seems to work locally. \\[\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\\]. But only locally.
+
+Need to figure out how to make it work...
