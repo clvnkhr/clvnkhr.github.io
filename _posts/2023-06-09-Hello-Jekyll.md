@@ -86,4 +86,8 @@ Specifically, in `_includes/header.html`, I have put
   </script>
 {% endif %}
 ```
-Unfortunately, I need to use double slashes in the source. Small price to pay.
+Unfortunately, I need to use double slashes in the source i.e. `\\[...\\]`. Small price to pay.
+
+## 2023-06-27: Fixing the projects page
+
+Figured out that `card:hover` was the part not working in Safari. Works nicely in Edge though. Simply turned off the border for now.
