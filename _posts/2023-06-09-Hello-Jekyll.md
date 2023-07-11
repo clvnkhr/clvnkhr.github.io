@@ -2,7 +2,7 @@
 layout: post
 title: Hello Jekyll -  A log of my experience setting this site up.
 date: 2023-06-09
-updated: 2023-07-05
+updated: 2023-07-11
 tags: [Jekyll]
 splash_img_source: /assets/img/hellojekyll.png
 splash_img_caption: Editing the repo in Neovim.
@@ -95,3 +95,7 @@ Figured out that `card:hover` was the part not working in Safari. Works nicely i
 ## 2023-07-05: Disqus comments turned on
 
 Will need to see if this is useful or just noise.
+
+## 2023-07-11: Math notes
+
+Put links to some math notes up. Also: for consideration in the future, perhaps try to recreate [this homepage](https://pme123.github.io/github-pages-demo/develop/2019/04/28/how-to.html) which allows embedding e.g. graphs using Scala.js.
