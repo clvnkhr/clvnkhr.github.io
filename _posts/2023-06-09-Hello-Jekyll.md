@@ -101,4 +101,4 @@ Will need to see if this is useful or just noise.
 Put links to some math notes up. Also: for consideration in the future:
 
 - perhaps try to recreate [this homepage](https://pme123.github.io/github-pages-demo/develop/2019/04/28/how-to.html) which allows embedding e.g. graphs using Scala.js.
-- switch comments to giscus which has support for mathjax natively
+- switch comments to [giscus](https://giscus.app) which has support for mathjax natively
