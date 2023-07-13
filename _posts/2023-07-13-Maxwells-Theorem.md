@@ -41,6 +41,7 @@ Indeed, the Dirac mass at 0 is a different solution, although it is quite natura
 But it seems that the possible existence of singular continuous distributions is not settled. Some tangentially related links for if I come back to this (or the interested reader):
 
 - [If \\(f\\) is singular continuous it is possible that \\(f\*f\\) is either singular continuous or absolutely continuous.](https://mathoverflow.net/questions/446600/)
+- [Simple example of a singular distribution](https://www.jstor.org/stable/2682772)
 - [A paper that discusses singular distributions](http://www.stat.uchicago.edu/~lalley/Papers/indistinguishability.pdf)
 - [Another paper that discusses singular continuous distributions](https://www.jstor.org/stable/2238043)
 - [A more expository note discussing singular continuous functions](https://sites.math.northwestern.edu/~ehsu/Class%20of%20Singular%20Contnuous%20Functions.pdf)
