@@ -44,3 +44,4 @@ But it seems that the possible existence of singular continuous distributions is
 - [Another paper that discusses singular continuous distributions](https://www.jstor.org/stable/2238043)
 - [A more expository note discussing singular continuous functions](https://sites.math.northwestern.edu/~ehsu/Class%20of%20Singular%20Contnuous%20Functions.pdf)
 - [A paper on Brownian motion with singular drift](http://www.jstor.org/stable/3481661?origin=JSTOR-pdf)
+- [An example of a singular continuous distribution arising from a random walk](https://web.archive.org/web/20151202055102/http://www.calpoly.edu/~kmorriso/Research/RandomWalks.pdf)
