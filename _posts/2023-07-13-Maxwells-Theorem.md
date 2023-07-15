@@ -10,8 +10,8 @@ usemathjax: true
 In a [recent 3Blue1Brown video](https://www.youtube.com/watch?v=d_qvLDhkg00&t=621s),
 it was mentioned that the 2D (centered) Gaussian are the unique distributions which are radial and has independent marginals.
 On a google I found out that this is known as [Maxwell's theorem](https://en.wikipedia.org/wiki/Maxwell%27s_theorem),
-but the linked Wikipedia page is a little lacking. [This](https://verzettelung.com/20/10/26/) blogpost does a better job,
-but still I feel there are some remarks to be made. Firstly, the blogpost says that the solution to
+but the linked Wikipedia page is a little lacking. [This](https://verzettelung.com/20/10/26/) blogpost does a better job
+The blogpost says that the solution to
 \\(h(x)h(y) = h(\sqrt{x^2 + y^2})\\) is clearly of the form \\(e^{ax^2}\\).
 For anyone else who doesn't want to spend the 5 seconds necessary to unpack this, you should set \\(H(x):=h(\sqrt x)\\)
 (without loss of generality \\(x\ge0\\)) to find the equivalent equation \\[ H(x^2) H(y^2) = H(x^2 + y^2),\\]
@@ -21,7 +21,7 @@ However there are some pedantic points that one might bring up. The first is tha
 search for exponential in [this Math.SE post](https://math.stackexchange.com/questions/423492/overview-of-basic-facts-about-cauchy-functional-equation?noredirect=1&lq=1).
 This can indeed be ignored since the other solutions will not lead to a probability distribution.
 The second is more interesting, and comes back to the rough state of the Wikipedia [page](https://en.wikipedia.org/wiki/Maxwell%27s_theorem).
-The proof given there, which I quote:
+The proof given there is as follows:
 
 > We only need to prove the theorem for the 2-dimensional case, since we can then generalize it to n-dimensions by applying the theorem sequentially to each pair of coordinates.
 > Since rotating by 90 degrees preserves the joint distribution, both \\(X_1, X_2\\) has the same probability measure. Let it be \\(\mu\\). If \\(\mu\\) is a Dirac delta distribution at zero, then it's a gaussian distribution, just degenerate. Now assume that it is not.
