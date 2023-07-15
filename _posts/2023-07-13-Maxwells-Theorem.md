@@ -35,7 +35,6 @@ Ignoring that the proof isn't complete, the Wikipedia article points out that th
 What the earlier blogpost actually gives a proof for is the following result:
 
 > Theorem (Maxwell) The (centered) gaussians are the only absolutely continuous distributions on \\(\mathbb R^n \\) which are radial and have independent marginals.
-> n
 
 Indeed, the Dirac mass at 0 is a different solution, although it is quite natural as a kind of 'degenerate' Gaussian.
 But it seems that the possible existence of singular continuous distributions is not settled. Some tangentially related links for if I come back to this (or the interested reader):
