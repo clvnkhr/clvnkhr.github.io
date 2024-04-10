@@ -5,7 +5,6 @@ date: 2023-06-26
 # updated: 2023-06-26
 tags: [coding, maths]
 splash_img_source: /assets/img/crystalballs.png
-splash_img_caption: Thanks, Stable Diffusion
 usemathjax: true
 ---
 
