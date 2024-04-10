@@ -4,6 +4,7 @@ title: Maxwell's Theorem
 date: 2023-07-13
 # updated: 2023-06-26
 tags: [maths]
+splash_img_source: /assets/img/maxwell.png
 usemathjax: true
 ---
 
