@@ -1,14 +1,14 @@
 ---
 layout: post
 title: Excellent Notes and Courses
-date: 2023-08-14
-# updated: 2023-06-26
+date: 2024-08-14
+# updated: 2024-06-26
 tags: [coding, maths]
 splash_img_source: /assets/img/courses.png
 usemathjax: true
 ---
 
-The purpose of this post is to link to well-polished or otherwise exceptional educational content online. 
+The purpose of this post is to link to well-polished or otherwise exceptional educational content online.
 If I have done at least part of the courses I will usually add some commentary.
 
 - [Discrete Differential Geometry](https://www.cs.cmu.edu/~kmcrane/Projects/DDG/) - One issue with most introductory manifolds/differential geometry courses (IMO) is a lack of pictures which is a shame in a geometry course. Not the case here, since there is a focus on numerics. This also allows the lecturer to go much further than a usual manifolds class, giving clear intuition for e.g. the Laplace-Beltrami operator. Plenty of exercises in the book and the C++/Javascript(!) framework.
@@ -20,4 +20,3 @@ If I have done at least part of the courses I will usually add some commentary.
 
 - [Computational Fluid Dynamics in Python](https://github.com/barbagroup/CFDPython)
 - [The Feynman Lectures](https://www.feynmanlectures.caltech.edu)
-
