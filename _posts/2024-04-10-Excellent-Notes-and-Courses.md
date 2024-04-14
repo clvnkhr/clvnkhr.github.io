@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Excellent Notes and Courses
-date: 2024-08-14
+date: 2024-04-10
 tags: [coding, maths]
 splash_img_source: /assets/img/courses.png
 usemathjax: true
