@@ -9,9 +9,9 @@ usemathjax: true
 ---
 
 In a [recent 3Blue1Brown video](https://www.youtube.com/watch?v=d_qvLDhkg00&t=621s),
-it was mentioned that the 2D (centered) Gaussian are the unique distributions which are radial and has independent marginals.
+it was mentioned that the 2D (centered) Gaussian are the unique distributions which are radial and have independent marginals.
 On a google I found out that this is known as [Maxwell's theorem](https://en.wikipedia.org/wiki/Maxwell%27s_theorem),
-but the linked Wikipedia page is a little lacking. [This](https://verzettelung.com/20/10/26/) blogpost does a better job
+but the linked Wikipedia page is a little lacking. [This](https://verzettelung.com/20/10/26/) blogpost does a better job.
 The blogpost says that the solution to
 \\(h(x)h(y) = h(\sqrt{x^2 + y^2})\\) is clearly of the form \\(e^{ax^2}\\).
 For anyone else who doesn't want to spend the 5 seconds necessary to unpack this, you should set \\(H(x):=h(\sqrt x)\\)
