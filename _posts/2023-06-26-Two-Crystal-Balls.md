@@ -80,5 +80,5 @@ export default function two_crystal_balls(breaks: boolean[]): number {
     return -1;
 }
 ```
-
-The problem is a little contrived, as there are no tests that guarantee we only break two balls. Nor are there any tests for speed, so a linear search would pass all the tests of the course. For the first issue, we could replace `breaks` by a custom array type that keeps logs of the number of breaks.
+# Conclusion
+The problem is a little contrived, as there are no tests that guarantee we only break two balls. Nor are there any tests for speed, so a linear search would pass all the tests of the course. For the first issue, we could replace `breaks` by a custom array type that keeps logs of the number of breaks. But some questions remain: is there an algorithm with worst case exactly \\(N(N+1)/2\\)? And is there a variant problem with complexity \\(O(n^q)\\) for any rational \\(q\\)?
