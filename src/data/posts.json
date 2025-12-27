@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": "test-post",
+    "title": "\"Hello Typst\"",
+    "date": "\"2024-12-27\"",
+    "tags": [
+      "test",
+      "typst"
+    ],
+    "description": "\"My first Typst post\"",
+    "htmlContent": "<div>Placeholder: Typst compilation not yet configured</div>",
+    "pin": false
+  }
+]

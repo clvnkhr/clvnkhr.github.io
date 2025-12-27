@@ -1,5 +1,4 @@
-import { Effect, pipe, Array as A } from 'effect';
-import { execSync } from 'child_process';
+import { Effect, pipe } from 'effect';
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { glob } from 'glob';
 import * as P from 'path';
@@ -17,36 +16,8 @@ interface Post {
   author?: string;
 }
 
-// Helper: Execute command safely
-const execSafe = (command: string) => 
-  Effect.try({
-    try: () => execSync(command, { encoding: 'utf-8' }),
-    catch: (error) => new Error(`Command failed: ${command}\n${error}`)
-  });
-
-// Helper: Read file safely
-const readFile = (path: string) =>
-  Effect.try({
-    try: () => readFileSync(path, 'utf-8'),
-    catch: (error) => new Error(`Failed to read: ${path}\n${error}`)
-  });
-
-// Helper: Write file safely
-const writeFile = (path: string, content: string) =>
-  Effect.try({
-    try: () => writeFileSync(path, content, 'utf-8'),
-    catch: (error) => new Error(`Failed to write: ${path}\n${error}`)
-  });
-
-// Helper: Ensure directory exists
-const ensureDir = (path: string) =>
-  Effect.sync(() => {
-    try { mkdirSync(path, { recursive: true }); }
-    catch (e) { /* ignore if exists */ }
-  });
-
 // Parse metadata from .typ file
-const parseMetadata = (content: string): Partial<Post> => {
+const parseMetadata = (content: string): any => {
   const metadata: any = {};
   let inMetadata = false;
   
@@ -77,71 +48,45 @@ const parseMetadata = (content: string): Partial<Post> => {
   return metadata;
 };
 
-// Process a single .typ file into a Post
-const processTypFile = (filePath: string): Effect.Effect<never, Error, Post> =>
-  pipe(
-    readFile(filePath),
-    Effect.flatMap(content => 
-      Effect.succeed({
-        id: P.basename(filePath, '.typ'),
-        ...parseMetadata(content),
-        htmlContent: '<div>Placeholder: Typst compilation not yet configured</div>'
-      })
-    )
-  );
-
 // Process all .typ files
-const processAllFiles = (pattern: string): Effect.Effect<never, Error, Post[]> =>
-  pipe(
-    Effect.promise(() => glob(pattern)),
-    Effect.flatMap(files => 
-      pipe(
-        A.fromArray(files),
-        Effect.forEach(file => processTypFile(file))
-      )
-    ),
-    Effect.tap(files => Effect.log(`Processed ${files.length} posts`))
-  );
+async function processAllFiles() {
+  const files = await glob('content/**/*.typ');
+  const posts: Post[] = files.map(filePath => {
+    const content = readFileSync(filePath, 'utf-8');
+    const metadata = parseMetadata(content);
+    
+    return {
+      id: P.basename(filePath, '.typ'),
+      title: metadata.title || 'Untitled',
+      date: metadata.date || new Date().toISOString(),
+      updated: metadata.updated,
+      tags: metadata.tags || [],
+      description: metadata.description || '',
+      htmlContent: '<div>Placeholder: Typst compilation not yet configured</div>',
+      pin: metadata.pin || false,
+      splashImage: metadata.splashImage,
+      author: metadata.author
+    } as Post;
+  });
+  
+  // Sort posts (pinned first, then by date)
+  posts.sort((a, b) => {
+    if (a.pin && !b.pin) return -1;
+    if (!a.pin && b.pin) return 1;
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+  
+  // Write posts.json
+  mkdirSync('src/data', { recursive: true });
+  writeFileSync('src/data/posts.json', JSON.stringify(posts, null, 2));
+  
+  console.log(`✅ Processed ${posts.length} posts`);
+}
 
-// Sort posts (pinned first, then by date)
-const sortPosts = (posts: Post[]): Post[] =>
-  pipe(
-    A.sortBy(posts, [
-      { order: 'descending', extract: (p: Post) => p.pin ? 1 : 0 },
-      { order: 'descending', extract: (p: Post) => new Date(p.date).getTime() }
-    ])
-  );
-
-// Write posts.json
-const writePostsJson = (posts: Post[]): Effect.Effect<never, Error, void> =>
-  pipe(
-    ensureDir('src/data'),
-    Effect.flatMap(() => 
-      writeFile('src/data/posts.json', JSON.stringify(posts, null, 2))
-    ),
-    Effect.tap(() => Effect.log('posts.json written'))
-  );
-
-// Build pipeline
-const buildPipeline = pipe(
-  Effect.log('Starting build...'),
-  Effect.flatMap(() => processAllFiles('content/**/*.typ')),
-  Effect.tap(posts => Effect.log(`Found ${posts.length} posts`)),
-  Effect.map(sortPosts),
-  Effect.tap(posts => Effect.log('Posts sorted')),
-  Effect.flatMap(writePostsJson),
-  Effect.flatMap(() => execSafe('vite build')),
-  Effect.tap(() => Effect.log('Vite build complete'))
-);
-
-// Run the build pipeline
-Effect.runPromise(buildPipeline).then(
-  () => {
-    console.log('✅ Build completed successfully!');
-    process.exit(0);
-  },
-  error => {
-    console.error('❌ Build failed:', error);
-    process.exit(1);
-  }
-);
+processAllFiles().then(() => {
+  console.log('✅ Build completed successfully!');
+  process.exit(0);
+}).catch(error => {
+  console.error('❌ Build failed:', error);
+  process.exit(1);
+});
