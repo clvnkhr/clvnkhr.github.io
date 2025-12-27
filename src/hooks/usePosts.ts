@@ -1,0 +1,66 @@
+import { useState, useMemo } from 'react';
+import type { Post, Filters } from '../types/post';
+
+// Placeholder until build generates posts.json
+const postsData: Post[] = [];
+
+export function usePosts() {
+  const [filters, setFilters] = useState<Filters>({});
+  
+  const filteredPosts = useMemo(() => {
+    return postsData.filter((post: Post) => {
+      // Search query
+      if (filters.query) {
+        const query = filters.query.toLowerCase();
+        const matchesSearch = 
+          post.title.toLowerCase().includes(query) ||
+          post.description.toLowerCase().includes(query) ||
+          post.htmlContent.toLowerCase().includes(query);
+        if (!matchesSearch) return false;
+      }
+      
+      // Tag filter (AND logic)
+      if (filters.tags && filters.tags.length > 0) {
+        const hasAllTags = filters.tags.every((tag: string) => post.tags.includes(tag));
+        if (!hasAllTags) return false;
+      }
+      
+      // Date range
+      if (filters.dateFrom) {
+        if (new Date(post.date) < new Date(filters.dateFrom)) return false;
+      }
+      if (filters.dateTo) {
+        if (new Date(post.date) > new Date(filters.dateTo)) return false;
+      }
+      
+      return true;
+    });
+  }, [filters]);
+  
+  // Get all unique tags
+  const allTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    postsData.forEach((post: Post) => post.tags.forEach((tag: string) => tagSet.add(tag)));
+    return Array.from(tagSet).sort();
+  }, []);
+  
+  // Get posts by tag
+  const getPostsByTag = (tag: string) => {
+    return postsData.filter((post: Post) => post.tags.includes(tag));
+  };
+  
+  // Get projects (posts with 'project' tag)
+  const projects = useMemo(() => {
+    return postsData.filter((post: Post) => post.tags.includes('project'));
+  }, []);
+  
+  return {
+    posts: postsData,
+    filteredPosts,
+    allTags,
+    projects,
+    getPostsByTag,
+    filters,
+    setFilters
+  };
+}
