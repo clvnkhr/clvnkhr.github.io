@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" /> 
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="http://localhost:4000/2023/06/26/Two-Crystal-Balls.html">
+<meta property="og:url" content="http://localhost:4000/2023/06/26/Two-Crystal-Balls.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:site_name" content="Calvin Khor">
+<title>Comments on the Two Crystal Balls problem | Calvin Khor</title>
+<meta property="og:title" content="Comments on the Two Crystal Balls problem | Calvin Khor">
+<meta name="description" content="The Two Crystal Balls problem, as mentioned in e.g. this course, is the following problem: You are given two identical crystal balls that will break if dropped from high enough.">
+<meta property="og:description" content="The Two Crystal Balls problem, as mentioned in e.g. this course, is the following problem: You are given two identical crystal balls that will break if dropped from high enough.">
+<meta name="author" content="Calvin Khor">
+<meta property="og:image" content="http://localhost:4000/assets/img/crystalballs.png">
+<meta name="twitter:site" content="@kamivine">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="icon" type="image/jpeg" href="http://localhost:4000/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css?v=3">
+<script src="http://localhost:4000/assets/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+<!--pudhina-fresh-jekyll-sun-chocolate-ruby-v-2021-02-22-->
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+<a href="http://localhost:4000" class="logo">CK</a>
+<ul class="menu">
+<li class="menu__entry"><a href="http://localhost:4000">home</a>
+<li class="menu__entry"><a href="http://localhost:4000/projects">projects</a>
+<li class="menu__entry"><a href="http://localhost:4000/posts">posts</a>
+<li class="menu__entry"><a href="http://localhost:4000/2023/06/09/maths.html">maths</a>
+</ul>
+</div>
+<ul class="social-links">
+<a href="mailto:calvin_khor@hotmail.com" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+<a href="https://github.com/clvnkhr" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+<a href="https://in.linkedin.com/in/clvnkhr" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+    <a class="social-links__entry" href='#' onclick="switch_dark_mode_icon(darkmode, 'dark_mode_toggle')">
+        <i style="color: rgba( 254, 164, 1, 100%);" id="dark_mode_toggle" class="fas fa-sun"></i>
+    </a>
+</ul>
+  <script type="text/x-mathjax-config">
+    MathJax = {
+      tex: {
+        packages: ['base'],        // extensions to use
+        inlineMath: [              // start/end delimiter pairs for in-line math
+          ['\\(', '\\)']
+        ],
+        displayMath: [             // start/end delimiter pairs for display math
+          ['$$', '$$'],
+          ['\\[', '\\]']
+        ],
+        processEscapes: true,      // use \$ to produce a literal dollar sign
+        processEnvironments: true, // process \begin{xxx}...\end{xxx} outside math mode
+        processRefs: true,         // process \ref{...} outside of math mode
+        digits: /^(?:[0-9]+(?:\{,\}[0-9]{3})*(?:\.[0-9]*)?|\.[0-9]+)/,
+                                   // pattern for recognizing numbers
+        tags: 'none',              // or 'ams' or 'all'
+        tagSide: 'right',          // side for \tag macros
+        tagIndent: '0.8em',        // amount to indent tags
+        useLabelIds: true,         // use label name rather than tag for ids
+        maxMacros: 1000,           // maximum number of macro substitutions per expression
+        maxBuffer: 5 * 1024,       // maximum size for the internal TeX string (5K)
+        baseURL:                   // URL for use with links to tags (when there is a<base> tag in effect)
+           (document.getElementsByTagName('base').length === 0) ?
+            '' : String(document.location).replace(/#.*$/, '')),
+        formatError:               // function called when TeX syntax errors occur
+            (jax, err) => jax.formatError(err)
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+</header>
+<br>
+<br>
+    <a href="http://localhost:4000/tags/coding" style="background-color: rgba( 144, 207, 106, 100%);" class="badge badge-primary">#coding</a>
+    <a href="http://localhost:4000/tags/maths" style="background-color: rgba( 144, 106, 207, 100%);" class="badge badge-primary">#maths</a>
+<h1 class="post-title">
+   <div class="post-title__text">Comments on the Two Crystal Balls problem</div>
+</h1>
+<p class="post-title__subtitle">Published Jun 26, 2023  by <a href="https://clvnkhr.github.io" target="_blank">Calvin Khor</a></p>
+<img class="splash-img" src="http://localhost:4000/assets/img/crystalballs.png" loading="lazy" alt="">
+<br>
+<div class="post_wrapper">
+   <p>The Two Crystal Balls problem, as mentioned in e.g. <a href="https://frontendmasters.com/courses/algorithms/two-crystal-balls-problem/">this course</a>, is the following problem:</p>
+<blockquote>
+ <p>You are given two identical crystal balls that will break if dropped from high enough. You are allowed to repeatedly drop them from different (integer) heights. Find the lowest distance (less than a given maximum) from which the balls will break. What is the optimal time complexity?</p>
+</blockquote>
+<p>The breaking condition is significant and rules out binary search, as once the first ball breaks, you are forced to linearly search through the heights in sequence. This would make it seem as the complexity is \(O(n)\), but it is actually \(O(\sqrt{n})\).</p>
+<p>The optimal algorithm is to first linearly search with jumps of size \(S=O(\sqrt{n})\) until the first ball breaks. If it doesn’t break, then we have finished by making \(N=O(\sqrt{n})\) jumps. Otherwise, take the previous known safe position and progressively increment the height by 1 until it breaks; in the worst case, this causes us to check an additional S balls. The final complexity is \(S+N=O(\sqrt n)\).</p>
+<p>This much was in the course. There are two comments I’d like to make.</p>
+<h2 id="optimality">Optimality</h2>
+<p>Firstly, it is possible to show that this is the optimum. From <a href="http://www.tanyakhovanova.com/Puzzles/solballs.html">Tanya Khovanova’s page</a>:</p>
+<p>Suppose we have a strategy which always terminates in at most \(N\) throws. Then the floor is defined by two numbers: the number of throws before first ball breaks, and similarly for the the second ball. The sum of these two numbers should be less than or equal to \(N\). Hence, the number of floors we can distinguish is the number of different pairs of such numbers, which is equal to \(\frac12 N(N+1)\).</p>
+<h2 id="generalisation">Generalisation</h2>
+<p>Secondly, this can be generalised to the case of any finite number \(K\) of balls: the time complexity is \(O(n^{1/K})\). The required modification is simply to take the first jump length to be \(S_1=O(n^{1-1/K})\), which results in \(N=O(n^{1/K})\) jumps. 
+With the second ball, take \(S_2=O(n^{1-2/K})\) jumps. it again takes \(N\) jumps to cover a distance of length \(S_1\). 
+With the third ball, take \(S_3=O(n^{1-3/K})\), and so on, until with the \(K\)th ball, you linearly search 
+(i.e. \(S_K = O(1) = O(n^{1-K/K})\).) 
+We use each ball to make \(N\) jumps, so the total number of jumps is \(KN=O(n^{1-1/K})\).</p>
+<p>The fact that this algorithm is optimal up to constants is also by a similar argument: the number of \(K\) tuples is a polynomial of order \(K\).</p>
+<p>It is amusing that in the limit of infinite balls \(K\to\infty\), we formally obtain \(O(1)\) which is off by a log (binary search). This “\(n^0=\log n\)” appears in many places in mathematics. The simplest instance of this that I know of is the fact that the integral of \(x^k\) is \(x^{k+1}\) (times a constant) unless \(k=-1\), in which case it is \(\log x\). Some other occurences can be found in <a href="https://math.stackexchange.com/q/2632349/80734">this Math.SE post</a>.</p>
+<h2 id="implementation">Implementation</h2>
+<p>This is the code given in the course:</p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="k">default</span> <span class="kd">function</span> <span class="nx">two_crystal_balls</span><span class="p">(</span><span class="nx">breaks</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">[]):</span> <span class="kr">number</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">jmpAmount</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">breaks</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+    <span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">jmpAmount</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">breaks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="nx">jmpAmount</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">breaks</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">i</span> <span class="o">-=</span> <span class="nx">jmpAmount</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">jmpAmount</span> <span class="o">&amp;&amp;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">breaks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">j</span><span class="p">,</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">breaks</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>As noted in <a href="https://github.com/ThePrimeagen/kata-machine/pull/37">this PR</a>, this code doesn’t work in some edge cases. The fix proposed is to replace the last return with</p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">return</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">breaks</span><span class="p">.</span><span class="nx">length</span> <span class="p">?</span> <span class="nx">i</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div></div>
+<p>It’s simpler to just remove the <code class="highlighter-rouge">j</code> index check completely though:</p>
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="k">default</span> <span class="kd">function</span> <span class="nx">two_crystal_balls</span><span class="p">(</span><span class="nx">breaks</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">[]):</span> <span class="kr">number</span> <span class="p">{</span>
+    <span class="kd">const</span> <span class="nx">jmpAmount</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span><span class="nx">breaks</span><span class="p">.</span><span class="nx">length</span><span class="p">));</span>
+    <span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">jmpAmount</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">breaks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">+=</span> <span class="nx">jmpAmount</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">breaks</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">i</span> <span class="o">-=</span> <span class="nx">jmpAmount</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">breaks</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="o">++</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">breaks</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h1 id="conclusion">Conclusion</h1>
+<p>The problem is a little contrived, as there are no tests that guarantee we only break two balls. Nor are there any tests for speed, so a linear search would pass all the tests of the course. For the first issue, we could replace <code class="highlighter-rouge">breaks</code> by a custom array type that keeps logs of the number of breaks. But some questions remain: is there an algorithm with worst case exactly \(N(N+1)/2\)? And is there a variant problem with complexity \(O(n^q)\) for any rational \(q\)?</p>
+</div>
+<span class="toggle"></span>
+<span class="wave"></span>
+<br>
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/2023/06/26/Two-Crystal-Balls.html';
+this.page.identifier = '/2023/06/26/Two-Crystal-Balls.html'; 
+this.page.title = 'Comments on the Two Crystal Balls problem';
+};
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://clvnkhr.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<br>
+<div class="about">
+<div class="about__devider">✮✮✮</div>
+<div class="about__text">
+<br>
+&#169 2023-2024 Calvin Khor | Made using the <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+</div>
+
+<script>
+const options = {
+    bottom: '32px', // default: '32px'
+    right: '32px', // default: '32px'
+    left: 'unset', // default: 'unset'
+    time: '0.3s', // default: '0.3s'
+    mixColor: 'rgba( 230, 230, 230, 100%)', // default: '#fff'
+    backgroundColor: '#fff',  // default: '#fff'
+    buttonColorDark: '#100f2c',  // default: '#100f2c'
+    buttonColorLight: '#fff', // default: '#fff'
+    saveInCookies: true, // default: true,
+    label: '🌓', // default: ''
+    autoMatchOsTheme: true // default: true
+    }
+const darkmode = new Darkmode(options);
+render_dark_mode_icon(darkmode, 'dark_mode_toggle');
+</script>

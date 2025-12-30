@@ -1,0 +1,19 @@
+current directory: /Users/calvinkhor/Documents/GitHub/clvnkhr.github.io/vendor/bundle/ruby/3.2.0/gems/eventmachine-1.2.7/ext/fastfilereader
+/Users/calvinkhor/.local/share/rtx/installs/ruby/3.2.1/bin/ruby -I /Users/calvinkhor/.local/share/rtx/installs/ruby/3.2.1/lib/ruby/3.2.0 extconf.rb
+creating Makefile
+
+current directory: /Users/calvinkhor/Documents/GitHub/clvnkhr.github.io/vendor/bundle/ruby/3.2.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20230609-51521-5yci0k sitelibdir\=./.gem.20230609-51521-5yci0k clean
+
+current directory: /Users/calvinkhor/Documents/GitHub/clvnkhr.github.io/vendor/bundle/ruby/3.2.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20230609-51521-5yci0k sitelibdir\=./.gem.20230609-51521-5yci0k
+compiling mapper.cpp
+compiling rubymain.cpp
+linking shared-object fastfilereaderext.bundle
+
+current directory: /Users/calvinkhor/Documents/GitHub/clvnkhr.github.io/vendor/bundle/ruby/3.2.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20230609-51521-5yci0k sitelibdir\=./.gem.20230609-51521-5yci0k install
+/opt/homebrew/bin/ginstall -c -m 0755 fastfilereaderext.bundle ./.gem.20230609-51521-5yci0k
+
+current directory: /Users/calvinkhor/Documents/GitHub/clvnkhr.github.io/vendor/bundle/ruby/3.2.0/gems/eventmachine-1.2.7/ext/fastfilereader
+make DESTDIR\= sitearchdir\=./.gem.20230609-51521-5yci0k sitelibdir\=./.gem.20230609-51521-5yci0k clean

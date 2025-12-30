@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8" /> 
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="http://localhost:4000/2024/04/24/Navier-Stokes.html">
+<meta property="og:url" content="http://localhost:4000/2024/04/24/Navier-Stokes.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:site_name" content="Calvin Khor">
+<title>Blagger's guide to the Navier-Stokes Equations Millenium Problem | Calvin Khor</title>
+<meta property="og:title" content="Blagger's guide to the Navier-Stokes Equations Millenium Problem | Calvin Khor">
+<meta name="description" content="The point of this note is to allow non-experts to have a feeling for the Navier–Stokes Equations Millenium problem (hereafter NSEMP) the same way people can understand e.g. Fermat’s Last">
+<meta property="og:description" content="The point of this note is to allow non-experts to have a feeling for the Navier–Stokes Equations Millenium problem (hereafter NSEMP) the same way people can understand e.g. Fermat’s Last">
+<meta name="author" content="Calvin Khor">
+<meta property="og:image" content="http://localhost:4000/assets/img/pade.png">
+<meta name="twitter:site" content="@kamivine">
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/styles/default.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.3.2/build/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<link rel="icon" type="image/jpeg" href="http://localhost:4000/favicon.png"/>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css?v=3">
+<script src="http://localhost:4000/assets/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+<!--pudhina-fresh-jekyll-sun-chocolate-ruby-v-2021-02-22-->
+<div class="wrapper">
+<header class="header">
+<div class="navigation">
+<a href="http://localhost:4000" class="logo">CK</a>
+<ul class="menu">
+<li class="menu__entry"><a href="http://localhost:4000">home</a>
+<li class="menu__entry"><a href="http://localhost:4000/projects">projects</a>
+<li class="menu__entry"><a href="http://localhost:4000/posts">posts</a>
+<li class="menu__entry"><a href="http://localhost:4000/2023/06/09/maths.html">maths</a>
+</ul>
+</div>
+<ul class="social-links">
+<a href="mailto:calvin_khor@hotmail.com" class="social-links__entry" target="_blank">
+<i class="fas fa-envelope-square"></i>
+</a>
+<a href="https://github.com/clvnkhr" class="social-links__entry" target="_blank">
+<i class="fab fa-github"></i>
+</a>
+<a href="https://in.linkedin.com/in/clvnkhr" class="social-links__entry" target="_blank">
+<i class="fab fa-linkedin-in"></i>
+</a>
+    <a class="social-links__entry" href='#' onclick="switch_dark_mode_icon(darkmode, 'dark_mode_toggle')">
+        <i style="color: rgba( 254, 164, 1, 100%);" id="dark_mode_toggle" class="fas fa-sun"></i>
+    </a>
+</ul>
+  <script type="text/x-mathjax-config">
+    MathJax = {
+      tex: {
+        packages: ['base'],        // extensions to use
+        inlineMath: [              // start/end delimiter pairs for in-line math
+          ['\\(', '\\)']
+        ],
+        displayMath: [             // start/end delimiter pairs for display math
+          ['$$', '$$'],
+          ['\\[', '\\]']
+        ],
+        processEscapes: true,      // use \$ to produce a literal dollar sign
+        processEnvironments: true, // process \begin{xxx}...\end{xxx} outside math mode
+        processRefs: true,         // process \ref{...} outside of math mode
+        digits: /^(?:[0-9]+(?:\{,\}[0-9]{3})*(?:\.[0-9]*)?|\.[0-9]+)/,
+                                   // pattern for recognizing numbers
+        tags: 'none',              // or 'ams' or 'all'
+        tagSide: 'right',          // side for \tag macros
+        tagIndent: '0.8em',        // amount to indent tags
+        useLabelIds: true,         // use label name rather than tag for ids
+        maxMacros: 1000,           // maximum number of macro substitutions per expression
+        maxBuffer: 5 * 1024,       // maximum size for the internal TeX string (5K)
+        baseURL:                   // URL for use with links to tags (when there is a<base> tag in effect)
+           (document.getElementsByTagName('base').length === 0) ?
+            '' : String(document.location).replace(/#.*$/, '')),
+        formatError:               // function called when TeX syntax errors occur
+            (jax, err) => jax.formatError(err)
+      }
+    };
+  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+</header>
+<br>
+<br>
+    <a href="http://localhost:4000/tags/maths" style="background-color: rgba( 144, 106, 207, 100%);" class="badge badge-primary">#maths</a>
+<h1 class="post-title">
+   <div class="post-title__text">Blagger's guide to the Navier-Stokes Equations Millenium Problem</div>
+</h1>
+<p class="post-title__subtitle">Published Apr 24, 2024  by <a href="https://clvnkhr.github.io" target="_blank">Calvin Khor</a></p>
+<img class="splash-img" src="http://localhost:4000/assets/img/pade.png" loading="lazy" alt="">
+<br>
+<div class="post_wrapper">
+   <p>The point of this note is to allow non-experts to have a feeling for the Navier–Stokes Equations Millenium problem (hereafter NSEMP) the same way people can understand e.g. Fermat’s Last Theorem. Being a statement in number theory, it is easy to explain. It is also famously hard to prove. NSEMP is currently open but it seems most people do not even comprehend what the problem is.</p>
+<h1 id="the-incompressible-navier-stokes-equations">The incompressible Navier-Stokes equations</h1>
+<p>For \(d = 2\) or \(3\), \(x \in \mathbb R^d \), and \(t \in \mathbb R\), the incompressible Navier–Stokes equation describes the velocity \(u=u(x,t) \in \mathbb R^d\) and pressure \(p=p(x,t) \in \mathbb R\) of a fluid at each position \(x\) and time \(t\):
+\begin{align}
+   \begin{cases} \partial_t u + u \cdot \nabla u &amp;= - \nabla p + \Delta u \\\<br />
+\nabla \cdot u &amp;= 0
+  \end{cases}
+\end{align}
+We have set the viscosity \(\nu=1\) for simplicity. There are 4 unknown functions: one vector field \(u = (u_1, u_2, u_3)\) and one scalar function \(p\). The first equation is the ‘main’ equation derives from conservation of momentum (\(F=ma\)) and the second is a incompressiblity constraint that \(u\) has to satisfy.</p>
+<h2 id="a-word-on-modelling">A word on modelling</h2>
+<p>This equation assumes that there are no external forces acting on the fluid. In addition, we assume that there is only a single body of fluid, that stretches infinitely far. In particular this situation does not model water in a cup; this is a bounded volume of water in a hard container surrounded by air. Splashing and bubbles are hard to describe (for instance, what happens topologically?). Boundaries can be accounted for but make the problem more complicated.</p>
+<p>In fact (just skip this paragraph), when one says Navier-Stokes, some might say you are referring to the compressible equations, which one usually first derives. The compressible equations are two equations, one stemming from conservation of momentum, and one stemming from conservation of mass. These involve the density \(\rho\) and certain stress tensors. The incompressiblity assumption is that the stress tensor assumes a certain simple form, which converts the mass equation into the divergence-free condition, and the momentum equation to take the above form. The details can be found on <a href="https://en.wikipedia.org/wiki/Derivation_of_the_Navier–Stokes_equations#Continuity_equations">Wikipedia</a>.</p>
+<h2 id="the-problem-statement">The Problem Statement</h2>
+<p>Cauchy Problem</p>
+<h1 id="simpler-problems-we-do-understand">Simpler problems we do understand</h1>
+<p>Burger’s equation
+Heat equation</p>
+<h1 id="problems-closer-to-3d-navier-stokes-we-still-understand">Problems closer to 3D Navier-Stokes we still understand</h1>
+<h1 id="what-we-do-know-about-3d-navier-stokes">What we do know about 3D Navier-Stokes</h1>
+<p>Basic sources for Navier-Stokes</p>
+<p>Classic references</p>
+<ul>
+ <li>Majda-Bertozzi
+ <li>Constantin-Foias
+</ul>
+<p>See also</p>
+<ul>
+ <li>Jose Book
+</ul>
+<h2 id="sources-from-fields-institute-on-problem-statement">Sources from Fields Institute on problem statement</h2>
+<h2 id="why-the-problem-is-hard">Why the problem is hard</h2>
+<p>-</p>
+<p>What we know</p>
+<p>Recent progress</p>
+<ul>
+ <li>convex integration
+ <li>
+   <ul>
+     <li>forcing
+   </ul>
+ <li>Euler
+</ul>
+</div>
+<span class="toggle"></span>
+<span class="wave"></span>
+<br>
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+this.page.url = 'http://localhost:4000/2024/04/24/Navier-Stokes.html';
+this.page.identifier = '/2024/04/24/Navier-Stokes.html'; 
+this.page.title = 'Blagger's guide to the Navier-Stokes Equations Millenium Problem';
+};
+(function() {
+var d = document, s = d.createElement('script');
+s.src = 'https://clvnkhr.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<br>
+<div class="about">
+<div class="about__devider">✮✮✮</div>
+<div class="about__text">
+<br>
+&#169 2023-2024 Calvin Khor | Made using the <a href="https://github.com/ritijjain/pudhina-fresh">Pudhina Fresh</a> theme for Jekyll.
+</div>
+</div>
+</div>
+
+<script>
+const options = {
+    bottom: '32px', // default: '32px'
+    right: '32px', // default: '32px'
+    left: 'unset', // default: 'unset'
+    time: '0.3s', // default: '0.3s'
+    mixColor: 'rgba( 230, 230, 230, 100%)', // default: '#fff'
+    backgroundColor: '#fff',  // default: '#fff'
+    buttonColorDark: '#100f2c',  // default: '#100f2c'
+    buttonColorLight: '#fff', // default: '#fff'
+    saveInCookies: true, // default: true,
+    label: '🌓', // default: ''
+    autoMatchOsTheme: true // default: true
+    }
+const darkmode = new Darkmode(options);
+render_dark_mode_icon(darkmode, 'dark_mode_toggle');
+</script>
