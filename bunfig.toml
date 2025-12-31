@@ -1,0 +1,9 @@
+[install]
+lockfile = true
+no-save-workspace-prefix = true
+
+[test]
+preload = ["./test/setup.ts"]
+
+[serve.static]
+plugins = []

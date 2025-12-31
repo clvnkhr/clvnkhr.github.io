@@ -259,21 +259,24 @@ All posts will import this from a shared file:
 
 ```typst
 // blog/templates/math.typ
-#show math.equation: it => context {
-  // only wrap in frame on html export
-  if target() == "html" {
-    // wrap frames of inline equations in a box
-    // so they don't interrupt paragraph
-    show: if it.block {
-      it => html.span( // this part centers equations like vscode
-        style:"display: block; text-align: center; margin: 1em 0;",
-        it
-      )
-    } else { box }
-    html.frame(it)
-  } else {
-    it
+#let html_math(it) = {
+  show math.equation: it => context {
+    // Only wrap in frame when exporting to HTML
+    if target() == "html" {
+      // Wrap inline equations in a box to prevent paragraph interruption
+      // Wrap display equations in a centered span
+      show: if it.block {
+        it => html.span(
+          style: "display: block; text-align: center; margin: 1em 0;",
+          it,
+        )
+      } else { box }
+      html.frame(it)
+    } else {
+      it
+    }
   }
+  it
 }
 ```
 
@@ -282,7 +285,9 @@ All posts will import this from a shared file:
 // title: My Post
 // date: 2025-01-15
 
-#import "../templates/math.typ": *
+#import "../../../../templates/math.typ": html_math
+
+#show: html_math
 
 = My Post
 
@@ -290,6 +295,9 @@ Math here: $x^2 + y^2 = z^2$
 ```
 
 **Key features:**
+- Defined as a function `html_math(it)` that wraps the show rule
+- Posts import the function with `#import ... : html_math`
+- Applied with `#show: html_math` in the post
 - Only wraps math when exporting to HTML (`target() == "html"`)
 - Handles inline equations (wraps in box to prevent paragraph interruption)
 - Handles display/block equations (centers with inline CSS)
@@ -478,9 +486,9 @@ clvnkhr.github.io/
 
 ## Implementation Steps
 
-### Phase 1: Foundation Setup (1-2 hours)
+### Phase 1: Foundation Setup (1-2 hours) ✅ COMPLETE
 
-1. [ ] Create `package.json` with dependencies:
+1. [x] Create `package.json` with dependencies:
    - react, react-dom
    - pagefind
    - @catppuccin/tailwindcss
@@ -511,7 +519,17 @@ clvnkhr.github.io/
 
 5. [ ] Initialize Bun and install dependencies
 
-6. [ ] Test local environment
+6. [x] Test local environment
+
+### Phase 1.5: Testing Infrastructure (1-2 hours) ✅ COMPLETE
+
+1. [x] Set up Bun test runner
+2. [x] Create test setup file (`test/setup.ts`)
+3. [x] Write unit tests for metadata parser
+4. [x] Write unit tests for tag color generator
+5. [x] Write integration tests for build system
+6. [x] Verify all tests pass (16/16 passing)
+7. [x] Add test scripts to package.json
 
 ### Phase 2: Build System Core (4-6 hours)
 
@@ -651,7 +669,9 @@ Since we're importing global show rules from a shared file, no injection step is
 // title: My Post
 // date: 2025-01-15
 
-#import "../../templates/math.typ": *
+#import "../../../../templates/math.typ": html_math
+
+#show: html_math
 
 = My Post
 
@@ -1029,23 +1049,26 @@ bun run tailwindcss -i ./src/assets/css/main.css -o ./dist/assets/css/main.css -
    usemathjax: true
    ---
    ```
-   →
-   ```typst
-   // title: Hello Jekyll
-   // date: 2023-06-09
-   // tags: Jekyll
+    →
+    ```typst
+    // title: Hello Jekyll
+    // date: 2023-06-09
+    // tags: Jekyll
 
-   #import "../../templates/math.typ": *
-   ```
+    #import "../../templates/math.typ": html_math
+
+    #show: html_math
+    ```
 4. [ ] Convert Markdown to Typst syntax:
    - `## Heading` → `== Heading`
    - `**bold**` → `*bold*`
    - `*italic*` → `_italic_`
    - `---` → `---` (horizontal rule, same)
-   - `[link](url)` → `#link(url)[link]`
-   - `` `code` `` → `` `code` `` (same)
-5. [ ] Import `../../templates/math.typ` at top of each post
-6. [ ] Keep math as-is (global show rule handles wrapping)
+    - `[link](url)` → `#link(url)[link]`
+    - `` `code` `` → `` `code` `` (same)
+  5. [ ] Import `html_math` from `../../templates/math.typ` at top of each post
+  6. [ ] Apply with `#show: html_math` after the import
+  7. [ ] Keep math as-is (global show rule handles wrapping)
 7. [ ] Update image paths to `/assets/img/`
 8. [ ] Test each post renders correctly
 
@@ -1138,7 +1161,9 @@ All decisions are finalized! Here's what happens next:
 
 ## Version History
 
-- **2025-12-29 v1.0:** Initial PLAN.md created based on research
+- **2025-12-31 v4.1:** Updated math template documentation to reflect working implementation (html_math function pattern)
+- **2025-12-30 v4.0:** Added Phase 1.5 - Testing Infrastructure (16 tests passing)
+- **2025-12-29 v3.0:** Updated with final user decisions:
 - **2025-12-29 v2.0:** Finalized technology choices, updated architecture
 - **2025-12-29 v3.0:** Updated with final user decisions:
   - Math show rules imported from shared file
@@ -1184,12 +1209,13 @@ All decisions are finalized! Here's what happens next:
 
 **Design Decisions:**
 - All posts on blog index (no pagination)
-- Math show rules imported from shared file
+- Math show rules via `html_math()` function imported from shared file
+- Posts apply math rules with `#show: html_math`
 - Tags auto-colored with pastel palette
 - Projects stored as TypeScript for type safety
 - Dev server uses Bun's built-in `--watch`
 
-**Estimated Timeline:** 15-26 hours total
+**Estimated Timeline:** 16-28 hours total (includes testing phase)
 
 **Ready to implement! 🚀**
 
@@ -1222,7 +1248,9 @@ blog/
 // tags: tutorial, typst
 
 // Import global math rules from templates folder
-#include "../../templates/math.typ"
+#import "../../../../templates/math.typ": html_math
+
+#show: html_math
 
 = My First Blog Post
 
@@ -1239,8 +1267,8 @@ Here's an inline equation: $x^2 + y^2 = z^2$
 And here's a display equation:
 
 $
-  \int_{-\infty}^\infty e^{-x^2} \, dx = \sqrt{\pi}
-$
+  integral_(-oo)^oo e^(-x^2) dif x = sqrt(pi)
+ $
 
 == Conclusion
 
@@ -1252,24 +1280,27 @@ That's how it works!
 ```typst
 // blog/templates/math.typ
 
-// This file contains show rules that ALL blog posts import
+// This file contains a function with show rules that ALL blog posts import
 // It handles math rendering for HTML export
 
-#show math.equation: it => context {
-  // Only wrap in frame when exporting to HTML
-  if target() == "html" {
-    // Wrap inline equations in a box to prevent paragraph interruption
-    // Wrap display equations in a centered span
-    show: if it.block {
-      it => html.span(
-        style:"display: block; text-align: center; margin: 1em 0;",
-        it
-      )
-    } else { box }
-    html.frame(it)
-  } else {
-    it
+#let html_math(it) = {
+  show math.equation: it => context {
+    // Only wrap in frame when exporting to HTML
+    if target() == "html" {
+      // Wrap inline equations in a box to prevent paragraph interruption
+      // Wrap display equations in a centered span
+      show: if it.block {
+        it => html.span(
+          style: "display: block; text-align: center; margin: 1em 0;",
+          it,
+        )
+      } else { box }
+      html.frame(it)
+    } else {
+      it
+    }
   }
+  it
 }
 ```
 
@@ -1466,14 +1497,15 @@ export function PostPage({ post, htmlContent }: PostPageProps) {
 ## Key Points
 
 1. **You write:** `.typ` file in `blog/posts/yyyy/mm/dd/`
-2. **You import:** Global rules from `blog/templates/math.typ` using `#include`
-3. **Build script:** 
+2. **You import:** Global rules from `blog/templates/math.typ` using `#import ... : html_math`
+3. **You apply:** The imported function with `#show: html_math`
+4. **Build script:**
    - Parses metadata from `// title:`, `// date:`, etc.
    - Compiles `.typ` to HTML (math is already wrapped by the show rule)
    - Wraps HTML in JSX template
    - Writes complete HTML page to `dist/`
-4. **User visits:** URL like `/blog/2025/01/15/my-first-post/`
-5. **Browser serves:** The HTML file with CSS styling applied
+5. **User visits:** URL like `/blog/2025/01/15/my-first-post/`
+6. **Browser serves:** The HTML file with CSS styling applied
 
 
 

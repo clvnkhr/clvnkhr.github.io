@@ -1,0 +1,28 @@
+{
+  "name": "clvnkhr.github.io",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "bun run src/build/index.ts",
+    "dev": "bun run src/build/index.ts --watch",
+    "serve": "python3 -m http.server 3000 --directory dist",
+    "clean": "rm -rf dist",
+    "test": "bun test",
+    "test:watch": "bun test --watch"
+  },
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "pagefind": "^1.0.0"
+  },
+  "devDependencies": {
+    "@catppuccin/tailwindcss": "^1.0.0",
+    "@types/bun": "latest",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
+  }
+}
