@@ -1,0 +1,3 @@
+[submodule "fonts/LeteSansMath"]
+	path = fonts/LeteSansMath
+	url = https://github.com/abccsss/LeteSansMath.git
