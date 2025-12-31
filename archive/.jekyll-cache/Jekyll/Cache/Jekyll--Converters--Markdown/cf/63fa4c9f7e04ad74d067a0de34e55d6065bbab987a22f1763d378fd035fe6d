@@ -1,4 +1,4 @@
-I"Å'<p>The Two Crystal Balls problem, as mentioned in e.g. <a href="https://frontendmasters.com/courses/algorithms/two-crystal-balls-problem/">this course</a>, is the following problem:</p>
+I"ÔøΩ'<p>The Two Crystal Balls problem, as mentioned in e.g. <a href="https://frontendmasters.com/courses/algorithms/two-crystal-balls-problem/">this course</a>, is the following problem:</p>
 
 <blockquote>
   <p>You are given two identical crystal balls that will break if dropped from high enough. You are allowed to repeatedly drop them from different (integer) heights. Find the lowest distance (less than a given maximum) from which the balls will break. What is the optimal time complexity?</p>

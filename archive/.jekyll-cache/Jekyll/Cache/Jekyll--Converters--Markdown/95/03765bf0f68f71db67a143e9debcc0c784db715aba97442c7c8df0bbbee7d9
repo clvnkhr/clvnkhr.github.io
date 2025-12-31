@@ -1,4 +1,4 @@
-I"�)<p>Quick notes on pandas (<code class="highlighter-rouge">import pandas as pd</code>)</p>
+I"�)<p>Quick notes on pandas (<code class="highlighter-rouge">import pandas as pd</code>)</p>
 
 <p>lets say df is a pd.DataFrame. to select we can use df[…], df.loc[…] or df.iloc[…]</p>
 

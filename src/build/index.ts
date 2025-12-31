@@ -75,7 +75,7 @@ export async function buildBlog() {
 
   // Build Tailwind CSS
   console.log('🎨 Building Tailwind CSS...');
-  await Bun.$`bunx tailwindcss -i src/assets/css/main.css -o dist/assets/css/main.css`.quiet();
+  await Bun.$`bunx @tailwindcss/cli -i src/assets/css/main.css -o dist/assets/css/main.css`.quiet();
 
   // Discover all posts
   const posts = await discoverPosts();

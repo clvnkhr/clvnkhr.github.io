@@ -17,6 +17,8 @@
   },
   "devDependencies": {
     "@catppuccin/tailwindcss": "^1.0.0",
+    "@seangenabe/catppuccin-tailwindcss-v4": "^1.0.2",
+    "@tailwindcss/cli": "^4.1.18",
     "@types/bun": "latest",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",

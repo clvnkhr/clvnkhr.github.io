@@ -1,3 +1,15 @@
 @import './fonts.css';
 
 @import "tailwindcss";
+
+@import "@seangenabe/catppuccin-tailwindcss-v4/default-mocha.css";
+
+:root {
+  --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+}

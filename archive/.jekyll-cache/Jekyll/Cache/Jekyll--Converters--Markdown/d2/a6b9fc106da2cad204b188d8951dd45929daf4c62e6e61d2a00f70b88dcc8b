@@ -1,4 +1,4 @@
-I"�$<p>The goal of Leetcode 69: Sqrt (Easy) is to provide your own implementation of integer square roots (rounded down), without appealing to a built in power operator or function.</p>
+I"�$<p>The goal of Leetcode 69: Sqrt (Easy) is to provide your own implementation of integer square roots (rounded down), without appealing to a built in power operator or function.</p>
 
 <p>One standard solution is binary search. But I was very amused to discover that one can avoid this with a mathematical device called a <a href="https://en.wikipedia.org/wiki/Padé_approximant">Padé approximant</a>, obtaining a reasonable run time without any knowledge of basic algorithms.
 <img src="https://clvnkhr.github.io/assets/img/pade-runtime.png" alt="test" /></p>

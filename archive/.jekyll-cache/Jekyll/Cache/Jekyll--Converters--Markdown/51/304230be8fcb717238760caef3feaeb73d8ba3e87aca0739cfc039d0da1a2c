@@ -1,4 +1,4 @@
-I"»+<h2 id="2023-06-09-setting-up-site-with-jekyll-template">2023-06-09: Setting up site with Jekyll template</h2>
+I"ï¿½+<h2 id="2023-06-09-setting-up-site-with-jekyll-template">2023-06-09: Setting up site with Jekyll template</h2>
 
 <p>I needed <code class="highlighter-rouge">bundle add webrick</code> as stated in
 <a href="https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll">Githubâ€™s own docs</a>
