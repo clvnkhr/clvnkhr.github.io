@@ -1,4 +1,6 @@
 import React from 'react';
+import { Header } from './Header';
+import { Footer } from './Footer';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,7 +18,11 @@ export function Layout({ children, title, darkMode = true }: LayoutProps) {
         <link rel="stylesheet" href="/assets/css/main.css" />
       </head>
       <body className="mocha min-h-screen bg-ctp-base text-ctp-text antialiased transition-colors duration-300">
-        {children}
+        <Header />
+        <main className="min-h-[calc(100vh-theme(spacing.64))]">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );

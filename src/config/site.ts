@@ -1,0 +1,16 @@
+export const site = {
+  title: "Calvin Khor",
+  description: "Personal blog about mathematics, programming, and technology",
+  url: "https://clvnkhr.github.io",
+  author: {
+    name: "Calvin Khor",
+    email: "",
+    github: "clvnkhr",
+  },
+  navigation: [
+    { label: "Home", href: "/" },
+    { label: "Blog", href: "/blog/" },
+    { label: "Projects", href: "/projects/" },
+    { label: "Tags", href: "/tags/" },
+  ],
+};

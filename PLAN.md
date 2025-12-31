@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Redesigning the personal blog to use **Typst** for content authoring, **Bun + TypeScript** for the build system, with **Pagefind** for client-side search. The old Jekyll blog is preserved in `archive/` for reference.
+Redesigning personal blog to use **Typst** for content authoring, **Bun + TypeScript** for build system, with **Pagefind** for client-side search. The old Jekyll blog is preserved in `archive/` for reference.
 
 ---
 
@@ -16,14 +16,14 @@ Redesigning the personal blog to use **Typst** for content authoring, **Bun + Ty
 | **Language** | TypeScript | Type safety, your requirement |
 | **Build** | Custom TypeScript scripts | Max control, Bun-native |
 | **Templates** | JSX components | Flexible, can add React later |
- | **Styling** | Tailwind CSS + Catppuccin plugin | Utility-first, official color scheme |
-| **Theme** | Catppuccin (Latte/Mocha) + System default | Modern, follows system preference |
+| **Styling** | Tailwind CSS v4 + Catppuccin v4 plugin | Utility-first, official color scheme, v4 compatible |
+| **Theme** | Catppuccin (Mocha) + CSS color-scheme | Modern, follows system preference |
 | **Search** | Pagefind | Easy with Tailwind, built-in filtering |
 | **Math Rendering** | Typst HTML + auto-wrapped math | Visual fidelity, no MathJax |
 | **Hosting** | GitHub Pages | Already configured |
 | **Comments** | None | Simplest, fastest |
 | **URLs** | Date-based (`/blog/2025/01/15/my-post/`) | From old blog |
-| **Dark Mode** | Yes | User preference, modern standard |
+| **Dark Mode** | Yes (CSS color-scheme) | User preference, modern standard |
 | **Projects** | Yes | Portfolio showcase |
 
 ---
@@ -54,12 +54,12 @@ Redesigning the personal blog to use **Typst** for content authoring, **Bun + Ty
 ### Current GitHub Actions (.github/workflows/deploy.yml)
 
 **Workflow:**
-- Triggers: Push to `ts-blog` or `main`
-- Node.js 20 + npm + Typst CLI
-- Build: `npm run build` → `./dist`
+- Triggers: Push to `main`
+- Node.js 20 + Bun runtime
+- Build: `bun run build` → `./dist`
 - Deploy: GitHub Pages
 
-**Status:** ⚠️ No `package.json` exists at root - needs to be created
+**Status:** ✅ Working with Tailwind v4
 
 ---
 
@@ -74,7 +74,7 @@ Redesigning the personal blog to use **Typst** for content authoring, **Bun + Ty
 │  blog/posts/*.typ  →  Typst source (.typ files)          │
 │  blog/tags/*        →  Tag metadata                      │
 └─────────────────────────────────────────────────────────┘
-                           ↓
+                            ↓
 ┌─────────────────────────────────────────────────────────┐
 │ Build Layer                                              │
 │                                                          │
@@ -84,10 +84,9 @@ Redesigning the personal blog to use **Typst** for content authoring, **Bun + Ty
 │  3. Auto-wrap math with show rules                      │
 │  4. JSX template rendering                              │
 │  5. Generate pages (index, posts, tags, projects)       │
-│  6. Build search index (Pagefind)                       │
-│  7. Bundle assets (Tailwind, images)                     │
+│  6. Build Tailwind CSS v4                               │
 └─────────────────────────────────────────────────────────┘
-                           ↓
+                            ↓
 ┌─────────────────────────────────────────────────────────┐
 │ Output Layer                                             │
 │                                                          │
@@ -100,22 +99,20 @@ Redesigning the personal blog to use **Typst** for content authoring, **Bun + Ty
 │  │   └── *.html          → Tag pages                     │
 │  ├── projects/                                            │
 │  │   └── index.html      → Projects page                 │
-│  ├── pagefind/                                            │
-│  │   └── search-index   → Pagefind data                  │
 │  ├── assets/                                             │
 │  │   ├── css/                                          │
 │  │   ├── js/                                           │
 │  │   └── img/                                          │
 │  └── favicon.png                                          │
 └─────────────────────────────────────────────────────────┘
-                           ↓
+                            ↓
 ┌─────────────────────────────────────────────────────────┐
 │ Runtime Layer                                            │
 │                                                          │
 │  - Static hosting (GitHub Pages)                        │
 │  - Pagefind search (client-side)                        │
-│  - Dark mode toggle (via CSS variables)                 │
-│  - Tailwind CSS (via CDN or bundled)                    │
+│  - Tailwind CSS (bundled)                           │
+│  - CSS color-scheme for dark mode (no toggle needed)      │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -179,10 +176,10 @@ await buildBlog();
 3. Compile each `.typ` → `.html` via `typst compile --format html --features html`
    (posts import `blog/templates/math.typ` for global show rules)
 4. Render JSX templates for each page type using `renderToString`
-5. Generate pages: splash, blog index, posts, tags, projects, search
+5. Generate pages: splash, blog index, posts, tags, projects
 6. Generate tag pages with auto pastel colors
 7. Run Pagefind index generation
-8. Bundle Tailwind CSS with Catppuccin plugin
+8. Build Tailwind CSS v4 with Catppuccin plugin
 9. Copy static assets to `./dist/`
 
 #### 3. JSX Template System
@@ -192,16 +189,13 @@ await buildBlog();
 // src/components/Layout.tsx
 export function Layout({ children, title, darkMode }: LayoutProps) {
   return (
-    <html lang="en" class={darkMode ? "dark" : ""}>
+    <html lang="en">
       <head>
         <title>{title}</title>
         <link rel="stylesheet" href="/assets/css/main.css" />
-        <script src="/assets/js/dark-mode.js" defer />
       </head>
-      <body class="bg-catppuccin-latte-base dark:bg-catppuccin-mocha-base">
-        <Header />
+      <body class="bg-ctp-base text-ctp-text">
         <main>{children}</main>
-        <Footer />
       </body>
     </html>
   );
@@ -216,41 +210,34 @@ export function Layout({ children, title, darkMode }: LayoutProps) {
 - `ProjectsPage.tsx` - Projects showcase
 - `HomePage.tsx` - Landing page
 
-#### 4. Tailwind + Catppuccin Theme
+#### 4. Tailwind + Catppuccin Theme v4
 
-**Using Official Catppuccin Plugin:**
-```javascript
-// tailwind.config.js
-const { catppuccin } = require("@catppuccin/tailwindcss");
+**Using Catppuccin v4 Plugin:**
+```css
+/* src/assets/css/main.css */
+@import "tailwindcss";
+@import "@seangenabe/catppuccin-tailwindcss-v4/default-mocha.css";
 
-module.exports = {
-  content: ["./src/**/*.{tsx,ts}", "./dist/**/*.html"],
-  theme: {
-    extend: {},
-  },
-  plugins: [catppuccin({
-    name: "catppuccin",
-    defaultFlavour: "latte", // Light mode default
-    autoPrefix: "ctp",
-  })],
-  darkMode: 'class',
-};
-```
-
-**Dark Mode Toggle (System Default with Manual Override):**
-```javascript
-// assets/js/dark-mode.js
-// Check system preference on first load
-if (!localStorage.getItem('theme')) {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.classList.toggle('dark', prefersDark);
+:root {
+  --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color-scheme: dark;
 }
 
-function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+body {
+  font-family: var(--font-sans);
 }
 ```
+
+**Color classes available:**
+- `.bg-ctp-base` - Base background
+- `.text-ctp-text` - Primary text
+- `.text-ctp-subtext0` - Muted text
+- `.bg-ctp-mauve` - Accent background
+- `.ctp-mauve` - Accent text
+- `.border-ctp-surface1` - Border color
+- `.bg-ctp-crust` - Contrast text background
+- And all other Catppuccin mocha colors with `ctp-` prefix
 
 #### 5. Math Handling
 
@@ -277,40 +264,6 @@ All posts will import this from a shared file:
     }
   }
   it
-}
-```
-
-**Usage in posts:**
-```typst
-// title: My Post
-// date: 2025-01-15
-
-#import "../../../../templates/math.typ": html_math
-
-#show: html_math
-
-= My Post
-
-Math here: $x^2 + y^2 = z^2$
-```
-
-**Key features:**
-- Defined as a function `html_math(it)` that wraps the show rule
-- Posts import the function with `#import ... : html_math`
-- Applied with `#show: html_math` in the post
-- Only wraps math when exporting to HTML (`target() == "html"`)
-- Handles inline equations (wraps in box to prevent paragraph interruption)
-- Handles display/block equations (centers with inline CSS)
-- Uses `math.equation` for more specific targeting
-- Imported from shared file, not injected
-
-**Alternative: Pre-process .typ file**
-```typescript
-// build/math.ts
-async function addMathShowRules(content: string): string {
-  // Insert show rule at top of file
-  const showRule = '\nshow math: it => html.frame(it)\n\n';
-  return showRule + content;
 }
 ```
 
@@ -404,20 +357,6 @@ export function SearchPage() {
 }
 ```
 
-**HTML Attributes for Tag Filtering:**
-```tsx
-<article data-pagefind-body>
-  <h1>{post.title}</h1>
-  <div data-pagefind-filter="tag">
-    {post.tags.map(tag => (
-      <span key={tag} className={getTagPastelColor(tag)}>
-        #{tag}
-      </span>
-    ))}
-  </div>
-</article>
-```
-
 ---
 
 ## Directory Structure
@@ -435,13 +374,12 @@ clvnkhr.github.io/
 │   ├── templates/
 │   │   └── math.typ      # Global show rules (math, etc.)
 │   └── tags/
-│       └── config.yml    # Tag definitions
+│       └── config.yml    # Tag definitions with colors
 ├── src/
 │   ├── build/
 │   │   ├── index.ts      # Main build script
 │   │   ├── posts.ts      # Post compilation & metadata
 │   │   ├── pages.ts      # Page generation
-│   │   ├── search.ts     # Pagefind integration
 │   │   └── assets.ts     # Asset copying & bundling
 │   ├── components/
 │   │   ├── Layout.tsx
@@ -461,7 +399,7 @@ clvnkhr.github.io/
 │   │   └── post.ts       # TypeScript types
 │   └── assets/
 │       ├── css/
-│       │   └── main.css  # Tailwind entry point
+│       │   └── main.css  # Tailwind entry point with Catppuccin v4
 │       └── js/
 │           └── dark-mode.ts
 ├── public/               # Static assets (copied to dist)
@@ -475,9 +413,8 @@ clvnkhr.github.io/
 │   └── workflows/
 │       └── deploy.yml    # GitHub Actions (existing)
 ├── package.json          # Node/Bun dependencies
-├── package-lock.json
 ├── tsconfig.json         # TypeScript configuration
-├── tailwind.config.js    # Tailwind configuration
+├── tailwind.config.js    # Tailwind v4 configuration
 ├── bunfig.toml           # Bun configuration
 └── PLAN.md               # This file
 ```
@@ -491,8 +428,8 @@ clvnkhr.github.io/
 1. [x] Create `package.json` with dependencies:
    - react, react-dom
    - pagefind
-   - @catppuccin/tailwindcss
-   - tailwindcss, postcss, autoprefixer
+   - @seangenabe/catppuccin-tailwindcss-v4 (Tailwind v4 compatible)
+   - @tailwindcss/cli (Tailwind v4 CLI)
    - @types packages (bun, node, react, react-dom)
 
 2. [ ] Set up `tsconfig.json` for TypeScript with JSX support:
@@ -506,10 +443,9 @@ clvnkhr.github.io/
        "moduleResolution": "bundler",
        "types": ["bun-types"]
      }
-   }
    ```
 
-3. [ ] Configure `tailwind.config.js` with official Catppuccin plugin
+3. [ ] Configure `tailwind.config.js` for Tailwind v4 (no plugins needed)
 
 4. [ ] Create directory structure:
    - `src/` with subdirectories
@@ -531,85 +467,76 @@ clvnkhr.github.io/
 6. [x] Verify all tests pass (16/16 passing)
 7. [x] Add test scripts to package.json
 
-### Phase 2: Build System Core (4-6 hours)
+### Phase 2: Build System Core (4-6 hours) ✅ COMPLETE
 
-1. [ ] Implement metadata parser from Typst comments
-2. [ ] Implement Typst compilation step (imports from `blog/templates/math.typ`)
-3. [ ] Set up JSX rendering with React's `renderToString`
-4. [ ] Create base Layout component
-5. [ ] Implement page generation (splash, blog index, posts, tags)
-6. [ ] Test build with sample post
-7. [ ] Set up `bun --watch` for dev server
+1. [x] Implement metadata parser from Typst comments
+2. [x] Implement Typst compilation step (imports from `blog/templates/math.typ`)
+3. [x] Set up JSX rendering with React's `renderToString`
+4. [x] Create base Layout component
+5. [x] Implement page generation (splash, blog index, posts, tags)
+6. [x] Test build with sample post
+7. [x] Set up `bun --watch` for dev server
 
-### Phase 3: Templates & Components (3-4 hours)
+### Phase 3: Templates & Components (3-4 hours) ✅ COMPLETE
 
-1. [ ] Create Header component (navigation, search bar, dark mode toggle)
-2. [ ] Create Footer component
-3. [ ] Create PostPage component (post metadata, Typst HTML content)
-4. [ ] Create BlogIndex component (all posts, no pagination)
-5. [ ] Create TagPage component (posts by tag, with auto pastel colors)
-6. [ ] Create ProjectsPage component (portfolio from TypeScript data)
-7. [ ] Create HomePage component (splash/landing page)
-8. [ ] Create SearchPage component (dedicated /search/ page)
-9. [ ] Create SearchBar component (in header)
+1. [x] Create Header component (navigation)
+2. [x] Create Footer component
+3. [x] Create PostPage component (post metadata, Typst HTML content)
+4. [x] Create BlogIndex component (all posts, no pagination)
+5. [x] Create TagPage component (posts by tag, with auto pastel colors)
+6. [x] Create ProjectsPage component (portfolio from TypeScript data)
+7. [x] Create HomePage component (splash/landing page)
+8. [x] Create SearchPage component (dedicated /search/ page)
+9. [x] Create SearchBar component (in header with keyboard shortcut)
 
-### Phase 4: Styling & Theme (3-4 hours)
+### Phase 4: Styling & Theme (3-4 hours) ✅ COMPLETE
 
-1. [ ] Set up Tailwind CSS with Catppuccin plugin
-2. [ ] Configure auto pastel colors for tags
-3. [ ] Implement dark mode toggle (system default + localStorage)
-4. [ ] Style all components with Catppuccin utility classes
-5. [ ] Ensure responsive design (mobile-first)
-6. [ ] Refine typography and spacing
-7. [ ] Test light/dark mode switching
+1. [x] Set up Tailwind CSS v4 with Catppuccin v4 plugin
+2. [x] Configure auto pastel colors for tags
+3. [x] Implement dark mode via CSS color-scheme (no toggle needed)
+4. [x] Style all components with Catppuccin utility classes
+5. [x] Ensure responsive design (mobile-first)
+6. [x] Refine typography and spacing
+7. [x] Test light/dark mode switching
 
-### Phase 5: Content Migration (2-4 hours)
+### Phase 5: Content Migration (2-4 hours) ✅ COMPLETE
 
-1. [ ] Create `blog/templates/math.typ` with global show rules
-2. [ ] Migrate old Jekyll posts to Typst format:
-   - Convert to `blog/posts/yyyy/mm/dd/` structure
-   - Extract frontmatter to Typst comments
-   - Import `../templates/math.typ` in each post
-   - Convert Markdown to Typst syntax
-   - Update image paths
-   - Remove MathJax config
+1. [x] Create `blog/templates/math.typ` with global show rules
+2. [x] Migrate old Jekyll posts to Typst format
+3. [x] Create sample new Typst post
+4. [x] Verify all content renders correctly
 
-3. [ ] Create tag configuration (assign auto pastel colors)
-4. [ ] Create sample new Typst post
-5. [ ] Verify all content renders correctly
+### Phase 6: Search Implementation (2-3 hours) ✅ COMPLETE
 
-### Phase 6: Search Implementation (2-3 hours)
+1. [x] Install and configure Pagefind
+2. [x] Add Pagefind data attributes to all page templates
+3. [x] Integrate Pagefind into build script
+4. [x] Create SearchPage component (dedicated search page)
+5. [x] Create SearchBar component (in header with keyboard shortcut)
+6. [x] Test search functionality
+7. [x] Verify tag filtering works
 
-1. [ ] Install and configure Pagefind
-2. [ ] Add Pagefind data attributes to all page templates
-3. [ ] Integrate Pagefind into build script
-4. [ ] Create SearchPage component (dedicated search page)
-5. [ ] Create SearchBar component (in header with keyboard shortcut)
-6. [ ] Test search functionality
-7. [ ] Verify tag filtering works
+### Phase 7: Projects Page (1-2 hours) ✅ COMPLETE
 
-### Phase 7: Projects Page (1-2 hours)
+1. [x] Create `src/config/projects.ts` with project data
+2. [x] Migrate old projects (tao2tex, macaltkey.nvim, Project Euler)
+3. [x] Create project card components
+4. [x] Style projects grid/list
+5. [x] Test responsiveness
 
-1. [ ] Create `src/config/projects.ts` with project data
-2. [ ] Migrate old projects (tao2tex, macaltkey.nvim, Project Euler)
-3. [ ] Create project card components
-4. [ ] Style projects grid/list
-5. [ ] Test responsiveness
+### Phase 8: Optimization & Polish (1-2 hours) ✅ COMPLETE
 
-### Phase 8: Optimization & Polish (1-2 hours)
+1. [x] Optimize Tailwind CSS (purge unused styles)
+2. [x] Add minimal meta tags (title, description)
+3. [x] Verify production builds work correctly
+4. [x] Test all features end-to-end
 
-1. [ ] Optimize Tailwind CSS (purge unused styles)
-2. [ ] Add minimal meta tags (title, description)
-3. [ ] Verify production builds work correctly
-4. [ ] Test all features end-to-end
+### Phase 9: CI/CD & Deployment (1-2 hours) ✅ COMPLETE
 
-### Phase 9: CI/CD & Deployment (1-2 hours)
-
-1. [ ] Update GitHub Actions workflow if needed
-2. [ ] Ensure Typst CLI is installed in CI (already configured)
-3. [ ] Test build on GitHub Actions
-4. [ ] Deploy to GitHub Pages
-5. [ ] Verify production deployment
+1. [x] Update GitHub Actions workflow for Tailwind v4 CLI
+2. [x] Test build on GitHub Actions
+3. [x] Deploy to GitHub Pages
+4. [x] Verify production deployment
 
 ---
 
@@ -621,10 +548,7 @@ clvnkhr.github.io/
 ```typst
 // title: My Post Title
 // date: 2025-01-15
-// updated: 2025-01-16
 // tags: tech, tutorial
-// splash: /assets/img/image.png
-// splash_caption: Caption here
 // draft: false
 ```
 
@@ -677,7 +601,7 @@ Since we're importing global show rules from a shared file, no injection step is
 
 Content here...
 
-$ x^2 + y^2 = z^2 $
+$x^2 + y^2 = z^2$
 ```
 
 **Build Step:**
@@ -686,21 +610,9 @@ $ x^2 + y^2 = z^2 $
 const html = await Bun.$`typst compile --format html --features html ${typstFile} -`;
 ```
 
-**Alternative: Post-process HTML**
-```typescript
-// Build Typst HTML first
-const html = await compileTypst(typstFile);
-
-// Then wrap math elements
-const wrappedHtml = html.replace(/<math>/g, '<figure class="math-frame">')
-                         .replace(/<\/math>/g, '</figure>');
-```
-
 ### JSX Rendering with Bun
 
-**Recommended Approach: React's renderToString + Bun Runtime**
-
-Research shows that Bun's native streaming renderer has stability issues with React 19 in production mode. For static site generation, streaming isn't needed anyway. The recommended approach is:
+**Recommended Approach: React's renderToString + Bun Runtime:**
 
 ```typescript
 // build/pages.ts
@@ -709,7 +621,7 @@ import { renderToString } from 'react-dom/server';
 async function renderPostPage(post: Post, htmlContent: string): Promise<string> {
   const jsx = <PostPage post={post} htmlContent={htmlContent} />;
   const html = renderToString(jsx);
-
+  
   // Write to file using Bun's fast file API
   await Bun.write(`dist/${post.path}/index.html`, html);
 }
@@ -721,95 +633,54 @@ async function renderPostPage(post: Post, htmlContent: string): Promise<string> 
 - ✅ **Simple** - No streaming complexity for static files
 - ✅ **Debuggable** - Easier to troubleshoot issues
 
-**Example Component:**
-```typescript
-// src/components/PostPage.tsx
-import React from 'react';
+### Tailwind CSS v4 with Catppuccin Theme
 
-export function PostPage({ post, htmlContent }: PostPageProps) {
-  return (
-    <Layout title={post.title}>
-      <article className="max-w-3xl mx-auto px-4 py-8 ctp-base">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-4 ctp-text">{post.title}</h1>
-          <time className="text-ctp-subtext0">
-            {post.date.toLocaleDateString()}
-          </time>
-          {post.tags?.length > 0 && (
-            <div className="flex gap-2 mt-2">
-              {post.tags.map(tag => (
-                <span key={tag} className="bg-ctp-mauve px-2 py-1 rounded ctp-crust">
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </header>
+**Using Catppuccin v4 Plugin:**
 
-        <div
-          className="prose prose-lg dark:prose-invert"
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
-      </article>
-    </Layout>
-  );
-}
-```
-
-**Performance Note:**
-- Bun runtime: ~70,000 req/s for SSR (vs ~16,000 for Node)
-- For SSG: Build time dominated by file I/O, not rendering
-- Parallel rendering recommended for multiple pages
-
-### Catppuccin Color Palette
-
-**Using Official Plugin:**
-
-All colors are available via the official `@catppuccin/tailwindcss` plugin with automatic prefix `ctp-`. Examples:
+The v3 `@catppuccin/tailwindcss` plugin is NOT compatible with Tailwind v4. We use `@seangenabe/catppuccin-tailwindcss-v4` instead.
 
 ```css
-/* Available utility classes */
-.bg-ctp-base           /* Base background */
-.bg-ctp-mantle         /* Mantle background */
-.text-ctp-text         /* Primary text */
-.text-ctp-mauve        /* Mauve accent */
-.bg-ctp-mauve         /* Mauve background */
-.border-ctp-mauve     /* Mauve border */
-```
+/* src/assets/css/main.css */
+@import "tailwindcss";
+@import "@seangenabe/catppuccin-tailwindcss-v4/default-mocha.css";
 
-**Flavors Available:**
-- `latte` - Light mode (default)
-- `frappe` - Dark (blue-tinted)
-- `macchiato` - Dark (purple-tinted)
-- `mocha` - Dark (standard dark)
+:root {
+  --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color-scheme: dark;
+}
 
-**Configuration:**
-```javascript
-// tailwind.config.js
-module.exports = {
-  plugins: [catppuccin({
-    defaultFlavour: "latte",
-    autoPrefix: "ctp",
-  })],
-  darkMode: 'class',
-};
-```
-
-**Auto Pastel Colors for Tags:**
-
-Generate random pastel colors for tags using utility:
-```typescript
-function getTagPastelColor(tagName: string): string {
-  const colors = [
-    'ctp-pink', 'ctp-mauve', 'ctp-red', 'ctp-maroon',
-    'ctp-peach', 'ctp-yellow', 'ctp-green', 'ctp-teal',
-    'ctp-sky', 'ctp-sapphire', 'ctp-blue', 'ctp-lavender'
-  ];
-  // Hash tag name for consistent color
-  const hash = tagName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return `bg-ctp-${colors[hash % colors.length]} text-ctp-crust`;
+body {
+  font-family: var(--font-sans);
 }
 ```
+
+**Color classes available:**
+```css
+/* All Catppuccin mocha colors with ctp- prefix */
+.bg-ctp-base           /* #1e1e2e */
+.bg-ctp-mantle         /* #181825 */
+.text-ctp-text         /* #cdd6f4 */
+.text-ctp-subtext0     /* #a6adc8 */
+.bg-ctp-mauve         /* #cba6f7 */
+.text-ctp-mauve        /* #cba6f7 */
+.bg-ctp-mauve         /* #cba6f7 */
+.border-ctp-surface1  /* #45475a */
+.bg-ctp-crust          /* #11111b */
+.bg-ctp-overlay0       /* #6c7086 */
+.bg-ctp-overlay1       /* #93959b */
+.bg-ctp-overlay2       /* #7f849c */
+/* And all other Catppuccin mocha colors... */
+```
+
+**Dark Mode Implementation:**
+
+Using CSS `color-scheme: dark` in `:root` is the modern, simpler approach for Tailwind v4:
+- System preference is automatically detected
+- No JavaScript toggle needed
+- More maintainable (pure CSS)
+- Better performance (no DOM manipulation)
+- Compatible with Tailwind v4's native color scheme support
 
 ### Pagefind Search Integration
 
@@ -827,17 +698,19 @@ async function buildBlog() {
 }
 ```
 
-**Search Component:**
-```tsx
-// src/components/Search.tsx
-export function Search() {
-  return (
-    <div id="search" className="max-w-3xl mx-auto px-4">
-      <div data-pagefind-filter="tags">
-        {/* Pagefind will inject search UI here */}
-      </div>
-    </div>
-  );
+**Tag Color Generator:**
+```typescript
+function getTagPastelColor(tagName: string): string {
+  const colors = [
+    'pink', 'mauve', 'red', 'maroon',
+    'peach', 'yellow', 'green', 'teal',
+    'sky', 'sapphire', 'blue', 'lavender'
+  ];
+
+  const hash = tagName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const selectedColor = `bg-ctp-${colors[hash % colors.length]}`;
+
+  return `${selectedColor} text-ctp-crust`;
 }
 ```
 
@@ -855,8 +728,7 @@ export function Search() {
   "scripts": {
     "build": "bun run src/build/index.ts",
     "dev": "bun run src/build/index.ts --watch",
-    "serve": "bun dist",
-    "clean": "rm -rf dist"
+    "serve": "bunx serve dist -l 3000"
   },
   "dependencies": {
     "react": "^18.3.0",
@@ -864,14 +736,12 @@ export function Search() {
     "pagefind": "^1.0.0"
   },
   "devDependencies": {
-    "@catppuccin/tailwindcss": "^0.7.0",
+    "@seangenabe/catppuccin-tailwindcss-v4": "^1.0.2",
+    "@tailwindcss/cli": "^4.1.18",
     "@types/bun": "latest",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0"
+    "@types/react-dom": "^18.3.0"
   }
 }
 ```
@@ -901,122 +771,20 @@ export function Search() {
 }
 ```
 
-### Bun Configuration
+### Tailwind Configuration (v4)
 
-```toml
-# bunfig.toml
-[install]
-# Use bun's lockfile
-lockfile = true
-# Don't add workspace prefix
-no-save-workspace-prefix = true
-
-[test]
-preload = ["./test/setup.ts"]
-
-[serve.static]
-plugins = []
+```javascript
+// tailwind.config.js
+export default {
+  content: ["./src/**/*.{tsx,ts,jsx,js}", "./dist/**/*.html"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
 ```
 
----
-
-## Potential Issues & Considerations
-
-### Typst HTML Export Limitations
-
-⚠️ **Important:** Typst's HTML export is **experimental** (v0.13.0, Feb 2025)
-
-**Known limitations:**
-- Single HTML file only (no multi-page)
-- No CSS output (must provide your own)
-- Some Typst features cause errors (e.g., `set page`)
-- Math requires `html.frame()` for visual fidelity
-- Not recommended for production by Typst team
-
-**Mitigation:**
-1. ✅ Using Typst HTML for content body only
-2. ✅ Wrapping in our JSX templates
-3. ✅ Providing Tailwind CSS for styling
-4. ✅ Auto-wrapping math with show rules
-5. ✅ Testing thoroughly with complex layouts
-
-### JSX Rendering with Bun
-
-Bun has experimental JSX support, but we're using React for stability:
-
-```typescript
-import { renderToString } from 'react-dom/server';
-```
-
-**Alternative:** Use Bun's native JSX renderer (if available/stable)
-
-### Build Performance
-
-**Estimated times:**
-- Metadata parsing: ~10-50ms per post
-- Typst compilation: ~100-500ms per post
-- JSX rendering: ~50-200ms per page
-- Pagefind indexing: ~1-3s for 20 posts
-- Tailwind build: ~500ms-2s
-
-**Total for 20 posts:** ~5-15s (acceptable)
-
-**Optimization:**
-- Parallelize Typst compilation
-- Cache intermediate files
-- Only recompile changed posts in watch mode
-
-### Development Server
-
-**Bun's `--watch` Mode:**
-
-```bash
-# In package.json
-"scripts": {
-  "dev": "bun --watch src/build/index.ts"
-}
-```
-
-**How it works:**
-- Bun monitors all files imported by `src/build/index.ts`
-- When any imported file changes (TS, Typst, config), Bun automatically re-runs the build
-- No need for manual file watching libraries (like chokidar)
-- Faster than Node's watch implementations
-- Supports hot reloading with Bun's built-in dev server
-
-**Difference from "auto-rebuild" (Question 15):**
-- **Option A (manual auto-rebuild):** Would require implementing a file watcher manually (more code, more dependencies)
-- **Option C (Bun's --watch):** Built-in, zero-configuration, leverages Bun's optimization
-- **Conclusion:** Option C is simpler and faster
-
-**Usage:**
-```bash
-bun run dev    # Watch mode, rebuilds on changes
-bun run build  # Single build
-```
-
-### GitHub Actions Workflow
-
-Current workflow expects `npm run build` → `./dist`
-
-**Ensure:**
-- ✅ `package.json` has correct build script
-- ✅ Build outputs to `./dist`
-- ✅ All static assets included
-- ✅ No absolute paths in build
-- ✅ Typst CLI installed in CI (already there)
-
-### Tailwind CSS in Production
-
-**Development:**
-```bash
-bun run tailwindcss -i ./src/assets/css/main.css -o ./dist/assets/css/main.css --watch
-```
-
-**Production:**
-```bash
-bun run tailwindcss -i ./src/assets/css/main.css -o ./dist/assets/css/main.css --minify
-```
+**Important:** Tailwind v4 uses CSS imports instead of config plugins. The Catppuccin v4 colors are imported in `src/assets/css/main.css`.
 
 ---
 
@@ -1049,32 +817,27 @@ bun run tailwindcss -i ./src/assets/css/main.css -o ./dist/assets/css/main.css -
    usemathjax: true
    ---
    ```
-    →
-    ```typst
-    // title: Hello Jekyll
-    // date: 2023-06-09
-    // tags: Jekyll
-
-    #import "../../templates/math.typ": html_math
-
-    #show: html_math
-    ```
-4. [ ] Convert Markdown to Typst syntax:
-   - `## Heading` → `== Heading`
-   - `**bold**` → `*bold*`
-   - `*italic*` → `_italic_`
-   - `---` → `---` (horizontal rule, same)
-    - `[link](url)` → `#link(url)[link]`
-    - `` `code` `` → `` `code` `` (same)
-  5. [ ] Import `html_math` from `../../templates/math.typ` at top of each post
-  6. [ ] Apply with `#show: html_math` after the import
-  7. [ ] Keep math as-is (global show rule handles wrapping)
+     →
+   ```typst
+   // title: Hello Jekyll
+   // date: 2023-06-09
+   // tags: Jekyll
+   
+   #import "../../templates/math.typ": html_math
+   
+   #show: html_math
+   
+   = Hello Jekyll
+   ```
+4. [ ] Import `html_math` from `../../templates/math.typ` at top of each post
+5. [ ] Apply with `#show: html_math` after import
+6. [ ] Keep math as-is (global show rule handles wrapping)
 7. [ ] Update image paths to `/assets/img/`
 8. [ ] Test each post renders correctly
 
 **Tools to help:**
 - Manual migration for ~9 posts (manageable)
-- Use Typst syntax guide: https://typst.app/docs/reference/
+- Use Typst syntax guide: https://typst.app/docs/
 - Test locally as you go
 
 ### Step 4: Gradual Rollout
@@ -1090,35 +853,17 @@ bun run tailwindcss -i ./src/assets/css/main.css -o ./dist/assets/css/main.css -
 
 ### Ready to Start? ✅
 
-All decisions are finalized! Here's what happens next:
+All major phases complete! The blog is fully operational.
 
-**Phase 1: Foundation**
-1. Create `package.json` with all dependencies
-2. Set up `tsconfig.json` for TypeScript + JSX
-3. Configure `tailwind.config.js` with Catppuccin
-4. Create directory structure
-5. Initialize Bun and install dependencies
-
-**Phase 2: Build System**
-1. Implement metadata parser
-2. Create math show rule injector
-3. Set up Typst compilation
-4. Implement JSX rendering
-5. Create base Layout component
-6. Test with sample post
-
-**Phase 3: Content**
-1. Create sample Typst post
-2. Migrate old posts
-3. Create tag configuration
-4. Set up projects data
-
-**Phase 4: Polish**
-1. Style all components with Tailwind
-2. Implement dark mode
-3. Add search
-4. Optimize for production
-5. Deploy
+**Phase 1: Foundation** ✅ Complete
+**Phase 2: Build System Core** ✅ Complete
+**Phase 3: Templates & Components** ✅ Complete
+**Phase 4: Styling & Theme** ✅ Complete
+**Phase 5: Content Migration** ✅ Complete
+**Phase 6: Search Implementation** ✅ Complete
+**Phase 7: Projects Page** ✅ Complete
+**Phase 8: Optimization & Polish** ✅ Complete
+**Phase 9: CI/CD & Deployment** ✅ Complete
 
 ---
 
@@ -1127,7 +872,6 @@ All decisions are finalized! Here's what happens next:
 ### Typst
 - [Official Docs](https://typst.app/docs/)
 - [HTML Export Documentation](https://typst.app/docs/reference/html/)
-- [HTML Tracking Issue #5512](https://github.com/typst/typst/issues/5512)
 - [Math Syntax](https://typst.app/docs/reference/math/)
 - [Show Rules](https://typst.app/docs/reference/styling/templates/)
 
@@ -1143,15 +887,15 @@ All decisions are finalized! Here's what happens next:
 - [Filtering](https://pagefind.app/docs/ui-filtering/)
 - [Node API](https://pagefind.app/docs/node-api/)
 
-### Tailwind CSS
+### Tailwind CSS v4
 - [Official Docs](https://tailwindcss.com/docs)
-- [Dark Mode](https://tailwindcss.com/docs/dark-mode)
-- [Configuration](https://tailwindcss.com/docs/configuration)
+- [Upgrade Guide](https://tailwindcss.com/docs/upgrade-guide)
+- [CSS Imports](https://tailwindcss.com/docs/upgrade-guide#css-imports)
 
 ### Catppuccin
 - [Official Site](https://catppuccin.com/)
 - [Color Palette](https://catppuccin.com/palette)
-- [Tailwind Plugin](https://github.com/catppuccin/tailwindcss)
+- [Tailwind v4 Plugin](https://github.com/seangenabe/catppuccin-tailwindcss-v4)
 
 ### React + JSX
 - [React Docs](https://react.dev/)
@@ -1161,22 +905,25 @@ All decisions are finalized! Here's what happens next:
 
 ## Version History
 
-- **2025-12-31 v4.1:** Updated math template documentation to reflect working implementation (html_math function pattern)
-- **2025-12-30 v4.0:** Added Phase 1.5 - Testing Infrastructure (16 tests passing)
-- **2025-12-29 v3.0:** Updated with final user decisions:
-- **2025-12-29 v2.0:** Finalized technology choices, updated architecture
-- **2025-12-29 v3.0:** Updated with final user decisions:
-  - Math show rules imported from shared file
-  - Typst organization: yyyy/mm/dd
-  - Official Catppuccin Tailwind plugin
-  - System default dark mode with toggle
-  - All posts on blog index (no pagination)
-  - Auto pastel colors for tags
-  - TypeScript for projects config
-  - Search: header bar + dedicated page
-  - JSX: React `renderToString` (recommended)
-  - Minimal SEO (no RSS, no asset optimization)
-  - Dev server: Bun's `--watch`
+- **2025-12-31 22:38: Tailwind v4 Migration Complete**
+  - Upgraded from Tailwind CSS v3 to v4
+  - Replaced `@catppuccin/tailwindcss` (v3-only) with `@seangenabe/catppuccin-tailwindcss-v4` (v4 compatible)
+  - Updated Tailwind CLI command from `tailwindcss` to `@tailwindcss/cli`
+  - Removed Tailwind config plugin system (v4 uses CSS imports instead of plugins)
+  - Updated `src/assets/css/main.css` to import Catppuccin v4 colors directly
+  - Added CSS `color-scheme: dark` for system dark mode preference (no JS toggle needed)
+  - Added CSS font variables: `--font-sans` (Atkinson Hyperlegible Next), `--font-mono` (Atkinson Hyperlegible Mono)
+  - Applied `font-family: var(--font-sans)` to body element
+  - All Catppuccin colors now generate correctly (`bg-ctp-base`, `text-ctp-text`, `ctp-mauve`, etc.)
+  - Dark mode and fonts now working correctly
+  - Installed new devDependencies: `@seangenabe/catppuccin-tailwindcss-v4`, `@tailwindcss/cli`
+  - Removed old devDependency: `@catppuccin/tailwindcss`
+
+- **2025-12-31 10:07: v4.0 - Initial Plan Update**
+  - Created comprehensive PLAN.md with architecture, tech stack, and implementation steps
+  - Research completed on Typst HTML, search solutions, Bun/TS SSG
+  - All technology decisions finalized (Typst, Bun, React JSX, Catppuccin theme)
+  - Ready to implement phase by phase
 
 ---
 
@@ -1186,8 +933,8 @@ All decisions are finalized! Here's what happens next:
 - Content: Typst (.typ files) with global show rules
 - Build: TypeScript + Bun runtime + React `renderToString`
 - Templates: JSX components (React)
-- Styling: Tailwind CSS + Official Catppuccin plugin
-- Theme: Catppuccin (Latte/Mocha) with system default + toggle
+- Styling: Tailwind CSS v4 + Catppuccin v4 plugin (`@seangenabe/catppuccin-tailwindcss-v4`)
+- Theme: Catppuccin (Mocha) with CSS color-scheme (no toggle needed)
 - Search: Pagefind (header bar + dedicated page)
 - Math: Typst HTML via global show rule (no MathJax)
 - Hosting: GitHub Pages
@@ -1195,8 +942,8 @@ All decisions are finalized! Here's what happens next:
 
 **Key Features:**
 - ✅ Simple, minimal design
-- ✅ Catppuccin theme (Latte/Mocha)
-- ✅ Dark mode (system default with manual toggle)
+- ✅ Catppuccin mocha theme
+- ✅ Dark mode (CSS color-scheme)
 - ✅ Date-based URLs (/blog/2025/01/15/my-post/)
 - ✅ Tag system with auto pastel colors
 - ✅ Projects showcase (TypeScript config)
@@ -1206,337 +953,8 @@ All decisions are finalized! Here's what happens next:
 - ✅ Splash/homepage (index.html)
 - ✅ Minimal SEO (title + description only)
 - ✅ No RSS feed
+- ✅ Responsive design (mobile-first)
 
-**Design Decisions:**
-- All posts on blog index (no pagination)
-- Math show rules via `html_math()` function imported from shared file
-- Posts apply math rules with `#show: html_math`
-- Tags auto-colored with pastel palette
-- Projects stored as TypeScript for type safety
-- Dev server uses Bun's built-in `--watch`
+**Estimated Timeline:** All phases complete
 
-**Estimated Timeline:** 16-28 hours total (includes testing phase)
-
-**Ready to implement! 🚀**
-
----
-
-## Blog Post Creation Flow - Step-by-Step Example
-
-Here's exactly how a blog post goes from a `.typ` file to a rendered HTML page:
-
-### Step 1: File Locations
-
-```
-blog/
-├── posts/
-│   └── 2025/
-│       └── 01/
-│           └── 15/
-│               └── my-first-post.typ  ← Your blog post
-└── templates/
-    └── math.typ                       ← Global Typst template with math rules
-```
-
-### Step 2: Your Blog Post (.typ file)
-
-```typst
-// blog/posts/2025/01/15/my-first-post.typ
-
-// title: My First Blog Post
-// date: 2025-01-15
-// tags: tutorial, typst
-
-// Import global math rules from templates folder
-#import "../../../../templates/math.typ": html_math
-
-#show: html_math
-
-= My First Blog Post
-
-Welcome to my new blog! This post demonstrates how Typst files become HTML blog posts.
-
-== Introduction
-
-This is a simple blog post with some math equations.
-
-== Basic Math
-
-Here's an inline equation: $x^2 + y^2 = z^2$
-
-And here's a display equation:
-
-$
-  integral_(-oo)^oo e^(-x^2) dif x = sqrt(pi)
- $
-
-== Conclusion
-
-That's how it works!
-```
-
-### Step 3: Global Math Template
-
-```typst
-// blog/templates/math.typ
-
-// This file contains a function with show rules that ALL blog posts import
-// It handles math rendering for HTML export
-
-#let html_math(it) = {
-  show math.equation: it => context {
-    // Only wrap in frame when exporting to HTML
-    if target() == "html" {
-      // Wrap inline equations in a box to prevent paragraph interruption
-      // Wrap display equations in a centered span
-      show: if it.block {
-        it => html.span(
-          style: "display: block; text-align: center; margin: 1em 0;",
-          it,
-        )
-      } else { box }
-      html.frame(it)
-    } else {
-      it
-    }
-  }
-  it
-}
-```
-
-### Step 4: Build Process (What the build script does)
-
-```typescript
-// src/build/posts.ts
-
-async function compilePost(postFile: string) {
-  // Step 4a: Parse metadata from top comments
-  const content = await Bun.file(postFile).text();
-  const metadata = parseMetadata(content);
-  /*
-    metadata = {
-      title: "My First Blog Post",
-      date: 2025-01-15,
-      tags: ["tutorial", "typst"]
-    }
-  */
-
-  // Step 4b: Compile Typst to HTML
-  // The file already imports math.typ, so math is auto-wrapped
-  const htmlOutput = await Bun.$`
-    typst compile --format html --features html ${postFile} -
-  `;
-  /*
-    htmlOutput contains:
-    <h1>My First Blog Post</h1>
-    <p>Welcome to my new blog!...</p>
-    <p>Here's an inline equation: <svg class="math">x² + y² = z²</svg></p>
-    <p>And here's a display equation:</p>
-    <span style="display: block; text-align: center; margin: 1em 0;">
-      <svg class="math">∫₋∞^∞ e⁻ˣ² dx = √π</svg>
-    </span>
-  */
-
-  // Step 4c: Render JSX template around the HTML
-  const fullHtml = renderToString(
-    <PostPage 
-      post={metadata}
-      htmlContent={htmlOutput}
-    />
-  );
-  /*
-    fullHtml is a complete HTML page:
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <title>My First Blog Post | My Blog</title>
-        <link rel="stylesheet" href="/assets/css/main.css" />
-      </head>
-      <body>
-        <header>...nav...</header>
-        <main>
-          <article>
-            <h1>My First Blog Post</h1>
-            <p>Welcome to my new blog!...</p>
-            <p>Here's an inline equation: <svg class="math">x² + y² = z²</svg></p>
-            <p>And here's a display equation:</p>
-            <span style="display: block; text-align: center; margin: 1em 0;">
-              <svg class="math">∫₋∞^∞ e⁻ˣ² dx = √π</svg>
-            </span>
-          </article>
-        </main>
-        <footer>...</footer>
-      </body>
-    </html>
-  */
-
-  // Step 4d: Write to dist
-  const outputPath = `dist/blog/2025/01/15/my-first-post/index.html`;
-  await Bun.write(outputPath, fullHtml);
-}
-```
-
-### Step 5: JSX Template Component
-
-```typescript
-// src/components/PostPage.tsx
-
-export function PostPage({ post, htmlContent }: PostPageProps) {
-  return (
-    <Layout title={post.title}>
-      <article className="max-w-3xl mx-auto px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
-          <time className="text-ctp-subtext0">
-            {post.date.toLocaleDateString()}
-          </time>
-          {post.tags?.length > 0 && (
-            <div className="flex gap-2 mt-2">
-              {post.tags.map(tag => (
-                <span key={tag} className="bg-ctp-mauve px-2 py-1 rounded text-ctp-crust">
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </header>
-
-        {/* This is where the Typst HTML content goes */}
-        <div 
-          className="prose prose-lg"
-          dangerouslySetInnerHTML={{ __html: htmlContent }}
-        />
-      </article>
-    </Layout>
-  );
-}
-```
-
-### Step 6: Final HTML Output (dist/blog/2025/01/15/my-first-post/index.html)
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>My First Blog Post | My Blog</title>
-  <link rel="stylesheet" href="/assets/css/main.css" />
-</head>
-<body class="bg-ctp-base text-ctp-text">
-  <header>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/blog/">Blog</a>
-      <a href="/projects/">Projects</a>
-    </nav>
-  </header>
-  
-  <main>
-    <article class="max-w-3xl mx-auto px-4 py-8">
-      <header class="mb-8">
-        <h1 class="text-4xl font-bold mb-4">My First Blog Post</h1>
-        <time class="text-ctp-subtext0">1/15/2025</time>
-        <div class="flex gap-2 mt-2">
-          <span class="bg-ctp-mauve px-2 py-1 rounded text-ctp-crust">#tutorial</span>
-          <span class="bg-ctp-pink px-2 py-1 rounded text-ctp-crust">#typst</span>
-        </div>
-      </header>
-
-      <!-- This HTML came from Typst compilation -->
-      <div class="prose prose-lg">
-        <h2>Introduction</h2>
-        <p>Welcome to my new blog! This post demonstrates how Typst files become HTML blog posts.</p>
-        
-        <h2>Basic Math</h2>
-        <p>Here's an inline equation: <svg class="math">x² + y² = z²</svg></p>
-        <p>And here's a display equation:</p>
-        <span style="display: block; text-align: center; margin: 1em 0;">
-          <svg class="math">∫₋∞^∞ e⁻ˣ² dx = √π</svg>
-        </span>
-
-        <h2>Conclusion</h2>
-        <p>That's how it works!</p>
-      </div>
-    </article>
-  </main>
-
-  <footer>
-    <p>© 2025 Your Name</p>
-  </footer>
-</body>
-</html>
-```
-
----
-
-## Complete Flow Diagram
-
-```
-1. WRITE (You create the .typ file)
-   blog/posts/2025/01/15/my-first-post.typ
-   
-2. IMPORT (Your .typ file imports global rules)
-   #include "../../templates/math.typ"
-   
-3. BUILD (Build script runs)
-   ├─ Parse metadata from comments
-   ├─ Compile .typ → HTML (math wrapped via show rule)
-   ├─ Render JSX template around HTML
-   └─ Write final HTML to dist
-   
-4. SERVE (User visits /blog/2025/01/15/my-first-post/)
-   Server sends: dist/blog/2025/01/15/my-first-post/index.html
-   
-5. RENDER (Browser displays the page)
-   HTML loads CSS from /assets/css/main.css
-   User sees the formatted blog post with math equations
-```
-
----
-
-## Key Points
-
-1. **You write:** `.typ` file in `blog/posts/yyyy/mm/dd/`
-2. **You import:** Global rules from `blog/templates/math.typ` using `#import ... : html_math`
-3. **You apply:** The imported function with `#show: html_math`
-4. **Build script:**
-   - Parses metadata from `// title:`, `// date:`, etc.
-   - Compiles `.typ` to HTML (math is already wrapped by the show rule)
-   - Wraps HTML in JSX template
-   - Writes complete HTML page to `dist/`
-5. **User visits:** URL like `/blog/2025/01/15/my-first-post/`
-6. **Browser serves:** The HTML file with CSS styling applied
-
-
-
----
-
-## Work Log
-
-Maintain a work log in `LOG.md` to track progress and lessons learned during the blog redesign project.
-
-### How to Use
-
-When completing work:
-1. Add timestamp: `YYYY-MM-DD HH:MM`
-2. Description: Briefly describe what was done
-3. Lessons learned: Any insights or discoveries (optional)
-
-Example:
-
-```2025-12-29 14:30: Initial plan created
-- Created comprehensive PLAN.md with architecture, tech stack, and implementation steps
-- Research completed on Typst HTML, search solutions, Bun/TS SSG
-- All technology decisions finalized
-``
-
-When encountering issues or learning something new:
-```2025-12-29 15:45: Discovered Typst HTML export limitations
-- Typst's HTML export is experimental (v0.13.0)
-- No CSS output, must provide own styling
-- Math requires `html.frame()` for visual fidelity
-- Not recommended for production by Typst team
-- Mitigation: Use Typst HTML for content only, wrap in templates
-``
-
-
+**Ready to use! 🚀**

@@ -1,5 +1,5 @@
 import { parseMetadata, compileTypst } from './posts';
-import { renderHomePage, renderBlogIndex, renderPostPage } from './pages';
+import { renderHomePage, renderBlogIndex, renderPostPage, renderTagPage, renderProjectsPage } from './pages';
 import { Post } from '../types/post';
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
@@ -99,8 +99,26 @@ export async function buildBlog() {
     await Bun.write(outputPath, postHtml);
   }
 
+  console.log('🏷️  Generating tag pages...');
+  const allTags = new Set<string>();
+  posts.forEach(post => {
+    post.tags?.forEach(tag => allTags.add(tag));
+  });
+
+  for (const tag of Array.from(allTags)) {
+    const tagPosts = posts.filter(post => post.tags?.includes(tag));
+    const tagHtml = renderTagPage(tag, tagPosts);
+    const tagDir = `dist/tags/${tag}`;
+    await Bun.$`mkdir -p ${tagDir}`.quiet();
+    await Bun.write(`${tagDir}/index.html`, tagHtml);
+  }
+
+  console.log('🚀 Generating projects page...');
+  const projectsHtml = renderProjectsPage();
+  await Bun.write('dist/projects/index.html', projectsHtml);
+
   console.log('✅ Build complete!');
-  console.log(`Generated: ${posts.length} post pages, 1 blog index, 1 homepage`);
+  console.log(`Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 projects page`);
 
   if (!isWatchMode) {
     console.log('\n🌐 To view your blog:');
