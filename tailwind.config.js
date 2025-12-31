@@ -1,10 +1,15 @@
+import catppuccin from "@catppuccin/tailwindcss";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: ["./src/**/*.{tsx,ts,jsx,js}", "./dist/**/*.html"],
   theme: {
     extend: {},
   },
-  plugins: [],
-  darkMode: 'class',
+  plugins: [
+    catppuccin({
+      defaultFlavour: "mocha",
+      prefix: "ctp",
+    })
+  ],
 };
