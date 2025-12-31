@@ -1,4 +1,3 @@
-const { catppuccin } = require("@catppuccin/tailwindcss");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -6,12 +5,6 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [
-    catppuccin({
-      name: "catppuccin",
-      defaultFlavour: "latte",
-      autoPrefix: "ctp",
-    })
-  ],
+  plugins: [],
   darkMode: 'class',
 };

@@ -1,14 +1,6 @@
-@import './fonts.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Catppuccin themes – choose one or more for dark/light switching */
-@import "@catppuccin/tailwindcss/latte.css";
-/* Light mode (always included) */
-@import "@catppuccin/tailwindcss/mocha.css";
-/* Recommended dark mode */
 
 :root {
   --ctp-rosewater: #f5e0dc;

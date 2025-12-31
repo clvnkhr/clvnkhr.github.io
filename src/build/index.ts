@@ -63,11 +63,19 @@ async function discoverPosts(): Promise<Post[]> {
 
 export async function buildBlog() {
   console.log('🔨 Building blog...');
-  
+
   const isWatchMode = process.argv.includes('--watch');
 
   // Create dist directory
-  await Bun.$`rm -rf dist && mkdir -p dist/blog dist/projects`.quiet();
+  await Bun.$`rm -rf dist && mkdir -p dist/blog dist/projects dist/assets/css dist/assets/img dist/assets/js dist/fonts`.quiet();
+
+  // Copy public assets to dist
+  console.log('📦 Copying assets...');
+  await Bun.$`cp -r public/* dist/`.quiet();
+
+  // Build Tailwind CSS
+  console.log('🎨 Building Tailwind CSS...');
+  await Bun.$`bunx tailwindcss -i src/assets/css/main.css -o dist/assets/css/main.css`.quiet();
 
   // Discover all posts
   const posts = await discoverPosts();
@@ -93,7 +101,7 @@ export async function buildBlog() {
 
   console.log('✅ Build complete!');
   console.log(`Generated: ${posts.length} post pages, 1 blog index, 1 homepage`);
-  
+
   if (!isWatchMode) {
     console.log('\n🌐 To view your blog:');
     console.log('   bun run serve     # Start local server');
