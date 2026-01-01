@@ -8,7 +8,7 @@ interface PostPageProps {
   post: Post;
 }
 
-  export function PostPage({ post }: PostPageProps) {
+export function PostPage({ post }: PostPageProps) {
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', {

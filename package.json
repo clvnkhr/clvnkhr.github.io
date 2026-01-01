@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "bun run src/build/index.ts",
-    "dev": "bun run src/build/index.ts & bunx serve dist -l 3000",
+    "dev": "bun --watch src/build/index.ts & bunx serve dist -l 3000",
     "serve": "python3 -m http.server 3000 --directory dist",
     "clean": "rm -rf dist",
     "test": "bun test",
