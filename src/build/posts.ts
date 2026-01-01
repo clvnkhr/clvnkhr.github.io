@@ -30,7 +30,6 @@ export async function compileTypst(typstFile: string): Promise<string> {
   const result = await Bun.$`typst compile --format html --features html --root ../../../../ --font-path ${fontPath} ${typstFile} -`.quiet();
   const html = result.stdout.toString();
 
-  // Extract just the body content from Typst's full HTML document
   const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
   if (!bodyMatch) {
     throw new Error(`Could not find body tag in Typst output for ${typstFile}`);
