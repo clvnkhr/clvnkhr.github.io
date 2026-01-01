@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout } from './Layout';
 import { site } from '../config/site';
 import type { Post } from '../types/post';
+import { getTagColorClass } from '../utils/tags';
 
 interface TagPageProps {
   tagName: string;
@@ -9,18 +10,6 @@ interface TagPageProps {
 }
 
 export function TagPage({ tagName, posts }: TagPageProps) {
-  const getTagPastelColor = (tag: string): string => {
-    const colors = [
-      'pink', 'mauve', 'red', 'maroon',
-      'peach', 'yellow', 'green', 'teal',
-      'sky', 'sapphire', 'blue', 'lavender'
-    ];
-
-    const hash = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const selectedColor = colors[hash % colors.length];
-
-    return `bg-ctp-${selectedColor} text-ctp-crust`;
-  };
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', {
@@ -34,7 +23,7 @@ export function TagPage({ tagName, posts }: TagPageProps) {
     <Layout title={`Posts tagged "${tagName}" - ${site.title}`}>
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-8">
-          <span className={`px-4 py-2 text-lg rounded-full ${getTagPastelColor(tagName)}`}>
+          <span className={`px-4 py-2 text-lg ${getTagColorClass(tagName)}`}>
             #{tagName}
           </span>
           <span className="ml-4 text-ctp-subtext0">

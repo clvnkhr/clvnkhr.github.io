@@ -2,24 +2,13 @@ import React from 'react';
 import { Layout } from './Layout';
 import { site } from '../config/site';
 import type { Post } from '../types/post';
+import { getTagColorClass } from '../utils/tags';
 
 interface PostPageProps {
   post: Post;
 }
 
-export function PostPage({ post }: PostPageProps) {
-  const getTagPastelColor = (tagName: string): string => {
-    const colors = [
-      'pink', 'mauve', 'red', 'maroon',
-      'peach', 'yellow', 'green', 'teal',
-      'sky', 'sapphire', 'blue', 'lavender'
-    ];
-
-    const hash = tagName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const selectedColor = colors[hash % colors.length];
-
-    return `bg-ctp-${selectedColor} text-ctp-crust`;
-  };
+  export function PostPage({ post }: PostPageProps) {
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', {
@@ -32,7 +21,7 @@ export function PostPage({ post }: PostPageProps) {
   return (
     <Layout title={`${post.title} - ${site.title}`}>
       <article className="max-w-4xl mx-auto px-4 py-8">
-        <header className="mb-8 pb-8 border-b border-ctp-surface1">
+        <header className="mb-8 border-b border-ctp-surface1">
           <h1 className="text-4xl font-bold mb-4 text-ctp-mauve">
             {post.title}
           </h1>
@@ -52,7 +41,7 @@ export function PostPage({ post }: PostPageProps) {
                 <a
                   key={tag}
                   href={`/tags/${tag}/`}
-                  className={`px-3 py-1 text-sm rounded-full transition-colors ${getTagPastelColor(tag)}`}
+                  className={`px-3 py-1 text-sm transition-colors ${getTagColorClass(tag)}`}
                 >
                   {tag}
                 </a>

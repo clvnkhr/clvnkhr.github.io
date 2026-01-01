@@ -3,20 +3,9 @@ import { Layout } from './Layout';
 import { site } from '../config/site';
 import { projects } from '../config/projects';
 import type { Project } from '../config/projects';
+import { getTagColorClass } from '../utils/tags';
 
 export function ProjectsPage() {
-  const getTagPastelColor = (tag: string): string => {
-    const colors = [
-      'pink', 'mauve', 'red', 'maroon',
-      'peach', 'yellow', 'green', 'teal',
-      'sky', 'sapphire', 'blue', 'lavender'
-    ];
-
-    const hash = tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    const selectedColor = colors[hash % colors.length];
-
-    return `bg-ctp-${selectedColor} text-ctp-crust`;
-  };
 
   return (
     <Layout title={`Projects - ${site.title}`}>
@@ -52,7 +41,7 @@ export function ProjectsPage() {
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className={`px-3 py-1 text-sm rounded-full ${getTagPastelColor(tag)}`}
+                        className={`px-3 py-1 text-sm ${getTagColorClass(tag)}`}
                       >
                         {tag}
                       </span>

@@ -905,6 +905,13 @@ All major phases complete! The blog is fully operational.
 
 ## Version History
 
+- **2026-01-01 01:00: Math Rendering Fixes - Dark Mode and Centering**
+  - Fixed Typst SVG colors to respect dark mode via CSS attribute selectors
+  - Fixed display math centering using inline-block + margin: auto approach
+  - Added global CSS in `src/assets/css/main.css` for SVG theming
+  - Catppuccin v4 color variables use `--color-ctp-text` prefix
+  - Math rendering now works perfectly in both light and dark modes
+
 - **2026-01-01 10:07: Project Status Check - All Phases Complete**
   - Verified all 9 phases of blog redesign are complete
   - Build system fully operational with Tailwind v4 + Catppuccin v4
@@ -944,7 +951,7 @@ All major phases complete! The blog is fully operational.
 - Styling: Tailwind CSS v4 + Catppuccin v4 plugin (`@seangenabe/catppuccin-tailwindcss-v4`)
 - Theme: Catppuccin (Mocha) with CSS color-scheme (no toggle needed)
 - Search: Pagefind (header bar + dedicated page)
-- Math: Typst HTML via global show rule (no MathJax)
+- Math: Typst HTML via Lete Sans Math font
 - Hosting: GitHub Pages
 - Content Structure: Date-based URLs (yyyy/mm/dd)
 
@@ -956,7 +963,7 @@ All major phases complete! The blog is fully operational.
 - ✅ Tag system with auto pastel colors
 - ✅ Projects showcase (TypeScript config)
 - ✅ Client-side search (header + dedicated page)
-- ✅ Math support (via Typst HTML export)
+- ✅ Math support (via Typst HTML export with SVG theming)
 - ✅ No comments (simple, fast)
 - ✅ Splash/homepage (index.html)
 - ✅ Minimal SEO (title + description only)
@@ -966,3 +973,83 @@ All major phases complete! The blog is fully operational.
 **Estimated Timeline:** All phases complete
 
 **Ready to use! 🚀**
+
+---
+
+## Development Workflow
+
+### Building the Blog
+
+**User (you) handles all builds.** The agent provides solutions and code changes, but you run the build command to test and deploy.
+
+**Build Commands:**
+
+```bash
+# Local development build
+bun run build
+
+# Watch mode for development (rebuilds on file changes)
+bun run dev
+
+# Local server for testing
+bun run serve
+# Then visit: http://localhost:3000
+```
+
+**Build Process:**
+1. Run `bun run build` after making changes
+2. Check build output for errors
+3. Test changes locally with `bun run serve`
+4. If working, commit and push (GitHub Actions will deploy)
+
+**What the Build Does:**
+1. Scans `blog/posts/yyyy/mm/dd/` for `.typ` files
+2. Parses metadata from Typst comments
+3. Compiles each `.typ` → HTML via Typst CLI
+4. Renders JSX templates for all pages
+5. Builds Tailwind CSS v4
+6. Copies static assets
+7. Outputs to `./dist/`
+
+**Manual Deployment (if needed):**
+- Commit changes and push to `main` branch
+- GitHub Actions automatically deploys to GitHub Pages
+- Or manually: `bun run build` then push `./dist/` to `gh-pages` branch
+
+### Adding New Content
+
+**New Blog Post:**
+1. Create `.typ` file in `blog/posts/yyyy/mm/dd/` directory
+2. Add metadata in Typst comments at top
+3. Import math template: `#import "../../../../templates/math.typ": html_math`
+4. Apply math rules: `#show: html_math`
+5. Write content in Typst syntax
+6. Run `bun run build` to generate HTML
+
+**New/Update Project:**
+1. Edit `src/config/projects.ts`
+2. Add or modify project entry
+3. Run `bun run build` to update projects page
+
+### Common Issues and Solutions
+
+**Math Equations Look Black:**
+- **Cause**: Typst hard-codes `fill="#000000"` in SVG
+- **Solution**: Already fixed in `src/assets/css/main.css` with SVG color overrides
+- **If recurs**: Check that CSS in main.css hasn't been removed
+
+**Display Math Not Centered:**
+- **Cause**: Tailwind Typography overrides inline centering
+- **Solution**: Already fixed with CSS for `.prose span[style*="display: block"]`
+- **If recurs**: Check that the CSS override is still present in main.css
+
+**Tailwind Colors Not Working:**
+- **Cause**: Wrong color variable name or Catppuccin v4 plugin issue
+- **Solution**: Use `--color-ctp-text` not `--ctp-text` (v4 prefix)
+- **Verify**: Check `package.json` has `@seangenabe/catppuccin-tailwindcss-v4`
+
+**Build Fails with Typst Errors:**
+- **Cause**: Invalid Typst syntax or math show rules not imported
+- **Solution**: Check file has `#import ... : html_math` and `#show: html_math`
+- **Debug**: Run `typst compile your-file.typ` directly to see errors
+

@@ -34,3 +34,16 @@ body {
   margin-left: auto;
   margin-right: auto;
 }
+
+.tag-pink { color: var(--color-ctp-pink); }
+.tag-mauve { color: var(--color-ctp-mauve); }
+.tag-red { color: var(--color-ctp-red); }
+.tag-maroon { color: var(--color-ctp-maroon); }
+.tag-peach { color: var(--color-ctp-peach); }
+.tag-yellow { color: var(--color-ctp-yellow); }
+.tag-green { color: var(--color-ctp-green); }
+.tag-teal { color: var(--color-ctp-teal); }
+.tag-sky { color: var(--color-ctp-sky); }
+.tag-sapphire { color: var(--color-ctp-sapphire); }
+.tag-blue { color: var(--color-ctp-blue); }
+.tag-lavender { color: var(--color-ctp-lavender); }

@@ -790,3 +790,129 @@ The entire blog has been successfully redesigned with the following major accomp
 
 🎉 **Project Complete!**
 All phases of the blog redesign have been successfully completed. The blog is fully operational with a modern tech stack, comprehensive features, and production-ready deployment.
+
+---
+
+## 2026-01-01 01:00: Math Dark Mode and Centering Fixes
+
+**Issues Fixed:**
+- Typst SVG math equations showing black text instead of theme-respecting colors
+- Display math equations not centered in post content
+
+### Problem 1: SVG Colors Not Respecting Dark Mode
+
+**Root Cause:**
+- Typst generates HTML with hard-coded SVG attributes: `fill="#000000"` and `stroke="#000000"`
+- These hard-coded colors override any CSS color variables
+- CSS variables in attribute values (e.g., `fill="var(--ctp-text)"`) don't work - only in `style` attributes
+
+**Solution Iterations:**
+
+1. **First attempt**: Replace `fill="#000000"` with `fill="var(--ctp-text)"` in build script
+   - Result: Didn't work - CSS variables don't resolve in attribute values
+
+2. **Second attempt**: Add inline `<style>` with `!important` selectors targeting `.typst-frame [fill="#000000"]`
+   - Result: Didn't work - CSS couldn't override hard-coded attributes
+
+3. **Third attempt**: Add global CSS to main.css with attribute selectors
+   - Problem: CSS variable name was wrong - user corrected to `--color-ctp-text` (Catppuccin v4 naming)
+
+**Final Solution:**
+```css
+/* src/assets/css/main.css */
+.typst-frame [fill="#000000"] {
+  fill: var(--color-ctp-text);
+}
+
+.typst-frame [stroke="#000000"] {
+  stroke: var(--color-ctp-text);
+}
+```
+
+**Why This Works:**
+- CSS attribute selectors `[fill="#000000"]` target elements with that specific attribute
+- CSS property `fill` overrides the SVG attribute value
+- Attribute selector only applies to elements that actually have `fill` or `stroke`, not forcing them on all SVG elements
+- No `!important` needed - CSS overrides attributes naturally
+
+**Files Modified:**
+- `src/build/posts.ts`: Simplified back to just extract body content (removed inline styles)
+- `src/assets/css/main.css`: Added SVG color override CSS
+
+### Problem 2: Display Math Not Centered
+
+**Root Cause:**
+- Typst's `html.span` adds inline `style="display: block; text-align: center; margin: 1em 0;"`
+- Tailwind Typography's `prose` class overrides `text-align: center`
+- The `display: block` on a `<span>` element conflicts with centering
+
+**Failed Solutions:**
+
+1. **Forced `text-align: center !important`**: Didn't work - prose overrides won
+2. **Used `display: inline-block` with `width: 100%`**: Still didn't center
+3. **Used `display: flex` with `justify-content: center`**: Still didn't work
+
+**Final Solution:**
+```css
+/* src/assets/css/main.css */
+.prose span[style*="display: block"] {
+  display: inline-block;
+  margin: 1em 0;
+}
+
+.prose span[style*="display: block"] svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+```
+
+**Why This Works:**
+- Outer span: `display: inline-block` prevents paragraph flow interruption while not blocking centering
+- Inner SVG: `display: block` + `margin: auto` centers it within the span's width
+- `margin: 1em 0` adds vertical spacing for display equations
+- Attribute selector `span[style*="display: block"]` specifically targets Typst's display math spans
+
+**User Insight:**
+- User discovered that unchecking `display: block` in dev tools made centering work
+- This led to the `inline-block` approach with SVG centering
+
+### Lessons Learned
+
+**SVG Color Theming:**
+- SVG attributes (`fill`, `stroke`) can be overridden with CSS properties
+- CSS variables must be in CSS `style` attribute or stylesheet, not as attribute values
+- Attribute selectors are powerful for targeting elements with specific SVG attributes
+- Don't force CSS properties on all elements - only override what needs changing
+
+**CSS and Centering:**
+- `display: block` on `<span>` can conflict with text alignment
+- Center child elements using `margin: auto` when parent has fixed/partial width
+- `inline-block` is useful for elements that need some block properties without breaking text flow
+- Tailwind Typography overrides can be tricky - use specific selectors or `!important` when needed
+
+**Build Process:**
+- Keep HTML attributes untouched in build script
+- Use global CSS in main.css instead of inline styles for maintainability
+- CSS attribute selectors are cleaner than string replacement in HTML
+
+**Development Workflow:**
+- User handles all builds (confirmed working pattern)
+- Agent provides solutions, user tests and builds
+- Collaborative debugging with dev tools is effective
+- Document what works and why
+
+### Status
+
+**Math Rendering:** ✅ Fully working
+- SVG colors respect dark/light mode
+- Both inline and display math render correctly
+- Centered display equations
+- Beautiful Lete Sans Math font
+
+**Layout Polish:** ✅ Header spacing tuned
+- Removed excessive padding from header elements
+- Cleaner, more compact header design
+
+**All Issues Resolved:** Blog is production-ready with polished math rendering and layout.
+
