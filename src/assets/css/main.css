@@ -16,7 +16,10 @@ body {
   font-family: var(--font-sans);
 }
 
-.typst-frame * {
+.typst-frame [fill="#000000"] {
   fill: var(--color-ctp-text);
+}
+
+.typst-frame [stroke="#000000"] {
   stroke: var(--color-ctp-text);
 }
