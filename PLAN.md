@@ -16,8 +16,8 @@ Redesigning personal blog to use **Typst** for content authoring, **Bun + TypeSc
 | **Language** | TypeScript | Type safety, your requirement |
 | **Build** | Custom TypeScript scripts | Max control, Bun-native |
 | **Templates** | JSX components | Flexible, can add React later |
-| **Styling** | Tailwind CSS v4 + Catppuccin v4 plugin | Utility-first, official color scheme, v4 compatible |
-| **Theme** | Catppuccin (Mocha) + CSS color-scheme | Modern, follows system preference |
+| **Styling** | Tailwind CSS v4 + Catppuccin official package | Utility-first, automatic theme switching (latte/mocha) |
+| **Theme** | Catppuccin (auto-switching) + CSS `color-scheme: auto` | Modern, follows system preference (light/dark) |
 | **Search** | Pagefind | Easy with Tailwind, built-in filtering |
 | **Math Rendering** | Typst HTML + auto-wrapped math | Visual fidelity, no MathJax |
 | **Hosting** | GitHub Pages | Already configured |
@@ -212,16 +212,16 @@ export function Layout({ children, title, darkMode }: LayoutProps) {
 
 #### 4. Tailwind + Catppuccin Theme v4
 
-**Using Catppuccin v4 Plugin:**
+**Using Official Catppuccin Package:**
 ```css
 /* src/assets/css/main.css */
 @import "tailwindcss";
-@import "@seangenabe/catppuccin-tailwindcss-v4/default-mocha.css";
+@import "@catppuccin/tailwindcss/mocha.css";
 
 :root {
   --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color-scheme: dark;
+  color-scheme: auto;
 }
 
 body {
@@ -635,19 +635,19 @@ async function renderPostPage(post: Post, htmlContent: string): Promise<string> 
 
 ### Tailwind CSS v4 with Catppuccin Theme
 
-**Using Catppuccin v4 Plugin:**
+**Using Official Catppuccin Package:**
 
-The v3 `@catppuccin/tailwindcss` plugin is NOT compatible with Tailwind v4. We use `@seangenabe/catppuccin-tailwindcss-v4` instead.
+We use the official `@catppuccin/tailwindcss` v1.0.0 package which supports automatic theme switching with Tailwind v4.
 
 ```css
 /* src/assets/css/main.css */
 @import "tailwindcss";
-@import "@seangenabe/catppuccin-tailwindcss-v4/default-mocha.css";
+@import "@catppuccin/tailwindcss/mocha.css";
 
 :root {
   --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color-scheme: dark;
+  color-scheme: auto;
 }
 
 body {
@@ -675,12 +675,26 @@ body {
 
 **Dark Mode Implementation:**
 
-Using CSS `color-scheme: dark` in `:root` is the modern, simpler approach for Tailwind v4:
-- System preference is automatically detected
+Using CSS `color-scheme: auto` in `:root` is modern, simpler approach for Tailwind v4:
+- System preference is automatically detected and switches between latte (light) and mocha (dark)
 - No JavaScript toggle needed
 - More maintainable (pure CSS)
 - Better performance (no DOM manipulation)
-- Compatible with Tailwind v4's native color scheme support
+- Compatible with Tailwind v4's native `dark:` variant system
+
+**Tailwind Dark Variant:**
+```tsx
+// Post content adapts to system theme
+<div className="prose dark:prose-invert max-w-none">
+  {/* Prose styles in light mode, inverted in dark mode */}
+</div>
+```
+
+**Key Pattern:**
+- `prose` - Standard typography for light mode
+- `dark:prose-invert` - Inverted typography (dark colors) only when system is in dark mode
+- Tailwind automatically adds `dark` class to `<html>` element based on system preference
+- All Catppuccin colors automatically adapt between latte and mocha themes
 
 ### Pagefind Search Integration
 
@@ -736,8 +750,9 @@ function getTagPastelColor(tagName: string): string {
     "pagefind": "^1.0.0"
   },
   "devDependencies": {
-    "@seangenabe/catppuccin-tailwindcss-v4": "^1.0.2",
+    "@catppuccin/tailwindcss": "^1.0.0",
     "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/bun": "latest",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
@@ -784,7 +799,7 @@ export default {
 };
 ```
 
-**Important:** Tailwind v4 uses CSS imports instead of config plugins. The Catppuccin v4 colors are imported in `src/assets/css/main.css`.
+**Important:** Tailwind v4 uses CSS imports instead of config plugins. The official Catppuccin package provides automatic theme switching and imports are done in `src/assets/css/main.css`.
 
 ---
 
@@ -905,16 +920,26 @@ All major phases complete! The blog is fully operational.
 
 ## Version History
 
+- **2026-01-02 16:24: System Theme Switching for Blog Post Content**
+  - Fixed blog post prose content not reacting to system theme changes
+  - Switched from fork package to official `@catppuccin/tailwindcss` v1.0.0
+  - Changed CSS `color-scheme: dark` to `color-scheme: auto` for system theme detection
+  - Removed hardcoded `mocha` class from body element (was forcing dark mode)
+  - Updated PostPage to use `prose dark:prose-invert` instead of `prose prose-invert`
+  - All content now adapts to system theme: text, math SVGs, tags, background
+  - Automatic switching between Catppuccin Latte (light) and Mocha (dark)
+  - Pure CSS solution - no JavaScript needed for theme switching
+
 - **2026-01-01 01:00: Math Rendering Fixes - Dark Mode and Centering**
   - Fixed Typst SVG colors to respect dark mode via CSS attribute selectors
   - Fixed display math centering using inline-block + margin: auto approach
   - Added global CSS in `src/assets/css/main.css` for SVG theming
-  - Catppuccin v4 color variables use `--color-ctp-text` prefix
+  - Catppuccin color variables use `--color-ctp-text` prefix
   - Math rendering now works perfectly in both light and dark modes
 
 - **2026-01-01 10:07: Project Status Check - All Phases Complete**
   - Verified all 9 phases of blog redesign are complete
-  - Build system fully operational with Tailwind v4 + Catppuccin v4
+  - Build system fully operational with Tailwind v4 + Catppuccin official package
   - All features implemented: math rendering, search, tags, projects, dark mode
   - Testing suite green (16/16 tests passing)
   - Production deployment working via GitHub Actions
@@ -948,19 +973,19 @@ All major phases complete! The blog is fully operational.
 - Content: Typst (.typ files) with global show rules
 - Build: TypeScript + Bun runtime + React `renderToString`
 - Templates: JSX components (React)
-- Styling: Tailwind CSS v4 + Catppuccin v4 plugin (`@seangenabe/catppuccin-tailwindcss-v4`)
-- Theme: Catppuccin (Mocha) with CSS color-scheme (no toggle needed)
-- Search: Pagefind (header bar + dedicated page)
+- Styling: Tailwind CSS v4 + official Catppuccin package (`@catppuccin/tailwindcss`)
+- Theme: Catppuccin (auto-switching Latte/Mocha) with CSS `color-scheme: auto`
+- Search: Pagefind (header + dedicated page)
 - Math: Typst HTML via Lete Sans Math font
 - Hosting: GitHub Pages
 - Content Structure: Date-based URLs (yyyy/mm/dd)
 
 **Key Features:**
 - ✅ Simple, minimal design
-- ✅ Catppuccin mocha theme
-- ✅ Dark mode (CSS color-scheme)
+- ✅ Catppuccin theme (auto-switching Latte/Mocha based on system preference)
+- ✅ Dark/light mode (CSS `color-scheme: auto` - automatic system detection)
 - ✅ Date-based URLs (/blog/2025/01/15/my-post/)
-- ✅ Tag system with auto pastel colors
+- ✅ Tag system with auto pastel colors (theme-reactive)
 - ✅ Projects showcase (TypeScript config)
 - ✅ Client-side search (header + dedicated page)
 - ✅ Math support (via Typst HTML export with SVG theming)
@@ -969,6 +994,7 @@ All major phases complete! The blog is fully operational.
 - ✅ Minimal SEO (title + description only)
 - ✅ No RSS feed
 - ✅ Responsive design (mobile-first)
+- ✅ All content reacts to system theme (text, math, tags, background)
 
 **Estimated Timeline:** All phases complete
 
@@ -1044,9 +1070,19 @@ bun run serve
 - **If recurs**: Check that the CSS override is still present in main.css
 
 **Tailwind Colors Not Working:**
-- **Cause**: Wrong color variable name or Catppuccin v4 plugin issue
-- **Solution**: Use `--color-ctp-text` not `--ctp-text` (v4 prefix)
-- **Verify**: Check `package.json` has `@seangenabe/catppuccin-tailwindcss-v4`
+- **Cause**: Wrong color variable name or incorrect Catppuccin package
+- **Solution**: Use `--color-ctp-text` not `--ctp-text` (official package prefix)
+- **Verify**: Check `package.json` has `@catppuccin/tailwindcss` (official package)
+
+**Prose Content Not Adapting to Theme:**
+- **Cause**: Using `prose-invert` instead of `prose dark:prose-invert`, or hardcoded `mocha` class on body
+- **Solution**: Already fixed - PostPage uses `prose dark:prose-invert`, body has no hardcoded theme class
+- **If recurs**: Check that `dark:` prefix is present in prose classes and body doesn't have `mocha` class
+
+**Theme Not Switching Automatically:**
+- **Cause**: `color-scheme: dark` instead of `color-scheme: auto` in `:root`
+- **Solution**: Already fixed - using `color-scheme: auto` for system theme detection
+- **If recurs**: Check that CSS has `color-scheme: auto` and using official Catppuccin package
 
 **Build Fails with Typst Errors:**
 - **Cause**: Invalid Typst syntax or math show rules not imported
