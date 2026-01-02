@@ -50,7 +50,7 @@ export function PostPage({ post }: PostPageProps) {
           )}
         </header>
         <div
-          className="prose prose-invert max-w-none"
+          className="prose dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: post.htmlContent }}
         />
       </article>

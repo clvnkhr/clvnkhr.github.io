@@ -1,6 +1,161 @@
 # Blog Redesign Work Log
 
-This file records all work done and lessons learned during the blog redesign project.
+This file records all work done and lessons learned during blog redesign project.
+
+---
+
+## 2026-01-02 16:24: System Theme Switching for Blog Post Content
+
+**Issue Fixed:**
+- Blog post content text (normal text in prose) not reacting to system theme changes
+- Text remained dark regardless of light/dark system preference
+- Math SVGs and tags were correctly switching, but prose content was not
+
+### Problem Analysis
+
+**Why Math and Tags Worked:**
+- Math SVGs: Used CSS attribute selectors `[fill="#000000"]` that override SVG attributes with `var(--color-ctp-text)`
+- Tags: Used CSS variables directly in classes (e.g., `.tag-pink { color: var(--color-ctp-pink); }`)
+- Both respect Catppuccin color variables that change based on system theme
+
+**Why Prose Content Didn't Work:**
+- PostPage component used `className="prose prose-invert max-w-none"`
+- `prose-invert` always forces dark colors regardless of system theme
+- Tailwind `dark:` variant was not being used, so prose couldn't adapt to system preference
+- The blog was locked to dark mode due to `color-scheme: dark` and hardcoded `mocha` class
+
+### Root Cause
+
+**Configuration Issues:**
+1. **CSS:** `color-scheme: dark` instead of `color-scheme: auto` - prevented system theme detection
+2. **Layout:** Body had hardcoded `mocha` class - forced dark theme regardless of system preference
+3. **Prose:** `prose-invert` always active - forced dark text colors instead of using `dark:prose-invert` variant
+
+### Solution
+
+**Step 1: Switch to Official Catppuccin Package**
+```css
+/* src/assets/css/main.css */
+/* Changed from: */
+@import "@seangenabe/catppuccin-tailwindcss-v4/default-mocha.css";
+/* To: */
+@import "@catppuccin/tailwindcss/mocha.css";
+```
+
+**Why Official Package:**
+- Official `@catppuccin/tailwindcss` v1.0.0 supports automatic theme switching
+- Fork package `@seangenabe/catppuccin-tailwindcss-v4` required manual theme selection
+- Official package integrates better with Tailwind v4's `dark:` variant system
+
+**Step 2: Enable System Theme Detection**
+```css
+/* src/assets/css/main.css */
+:root {
+  --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color-scheme: auto;  /* Changed from: color-scheme: dark; */
+}
+```
+
+**What This Does:**
+- Browser automatically detects system theme preference
+- Catppuccin colors switch between latte (light) and mocha (dark) based on system setting
+- No JavaScript needed - pure CSS solution
+
+**Step 3: Remove Hardcoded Theme Class**
+```tsx
+/* src/components/Layout.tsx */
+/* Changed from: */
+<body className="mocha min-h-screen bg-ctp-base text-ctp-text antialiased transition-colors duration-300">
+/* To: */
+<body className="min-h-screen bg-ctp-base text-ctp-text antialiased transition-colors duration-300">
+```
+
+**Why This Matters:**
+- `mocha` class was forcing dark theme regardless of system preference
+- Without hardcoded class, Tailwind's `dark:` variant now works correctly
+- Body colors adapt to system theme automatically
+
+**Step 4: Use Dark Variant for Prose**
+```tsx
+/* src/components/PostPage.tsx */
+/* Changed from: */
+<div className="prose prose-invert max-w-none">
+/* To: */
+<div className="prose dark:prose-invert max-w-none">
+```
+
+**How This Works:**
+- `prose` - Standard prose styling for light mode
+- `dark:prose-invert` - Inverted (dark) prose styling only when `dark` class is present
+- Tailwind automatically adds `dark` class to `<html>` element when system is in dark mode
+- Content now adapts to system theme: light text on dark background, dark text on light background
+
+### Lessons Learned
+
+**Tailwind Dark Mode Variants:**
+- `dark:` prefix is essential for conditional styling based on system theme
+- Always use `prose dark:prose-invert` not `prose prose-invert` for theme-reactive content
+- Tailwind v4's `color-scheme: auto` enables automatic theme detection
+
+**Catppuccin Package Selection:**
+- Official `@catppuccin/tailwindcss` supports automatic theme switching
+- Fork packages may require manual theme selection with hardcoded classes
+- Official package integrates better with Tailwind's native dark mode system
+
+**System Theme Detection:**
+- CSS `color-scheme: auto` is modern standard for theme preference
+- Browser automatically switches colors based on system setting
+- No JavaScript toggle needed - simpler and more maintainable
+- All Catppuccin colors automatically adapt (latte vs mocha)
+
+**Typography Plugin Integration:**
+- Tailwind Typography's `prose-invert` should be conditional with `dark:` prefix
+- Mixing `prose` and `dark:prose-invert` allows full theme support
+- Don't force dark colors - let system preference decide
+
+### Files Modified
+
+**src/assets/css/main.css:**
+- Changed Catppuccin import to official package
+- Changed `color-scheme` from `dark` to `auto`
+- Removed manual centering CSS for `.prose span[style*="display: block"]`
+
+**src/components/Layout.tsx:**
+- Removed `mocha` class from body element
+- Now relies on Tailwind's `dark:` variant for theme switching
+
+**src/components/PostPage.tsx:**
+- Changed `prose prose-invert` to `prose dark:prose-invert`
+- Prose content now adapts to system theme
+
+### Verification
+
+**Theme Switching Test:**
+- ✅ Math SVGs: Switch between latte and mocha colors
+- ✅ Tags: Switch between latte and mocha pastel colors
+- ✅ Prose content: Now switches between light and dark text colors
+- ✅ Body background: Switches between latte (#eff1f5) and mocha (#1e1e2e) base colors
+- ✅ All content reacts to system theme preference automatically
+
+**How to Test:**
+1. Open blog post in browser
+2. Change system theme (macOS: System Settings → Appearance → Light/Dark)
+3. Observe all content colors changing smoothly
+4. Math equations, tags, text, and background all adapt
+
+### Status
+
+**Theme System:** ✅ Fully Working
+- Light mode: Catppuccin Latte theme with dark text
+- Dark mode: Catppuccin Mocha theme with light text
+- System preference: Automatically detected via CSS `color-scheme: auto`
+- All content: Reacts to theme changes smoothly
+
+**Build System:** ✅ Stable
+- Tailwind v4 + official Catppuccin package working correctly
+- No JavaScript needed for theme switching
+- Pure CSS solution is maintainable and performant
 
 ---
 

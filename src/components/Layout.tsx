@@ -17,7 +17,7 @@ export function Layout({ children, title, darkMode = true }: LayoutProps) {
         {title && <title>{title}</title>}
         <link rel="stylesheet" href="/assets/css/main.css" />
       </head>
-      <body className="mocha min-h-screen bg-ctp-base text-ctp-text antialiased transition-colors duration-300">
+      <body className=" min-h-screen bg-ctp-base text-ctp-text antialiased transition-colors duration-300">
         <Header />
         <main className="min-h-[calc(100vh-theme(spacing.64))]">
           {children}
