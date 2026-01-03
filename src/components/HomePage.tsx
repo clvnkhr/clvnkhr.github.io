@@ -29,14 +29,14 @@ export function HomePage() {
           </a>
 
           <a
-            href="/projects/"
+            href="/tags/projects/"
             className="border border-ctp-surface1 rounded-lg p-8 hover:border-ctp-mauve transition-colors group"
           >
             <h2 className="text-3xl font-bold mb-3 text-ctp-mauve group-hover:text-ctp-mauve/80">
               Projects
             </h2>
             <p className="text-ctp-subtext0">
-              A portfolio of my open source projects and contributions.
+              My open source projects and contributions.
             </p>
           </a>
         </section>

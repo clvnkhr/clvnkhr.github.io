@@ -5,6 +5,7 @@ import { PostPage } from '../components/PostPage';
 import { TagPage } from '../components/TagPage';
 import { TagsIndex } from '../components/TagsIndex';
 import { ProjectsPage } from '../components/ProjectsPage';
+import { NotFoundPage } from '../components/NotFoundPage';
 import type { Post } from '../types/post';
 
 export function renderHomePage(): string {
@@ -34,5 +35,10 @@ export function renderTagsIndex(allTags: string[], tagPosts: Record<string, numb
 
 export function renderProjectsPage(): string {
   const html = renderToString(<ProjectsPage />);
+  return `<!DOCTYPE html>${html}`;
+}
+
+export function renderNotFoundPage(): string {
+  const html = renderToString(<NotFoundPage />);
   return `<!DOCTYPE html>${html}`;
 }

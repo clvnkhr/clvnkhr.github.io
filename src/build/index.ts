@@ -1,5 +1,5 @@
 import { parseMetadata, compileTypst } from './posts';
-import { renderHomePage, renderBlogIndex, renderPostPage, renderTagPage, renderTagsIndex, renderProjectsPage } from './pages';
+import { renderHomePage, renderBlogIndex, renderPostPage, renderTagPage, renderTagsIndex, renderProjectsPage, renderNotFoundPage } from './pages';
 import { Post } from '../types/post';
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
@@ -137,8 +137,12 @@ export async function buildBlog() {
   const projectsHtml = renderProjectsPage();
   await Bun.write('dist/projects/index.html', projectsHtml);
 
+  console.log('🔍 Generating 404 page...');
+  const notFoundHtml = renderNotFoundPage();
+  await Bun.write('dist/404.html', notFoundHtml);
+
   console.log('✅ Build complete!');
-  console.log(`Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 projects page`);
+  console.log(`Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 projects page, 1 404 page`);
 
   if (!isWatchMode) {
     console.log('\n🌐 To view your blog:');
