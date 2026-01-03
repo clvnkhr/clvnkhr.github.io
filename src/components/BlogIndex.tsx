@@ -4,6 +4,7 @@ import { site } from '../config/site';
 import type { Post } from '../types/post';
 import { getTagColorClass } from '../utils/tags';
 import { formatDate } from '../utils/date';
+import { getPostBlurb } from '../utils/post';
 import { UpdateDatesTooltip } from './UpdateDatesTooltip';
 
 interface BlogIndexProps {
@@ -33,9 +34,9 @@ export function BlogIndex({ posts }: BlogIndexProps) {
                     {post.title}
                   </a>
                 </h2>
-                {post.description && (
+                {(post.description || post.htmlContent) && (
                   <p className="text-ctp-subtext0 mb-4">
-                    {post.description}
+                    {post.description || getPostBlurb(post.htmlContent)}
                   </p>
                 )}
                 {post.tags && post.tags.length > 0 && (

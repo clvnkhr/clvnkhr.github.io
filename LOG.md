@@ -4,6 +4,81 @@ This file records all work done and lessons learned during blog redesign project
 
 ---
 
+## 2026-01-03 16:24: Post Blurb Function Added
+
+**Feature Added:**
+- Blog index page now displays post blurbs automatically
+- Blurbs show the first few words of post content
+- Falls back to custom description if available
+
+### Implementation
+
+**Created: `src/utils/post.ts`**
+```typescript
+export function getPostBlurb(htmlContent: string, wordCount: number = 25): string {
+  const plainText = htmlContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+
+  const words = plainText.split(' ').slice(0, wordCount);
+  const blurb = words.join(' ');
+
+  return plainText.split(' ').length > wordCount ? `${blurb}...` : blurb;
+}
+```
+
+**Function Behavior:**
+- Strips HTML tags from content to extract plain text
+- Extracts first 25 words (configurable via `wordCount` parameter)
+- Adds ellipsis (...) if content is truncated
+- Returns full blurb without ellipsis if content is shorter than word count
+
+**Updated: `src/components/BlogIndex.tsx`**
+```tsx
+// Changed from:
+{post.description && (
+  <p className="text-ctp-subtext0 mb-4">
+    {post.description}
+  </p>
+)}
+
+// To:
+{(post.description || post.htmlContent) && (
+  <p className="text-ctp-subtext0 mb-4">
+    {post.description || getPostBlurb(post.htmlContent)}
+  </p>
+)}
+```
+
+**Display Logic:**
+- Shows custom `post.description` if available
+- Falls back to auto-generated blurb from `post.htmlContent` if no description
+- Only shows blurb section if either description or content exists
+- Maintains consistent styling with Catppuccin subtext color
+
+### Files Modified
+
+1. **src/utils/post.ts** (NEW)
+   - Created utility function for post blurbs
+   - Handles HTML tag stripping and word extraction
+
+2. **src/components/BlogIndex.tsx**
+   - Added import for `getPostBlurb`
+   - Updated blurb display logic with fallback behavior
+
+### Benefits
+
+**User Experience:**
+- Posts always have a preview on blog index page
+- No manual blurb writing required for new posts
+- Custom descriptions still supported when desired
+- Consistent preview length across all posts
+
+**Maintainability:**
+- Automatic blurbs reduce content management overhead
+- Single function handles all blurb generation
+- Easy to adjust blurb length (change `wordCount` default)
+
+---
+
 ## 2026-01-02 16:24: System Theme Switching for Blog Post Content
 
 **Issue Fixed:**
