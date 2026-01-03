@@ -40,9 +40,9 @@ export function TagPage({ tagName, posts }: TagPageProps) {
                 <time className="text-ctp-subtext0 text-sm">
                   {formatDate(post.date)}
                 </time>
-                {post.updated && post.updated !== post.date && (
+                {post.updated && post.updated.length > 0 && (
                   <span className="text-ctp-subtext0 text-sm">
-                    • Updated {formatDate(post.updated)}
+                    • Updated {formatDate(post.updated[0])}
                   </span>
                 )}
               </div>

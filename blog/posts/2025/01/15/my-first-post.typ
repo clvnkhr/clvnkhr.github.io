@@ -1,5 +1,5 @@
 // title: My First Typst Post
-// date: 2025-01-15
+// date: 2025-01-15, 2026-01-02
 // tags: tutorial, typst, test
 
 #import "../../../../templates/math.typ": html_math
@@ -22,7 +22,15 @@ And here's a display equation:
 
 $
   integral_(-oo)^oo e^(-x^2) dif x = sqrt(pi)
- $
+$
+
+Code block:
+```typst
+#set: text(fill: red)
+#let a = 5
+#let b = 10
+$a+b=#{a+b}$
+```
 
 == Conclusion
 

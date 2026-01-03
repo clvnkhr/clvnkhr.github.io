@@ -3,20 +3,14 @@ import { Layout } from './Layout';
 import { site } from '../config/site';
 import type { Post } from '../types/post';
 import { getTagColorClass } from '../utils/tags';
+import { formatDate } from '../utils/date';
+import { UpdateDatesTooltip } from './UpdateDatesTooltip';
 
 interface PostPageProps {
   post: Post;
 }
 
 export function PostPage({ post }: PostPageProps) {
-
-  const formatDate = (date: Date): string => {
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
   return (
     <Layout title={`${post.title} - ${site.title}`}>
@@ -29,11 +23,11 @@ export function PostPage({ post }: PostPageProps) {
             <time className="text-sm">
               {formatDate(post.date)}
             </time>
-            {post.updated && post.updated !== post.date && (
-              <span className="text-sm">
-                • Updated {formatDate(post.updated)}
-              </span>
-            )}
+            <UpdateDatesTooltip
+              updated={post.updated}
+              date={post.date}
+              formatDate={formatDate}
+            />
           </div>
           {post.tags && post.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">

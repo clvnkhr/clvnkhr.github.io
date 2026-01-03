@@ -1,6 +1,6 @@
 import { Post, PostMetadata } from '../types/post.js';
 
-export function parseMetadata(content: string): PostMetadata {
+  export function parseMetadata(content: string): PostMetadata {
   const metadata: Record<string, any> = {};
   const commentBlock = content.match(/^\/\/.*$/gm);
 
@@ -12,10 +12,24 @@ export function parseMetadata(content: string): PostMetadata {
 
       if (key === 'tags') {
         metadata[key] = value.split(',').map((t: string) => t.trim());
-      } else if (key === 'date' || key === 'updated') {
-        metadata[key] = new Date(value);
+      } else if (key === 'updated') {
+        const dates = value.split(',').map((d: string) => d.trim()).filter(Boolean);
+        metadata.updated = dates.length > 0 ? dates.map((d: string) => new Date(d)) : undefined;
       } else if (key === 'draft') {
         metadata[key] = value === 'true';
+      } else if (key === 'date') {
+        const dates = value.split(',').map((d: string) => d.trim()).filter(Boolean);
+        if (dates.length > 0) {
+          metadata[key] = new Date(dates[0]);
+          if (dates.length > 1) {
+            const additionalDates = dates.slice(1).map((d: string) => new Date(d));
+            if (!metadata.updated) {
+              metadata.updated = additionalDates;
+            } else {
+              metadata.updated = [...metadata.updated, ...additionalDates];
+            }
+          }
+        }
       } else {
         metadata[key] = value;
       }

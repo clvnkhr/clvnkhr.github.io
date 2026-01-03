@@ -17,7 +17,7 @@ describe('Build System Integration', () => {
     console.log = originalLog;
 
     expect(logs.length).toBeGreaterThan(0);
-    expect(logs.some(log => log.includes('Build system'))).toBe(true);
+    expect(logs.some(log => log.includes('Building blog'))).toBe(true);
   });
 
   it('should handle build system errors gracefully', async () => {

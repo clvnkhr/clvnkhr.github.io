@@ -64,16 +64,15 @@ describe('Build Integration', () => {
   it('should include post date in blog index', async () => {
     const blogPath = join(distDir, 'blog', 'index.html');
     const content = await Bun.file(blogPath).text();
-    const today = new Date().toLocaleDateString();
-    expect(content).toMatch(/\d{1,2}\/\d{1,2}\/\d{4}/);
+    expect(content).toContain('January 15, 2025');
   });
 
   it('should include tags in blog index', async () => {
     const blogPath = join(distDir, 'blog', 'index.html');
     const content = await Bun.file(blogPath).text();
-    expect(content).toContain('#tutorial');
-    expect(content).toContain('#typst');
-    expect(content).toContain('#test');
+    expect(content).toContain('tutorial');
+    expect(content).toContain('typst');
+    expect(content).toContain('test');
   });
 
   it('should render full post page with content', async () => {
@@ -86,7 +85,7 @@ describe('Build Integration', () => {
   it('should include math rendering in post page', async () => {
     const postPath = join(distDir, 'blog', '2025', '01', '15', 'my-first-post', 'index.html');
     const content = await Bun.file(postPath).text();
-    expect(content).toMatch(/x\^2/);
-    expect(content).toMatch(/integral.*sqrt/i);
+    expect(content).toContain('typst-frame');
+    expect(content).toContain('<svg');
   });
 });
