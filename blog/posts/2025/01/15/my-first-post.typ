@@ -1,4 +1,3 @@
-// title: My First Typst Post
 // date: 2025-01-15, 2026-01-02
 // tags: tutorial, typst, test
 
@@ -6,15 +5,16 @@
 
 #show: html_math
 
-= My First Typst Post
+#set document(title: "My First Typst Post")
+#title()
 
 This is a sample blog post written in Typst format.
 
-== Introduction
+= Introduction
 
 Welcome to new blog system! This post demonstrates how Typst files work.
 
-== Basic Math
+= Basic Math
 
 Here's an inline equation: $x^2 + y^2 = z^2$
 
@@ -32,7 +32,9 @@ Code block:
 $a+b=#{a+b}$
 ```
 
-== Conclusion
+#image("../../../../img/image-9.jpg", width: 300pt)
+
+= Conclusion
 
 That's how Typst math rendering works with HTML export!
 

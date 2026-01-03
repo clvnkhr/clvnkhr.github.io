@@ -10,7 +10,9 @@ import { Post, PostMetadata } from '../types/post.js';
       const key = parts[0].trim();
       const value = parts.slice(1).join(':').trim();
 
-      if (key === 'tags') {
+      if (key === 'title') {
+        return;
+      } else if (key === 'tags') {
         metadata[key] = value.split(',').map((t: string) => t.trim());
       } else if (key === 'updated') {
         const dates = value.split(',').map((d: string) => d.trim()).filter(Boolean);

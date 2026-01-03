@@ -1,8 +1,9 @@
 import { parseMetadata, compileTypst } from './posts';
-import { renderHomePage, renderBlogIndex, renderPostPage, renderTagPage, renderProjectsPage } from './pages';
+import { renderHomePage, renderBlogIndex, renderPostPage, renderTagPage, renderTagsIndex, renderProjectsPage } from './pages';
 import { Post } from '../types/post';
 import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
+import { extractTitleFromHtml, stripFirstHeading } from '../utils/post';
 
 async function discoverPosts(): Promise<Post[]> {
   const posts: Post[] = [];
@@ -30,13 +31,23 @@ async function discoverPosts(): Promise<Post[]> {
 
               try {
                 const metadata = parseMetadata(content);
-                const htmlContent = await compileTypst(typstPath);
+                let htmlContent = await compileTypst(typstPath);
+                const title = extractTitleFromHtml(htmlContent);
+
+                if (!title) {
+                  console.warn(`Warning: No h1 tag found in ${typstPath}, skipping post`);
+                  continue;
+                }
+
+                // Strip the first H1 from HTML content since title is displayed separately
+                htmlContent = stripFirstHeading(htmlContent);
 
                 const slug = dayEntry.replace('.typ', '');
                 const path = `/blog/${basePath}/${entry}/${slug}/`;
 
                 posts.push({
                   ...metadata,
+                  title,
                   slug,
                   path,
                   htmlContent
@@ -101,13 +112,22 @@ export async function buildBlog() {
 
   console.log('🏷️  Generating tag pages...');
   const allTags = new Set<string>();
+  const tagPosts: Record<string, number> = {};
   posts.forEach(post => {
-    post.tags?.forEach(tag => allTags.add(tag));
+    post.tags?.forEach(tag => {
+      allTags.add(tag);
+      tagPosts[tag] = (tagPosts[tag] || 0) + 1;
+    });
   });
 
+  console.log('📋 Generating tags index...');
+  await Bun.$`mkdir -p dist/tags`.quiet();
+  const tagsIndexHtml = renderTagsIndex(Array.from(allTags).sort(), tagPosts);
+  await Bun.write('dist/tags/index.html', tagsIndexHtml);
+
   for (const tag of Array.from(allTags)) {
-    const tagPosts = posts.filter(post => post.tags?.includes(tag));
-    const tagHtml = renderTagPage(tag, tagPosts);
+    const tagPostsList = posts.filter(post => post.tags?.includes(tag));
+    const tagHtml = renderTagPage(tag, tagPostsList);
     const tagDir = `dist/tags/${tag}`;
     await Bun.$`mkdir -p ${tagDir}`.quiet();
     await Bun.write(`${tagDir}/index.html`, tagHtml);
@@ -118,7 +138,7 @@ export async function buildBlog() {
   await Bun.write('dist/projects/index.html', projectsHtml);
 
   console.log('✅ Build complete!');
-  console.log(`Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 projects page`);
+  console.log(`Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 projects page`);
 
   if (!isWatchMode) {
     console.log('\n🌐 To view your blog:');

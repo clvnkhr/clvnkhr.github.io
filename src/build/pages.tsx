@@ -3,6 +3,7 @@ import { HomePage } from '../components/HomePage';
 import { BlogIndex } from '../components/BlogIndex';
 import { PostPage } from '../components/PostPage';
 import { TagPage } from '../components/TagPage';
+import { TagsIndex } from '../components/TagsIndex';
 import { ProjectsPage } from '../components/ProjectsPage';
 import type { Post } from '../types/post';
 
@@ -23,6 +24,11 @@ export function renderPostPage(post: Post): string {
 
 export function renderTagPage(tagName: string, posts: Post[]): string {
   const html = renderToString(<TagPage tagName={tagName} posts={posts} />);
+  return `<!DOCTYPE html>${html}`;
+}
+
+export function renderTagsIndex(allTags: string[], tagPosts: Record<string, number>): string {
+  const html = renderToString(<TagsIndex allTags={allTags} tagPosts={tagPosts} />);
   return `<!DOCTYPE html>${html}`;
 }
 
