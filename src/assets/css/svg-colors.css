@@ -1,0 +1,11 @@
+/* SVG grayscale color overrides for dark mode */
+/* Generated at build time - do not edit manually */
+
+@media (prefers-color-scheme: dark) {
+  .typst-frame [fill="#ffffffcc"] { fill: #000000cc; }
+  .typst-frame [stroke="#ffffffcc"] { stroke: #000000cc; }
+  .typst-frame [fill="#cccccc"] { fill: #333333; }
+  .typst-frame [stroke="#cccccc"] { stroke: #333333; }
+  .typst-frame [fill="#aaaaaa"] { fill: #555555; }
+  .typst-frame [stroke="#aaaaaa"] { stroke: #555555; }
+}

@@ -12,10 +12,5 @@ export interface Post extends PostMetadata {
   slug: string;
   path: string;
   htmlContent: string;
-}
-
-export interface Post extends PostMetadata {
-  slug: string;
-  path: string;
-  htmlContent: string;
+  svgColors?: string[];
 }

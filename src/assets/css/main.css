@@ -6,6 +6,8 @@
 
 @plugin "@tailwindcss/typography";
 
+@import './svg-colors.css';
+
 :root {
   --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;

@@ -83,6 +83,14 @@ describe('Theme System', () => {
     expect(cssContent).toContain('stroke: var(--color-ctp-text)');
   });
 
+  it('should have SVG grayscale color overrides in dark mode', async () => {
+    const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
+
+    expect(cssContent).toContain('@media (prefers-color-scheme: dark)');
+    expect(cssContent).toContain('.typst-frame [fill="#ffffffcc"]');
+    expect(cssContent).toContain('.typst-frame [stroke="#cccccc"]');
+  });
+
   it('should have tag color classes with CSS variables', async () => {
     const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
 

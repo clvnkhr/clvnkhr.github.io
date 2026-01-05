@@ -1,4 +1,5 @@
 import { Post, PostMetadata } from '../types/post.js';
+import { extractColorsFromHtml } from '../utils/svg-colors.js';
 
   export function parseMetadata(content: string): PostMetadata {
   const metadata: Record<string, any> = {};
@@ -41,7 +42,10 @@ import { Post, PostMetadata } from '../types/post.js';
   return metadata as PostMetadata;
 }
 
-export async function compileTypst(typstFile: string): Promise<string> {
+export async function compileTypst(typstFile: string): Promise<{
+  html: string;
+  svgColors: string[];
+}> {
   const fontPath = 'fonts/LeteSansMath';
   const result = await Bun.$`typst compile --format html --features html --root ../../../../ --font-path ${fontPath} ${typstFile} -`.quiet();
   const html = result.stdout.toString();
@@ -51,5 +55,8 @@ export async function compileTypst(typstFile: string): Promise<string> {
     throw new Error(`Could not find body tag in Typst output for ${typstFile}`);
   }
 
-  return bodyMatch[1].trim();
+  const htmlContent = bodyMatch[1].trim();
+  const svgColors = extractColorsFromHtml(htmlContent);
+
+  return { html: htmlContent, svgColors };
 }

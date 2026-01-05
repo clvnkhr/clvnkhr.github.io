@@ -1,7 +1,7 @@
 // Global Typst template for math show rules
 // This file is imported by all blog posts to handle HTML export
 
-#let html_math(it) = {
+#let html_fmt(it) = {
   show math.equation: it => context {
     set text(font: "Lete Sans Math")
     // Only wrap in frame when exporting to HTML
