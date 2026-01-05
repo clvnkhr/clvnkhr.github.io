@@ -5,6 +5,8 @@ import { readdir, stat } from 'fs/promises';
 import { join } from 'path';
 import { extractTitleFromHtml, stripFirstHeading } from '../utils/post';
 import { generateSvgColorCss } from '../utils/svg-colors.js';
+import { readFileSync } from 'fs';
+import packageJson from '../../package.json' with { type: 'json' };
 
 async function discoverPosts(): Promise<Post[]> {
   const posts: Post[] = [];
@@ -74,8 +76,41 @@ async function discoverPosts(): Promise<Post[]> {
   return posts.filter(post => !post.draft);
 }
 
+async function checkTypstVersion(): Promise<void> {
+  const expectedVersion = packageJson.engines?.typst;
+  if (!expectedVersion) {
+    console.warn('⚠️  No expected Typst version specified in package.json engines.typst');
+    return;
+  }
+
+  try {
+    const result = await Bun.$`typst --version`.quiet();
+    const versionMatch = result.stdout.toString().match(/typst (\d+\.\d+\.\d+)/);
+
+    if (!versionMatch) {
+      console.warn('⚠️  Could not parse Typst version');
+      return;
+    }
+
+    const actualVersion = versionMatch[1];
+
+    if (actualVersion !== expectedVersion) {
+      console.warn(`\n⚠️  WARNING: Typst version mismatch!`);
+      console.warn(`   Expected: ${expectedVersion}`);
+      console.warn(`   Actual:   ${actualVersion}`);
+      console.warn(`   This blog relies on Typst HTML export (experimental feature).`);
+      console.warn(`   Unexpected version changes may break the build.\n`);
+    } else {
+      console.log(`✅ Typst version ${actualVersion} matches expected ${expectedVersion}`);
+    }
+  } catch (error) {
+    console.warn('⚠️  Could not check Typst version:', error);
+  }
+}
+
 export async function buildBlog() {
   console.log('🔨 Building blog...');
+  await checkTypstVersion();
 
   const isWatchMode = process.argv.includes('--watch');
 
