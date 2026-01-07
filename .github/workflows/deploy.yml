@@ -29,7 +29,7 @@ jobs:
           bun-version: latest
 
       - name: Install Typst CLI
-        uses: fufexan/typst-action@v2
+        run: curl -fsSL https://typst.app/install.sh | sh
 
       - name: Install dependencies
         run: bun install
