@@ -25,7 +25,7 @@ I have translated some papers to English in my spare time. I will try to make th
 
 = Online Activities
 
-See the other posts tagged #link("{{ site.url }}/tags/maths")[maths].
+See the other posts tagged #link("/tags/maths")[maths].
 
 I am #link("https://math.stackexchange.com/users/80734/calvin-khor")[user number 80734] on Math StackExchange,
 and I have also solved some Project Euler problems: #html.img(src: "https://projecteuler.net/profile/calvinkhor.png")

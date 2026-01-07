@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Redesigning personal blog to use **Typst** for content authoring, **Bun + TypeScript** for build system, with **Pagefind** for client-side search. The old Jekyll blog is preserved in `archive/` for reference.
+Redesigning personal blog to use **Typst** for content authoring, **Bun + TypeScript** for build system. The old Jekyll blog is preserved in `archive/` for reference.
 
 ---
 
@@ -18,7 +18,6 @@ Redesigning personal blog to use **Typst** for content authoring, **Bun + TypeSc
 | **Templates** | JSX components | Flexible, can add React later |
 | **Styling** | Tailwind CSS v4 + Catppuccin official package | Utility-first, automatic theme switching (latte/mocha) |
 | **Theme** | Catppuccin (auto-switching) + CSS `color-scheme: auto` | Modern, follows system preference (light/dark) |
-| **Search** | Pagefind | Easy with Tailwind, built-in filtering |
 | **Math Rendering** | Typst HTML + auto-wrapped math | Visual fidelity, no MathJax |
 | **Hosting** | GitHub Pages | Already configured |
 | **Comments** | None | Simplest, fastest |
@@ -106,11 +105,10 @@ Redesigning personal blog to use **Typst** for content authoring, **Bun + TypeSc
 │  └── favicon.png                                          │
 └─────────────────────────────────────────────────────────┘
                             ↓
-┌─────────────────────────────────────────────────────────┐
+ ┌─────────────────────────────────────────────────────────┐
 │ Runtime Layer                                            │
 │                                                          │
 │  - Static hosting (GitHub Pages)                        │
-│  - Pagefind search (client-side)                        │
 │  - Tailwind CSS (bundled)                           │
 │  - CSS color-scheme for dark mode (no toggle needed)      │
 └─────────────────────────────────────────────────────────┘
@@ -178,9 +176,8 @@ await buildBlog();
 4. Render JSX templates for each page type using `renderToString`
 5. Generate pages: splash, blog index, posts, tags, projects
 6. Generate tag pages with auto pastel colors
-7. Run Pagefind index generation
-8. Build Tailwind CSS v4 with Catppuccin plugin
-9. Copy static assets to `./dist/`
+7. Build Tailwind CSS v4 with Catppuccin plugin
+8. Copy static assets to `./dist/`
 
 #### 3. JSX Template System
 
@@ -267,96 +264,6 @@ All posts will import this from a shared file:
 }
 ```
 
-#### 6. Search with Pagefind
-
-**Integration:**
-```typescript
-// build/search.ts
-import * as pagefind from "pagefind";
-
-async function buildSearch(distDir: string) {
-  const { index } = await pagefind.createIndex();
-  await index.addDirectory({ path: distDir });
-  await index.writeFiles({ outputPath: `${distDir}/pagefind` });
-}
-```
-
-**Search in Header (SearchBar Component):**
-```tsx
-// src/components/SearchBar.tsx
-import { useEffect, useRef } from 'react';
-
-export function SearchBar() {
-  const searchRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const loadPagefind = async () => {
-      const { PagefindUI } = await import('pagefind');
-      new PagefindUI({
-        element: searchRef.current,
-        showSubResults: true,
-        translations: {
-          placeholder: "Search...",
-        },
-      });
-    };
-
-    // Load lazily when user focuses
-    const handleFocus = () => loadPagefind();
-    searchRef.current?.addEventListener('focus', handleFocus);
-
-    // Keyboard shortcut (Ctrl/Cmd + K)
-    const handleKeydown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        searchRef.current?.querySelector('input')?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeydown);
-
-    return () => {
-      searchRef.current?.removeEventListener('focus', handleFocus);
-      window.removeEventListener('keydown', handleKeydown);
-    };
-  }, []);
-
-  return (
-    <div ref={searchRef} className="search-bar" />
-  );
-}
-```
-
-**Dedicated Search Page (SearchPage Component):**
-```tsx
-// src/components/SearchPage.tsx
-export function SearchPage() {
-  const searchRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const initSearch = async () => {
-      const { PagefindUI } = await import('pagefind');
-      new PagefindUI({
-        element: searchRef.current,
-        showSubResults: true,
-        showImages: true,
-        excerptLength: 150,
-      });
-    };
-
-    initSearch();
-  }, []);
-
-  return (
-    <Layout title="Search">
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8 ctp-text">Search</h1>
-        <div ref={searchRef} />
-      </div>
-    </Layout>
-  );
-}
-```
-
 ---
 
 ## Directory Structure
@@ -381,17 +288,15 @@ clvnkhr.github.io/
 │   │   ├── posts.ts      # Post compilation & metadata
 │   │   ├── pages.ts      # Page generation
 │   │   └── assets.ts     # Asset copying & bundling
-│   ├── components/
-│   │   ├── Layout.tsx
-│   │   ├── Header.tsx
-│   │   ├── Footer.tsx
-│   │   ├── PostPage.tsx
-│   │   ├── BlogIndex.tsx
-│   │   ├── TagPage.tsx
-│   │   ├── ProjectsPage.tsx
-│   │   ├── HomePage.tsx
-│   │   ├── SearchPage.tsx
-│   │   └── SearchBar.tsx
+ │   ├── components/
+ │   │   ├── Layout.tsx
+ │   │   ├── Header.tsx
+ │   │   ├── Footer.tsx
+ │   │   ├── PostPage.tsx
+ │   │   ├── BlogIndex.tsx
+ │   │   ├── TagPage.tsx
+ │   │   ├── ProjectsPage.tsx
+ │   │   └── HomePage.tsx
 │   ├── config/
 │   │   ├── site.ts       # Site metadata
 │   │   └── projects.ts  # Projects data
@@ -427,7 +332,6 @@ clvnkhr.github.io/
 
 1. [x] Create `package.json` with dependencies:
    - react, react-dom
-   - pagefind
    - @seangenabe/catppuccin-tailwindcss-v4 (Tailwind v4 compatible)
    - @tailwindcss/cli (Tailwind v4 CLI)
    - @types packages (bun, node, react, react-dom)
@@ -486,8 +390,6 @@ clvnkhr.github.io/
 5. [x] Create TagPage component (posts by tag, with auto pastel colors)
 6. [x] Create ProjectsPage component (portfolio from TypeScript data)
 7. [x] Create HomePage component (splash/landing page)
-8. [x] Create SearchPage component (dedicated /search/ page)
-9. [x] Create SearchBar component (in header with keyboard shortcut)
 
 ### Phase 4: Styling & Theme (3-4 hours) ✅ COMPLETE
 
@@ -505,16 +407,6 @@ clvnkhr.github.io/
 2. [x] Migrate old Jekyll posts to Typst format
 3. [x] Create sample new Typst post
 4. [x] Verify all content renders correctly
-
-### Phase 6: Search Implementation (2-3 hours) ✅ COMPLETE
-
-1. [x] Install and configure Pagefind
-2. [x] Add Pagefind data attributes to all page templates
-3. [x] Integrate Pagefind into build script
-4. [x] Create SearchPage component (dedicated search page)
-5. [x] Create SearchBar component (in header with keyboard shortcut)
-6. [x] Test search functionality
-7. [x] Verify tag filtering works
 
 ### Phase 7: Projects Page (1-2 hours) ✅ COMPLETE
 
@@ -696,38 +588,6 @@ Using CSS `color-scheme: auto` in `:root` is modern, simpler approach for Tailwi
 - Tailwind automatically adds `dark` class to `<html>` element based on system preference
 - All Catppuccin colors automatically adapt between latte and mocha themes
 
-### Pagefind Search Integration
-
-**Add to Build:**
-```typescript
-// build/index.ts
-import { buildSearch } from './search';
-
-async function buildBlog() {
-  // ... build steps ...
-  
-  await buildSearch('./dist');
-  
-  console.log('✅ Build complete!');
-}
-```
-
-**Tag Color Generator:**
-```typescript
-function getTagPastelColor(tagName: string): string {
-  const colors = [
-    'pink', 'mauve', 'red', 'maroon',
-    'peach', 'yellow', 'green', 'teal',
-    'sky', 'sapphire', 'blue', 'lavender'
-  ];
-
-  const hash = tagName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const selectedColor = `bg-ctp-${colors[hash % colors.length]}`;
-
-  return `${selectedColor} text-ctp-crust`;
-}
-```
-
 ---
 
 ## Technology Requirements
@@ -746,8 +606,7 @@ function getTagPastelColor(tagName: string): string {
   },
   "dependencies": {
     "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "pagefind": "^1.0.0"
+    "react-dom": "^18.3.0"
   },
   "devDependencies": {
     "@catppuccin/tailwindcss": "^1.0.0",
@@ -875,10 +734,9 @@ All major phases complete! The blog is fully operational.
 **Phase 3: Templates & Components** ✅ Complete
 **Phase 4: Styling & Theme** ✅ Complete
 **Phase 5: Content Migration** ✅ Complete
-**Phase 6: Search Implementation** ✅ Complete
-**Phase 7: Projects Page** ✅ Complete
-**Phase 8: Optimization & Polish** ✅ Complete
-**Phase 9: CI/CD & Deployment** ✅ Complete
+**Phase 6: Projects Page** ✅ Complete
+**Phase 7: Optimization & Polish** ✅ Complete
+**Phase 8: CI/CD & Deployment** ✅ Complete
 
 ---
 
@@ -895,12 +753,6 @@ All major phases complete! The blog is fully operational.
 - [HTML & Static Sites](https://bun.sh/docs/bundler/html-static)
 - [TypeScript Support](https://bun.sh/docs/guides/runtime/typescript)
 - [JSX Support](https://bun.sh/docs/bundler/react-jsx)
-
-### Pagefind
-- [Official Site](https://pagefind.app/)
-- [Documentation](https://pagefind.app/docs/)
-- [Filtering](https://pagefind.app/docs/ui-filtering/)
-- [Node API](https://pagefind.app/docs/node-api/)
 
 ### Tailwind CSS v4
 - [Official Docs](https://tailwindcss.com/docs)
@@ -940,7 +792,7 @@ All major phases complete! The blog is fully operational.
 - **2026-01-01 10:07: Project Status Check - All Phases Complete**
   - Verified all 9 phases of blog redesign are complete
   - Build system fully operational with Tailwind v4 + Catppuccin official package
-  - All features implemented: math rendering, search, tags, projects, dark mode
+  - All features implemented: math rendering, tags, projects, dark mode
   - Testing suite green (16/16 tests passing)
   - Production deployment working via GitHub Actions
   - Blog is fully operational and ready for content creation
@@ -975,7 +827,6 @@ All major phases complete! The blog is fully operational.
 - Templates: JSX components (React)
 - Styling: Tailwind CSS v4 + official Catppuccin package (`@catppuccin/tailwindcss`)
 - Theme: Catppuccin (auto-switching Latte/Mocha) with CSS `color-scheme: auto`
-- Search: Pagefind (header + dedicated page)
 - Math: Typst HTML via Lete Sans Math font
 - Hosting: GitHub Pages
 - Content Structure: Date-based URLs (yyyy/mm/dd)
@@ -987,7 +838,6 @@ All major phases complete! The blog is fully operational.
 - ✅ Date-based URLs (/blog/2025/01/15/my-post/)
 - ✅ Tag system with auto pastel colors (theme-reactive)
 - ✅ Projects showcase (TypeScript config)
-- ✅ Client-side search (header + dedicated page)
 - ✅ Math support (via Typst HTML export with SVG theming)
 - ✅ No comments (simple, fast)
 - ✅ Splash/homepage (index.html)

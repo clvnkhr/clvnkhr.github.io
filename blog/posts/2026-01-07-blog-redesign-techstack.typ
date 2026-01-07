@@ -39,9 +39,10 @@ After Typst compilation:
 
 = Tech Stack
 
-* Bun - Runtime, build tool
-* Typst 0.14.2 - Typesetting with HTML export
-* TypeScript - Build scripts
-* React - Page rendering
-* Tailwind CSS v4 - Styling (Catppuccin theme)
-* GitHub Pages - Deployment
+- Bun - Runtime, build tool
+- Typst 0.14.2 - Typesetting with HTML export
+- TypeScript - Build scripts
+- React - Page rendering
+- Tailwind CSS v4 - Styling (Catppuccin theme)
+- GitHub Pages - Deployment
+
