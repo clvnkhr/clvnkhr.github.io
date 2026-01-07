@@ -1,0 +1,83 @@
+@import './fonts.css';
+
+@import "tailwindcss";
+
+@import "@catppuccin/tailwindcss/mocha.css";
+
+@plugin "@tailwindcss/typography";
+
+@import './svg-colors.css';
+
+:root {
+  --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color-scheme: auto;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+.typst-frame [fill="#000000"] {
+  fill: var(--color-ctp-text);
+}
+
+.typst-frame [stroke="#000000"] {
+  stroke: var(--color-ctp-text);
+}
+
+
+
+.prose span[style*="display: block"] svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tag-pink {
+  color: var(--color-ctp-pink);
+}
+
+.tag-mauve {
+  color: var(--color-ctp-mauve);
+}
+
+.tag-red {
+  color: var(--color-ctp-red);
+}
+
+.tag-maroon {
+  color: var(--color-ctp-maroon);
+}
+
+.tag-peach {
+  color: var(--color-ctp-peach);
+}
+
+.tag-yellow {
+  color: var(--color-ctp-yellow);
+}
+
+.tag-green {
+  color: var(--color-ctp-green);
+}
+
+.tag-teal {
+  color: var(--color-ctp-teal);
+}
+
+.tag-sky {
+  color: var(--color-ctp-sky);
+}
+
+.tag-sapphire {
+  color: var(--color-ctp-sapphire);
+}
+
+.tag-blue {
+  color: var(--color-ctp-blue);
+}
+
+.tag-lavender {
+  color: var(--color-ctp-lavender);
+}

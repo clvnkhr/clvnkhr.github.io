@@ -1,0 +1,17 @@
+I"p<p>The purpose of this post is to link to well-polished or otherwise exceptional educational content online.
+If I have done at least part of the courses I will usually add some commentary.</p>
+
+<ul>
+  <li><a href="https://www.cs.cmu.edu/~kmcrane/Projects/DDG/">Discrete Differential Geometry</a> - One issue with most introductory manifolds/differential geometry courses (IMO) is a lack of pictures which is a shame in a geometry course. Not the case here, since there is a focus on numerics. This also allows the lecturer to go much further than a usual manifolds class, giving clear intuition for e.g. the Laplace-Beltrami operator. Plenty of exercises in the book and the C++/Javascript(!) framework.</li>
+  <li><a href="https://complex-analysis.com">Complex Analysis-A Visual and Interactive Introduction</a> Excellent visualisations like DDG, though I have yet to find the time to go through them (since I know much of the material already)</li>
+  <li><a href="https://www.statlearning.com">Introduction to Statistical Learning</a> Excellent material by leading experts written for an audience with little background. Two of the authors (Hastie and Tibshirani) recorded lectures together which are dense with information, partly due to the conversational style. See also <a href="https://github.com/bomtall/islp">the material produced by the reading group I am attending (at time of writing)</a> My one complaint is that I think the exercises are at times too easy, but I suppose there is <a href="https://hastie.su.domains/ElemStatLearn/">ESL</a> for that.</li>
+  <li><a href="https://www.edx.org/learn/computer-science/harvard-university-cs50-s-introduction-to-computer-science">CS50X - Introduction to Computer Science</a> Full of enthusiasm and fun. And free.</li>
+  <li><a href="https://docs.scala-lang.org/online-courses.html">Scala 3 Courses</a> - Amazing courses for Scala and functional programming; the first few are taught by the creator of Scala himself, and have been updated for Scala 3. The automated assignment grading and the excellent compiler gives sufficient feedback to keep you from being stuck. IMO the Scala Actors course is a huge ramp up in difficulty but I learned a lot pushing through the assignments.</li>
+  <li>
+    <p><a href="https://www.youtube.com/playlist?list=PLsazbLqk0ktfTAYxZeaWTFD-mwZIpInHC">Introduction to Banach-Valued Analysis</a> One of the few silver linings of COVID. Among other things, contains Bourgain’s result on UMD spaces and a quick intro to Schatten spaces. Regrettably I was too busy to do the exercises consistently. Very clear presentation of the material.</p>
+  </li>
+  <li><a href="https://github.com/barbagroup/CFDPython">Computational Fluid Dynamics in Python</a></li>
+  <li><a href="https://www.feynmanlectures.caltech.edu">The Feynman Lectures</a></li>
+  <li><a href="https://www.youtube.com/watch?v=q8p1voEiu8Q">ANTLR v4 with Terence Parr</a></li>
+</ul>
+:ET

@@ -1,0 +1,95 @@
+I"�+<h2 id="2023-06-09-setting-up-site-with-jekyll-template">2023-06-09: Setting up site with Jekyll template</h2>
+
+<p>I needed <code class="highlighter-rouge">bundle add webrick</code> as stated in
+<a href="https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll">Github’s own docs</a>
+but also <code class="highlighter-rouge">bundle update liquid</code>, which the good Bing told me about 😊</p>
+
+<p>Colours can be changed in <code class="highlighter-rouge">assets/css/main.css</code>, but there are also some settings in <code class="highlighter-rouge">_includes/page/dark_mode.html</code></p>
+
+<p>Modifications to the header can be made in <code class="highlighter-rouge">_includes/header.html</code>. At the moment I have added a hard-link to a generated post.</p>
+
+<p>For Mathjax support, I followed <a href="http://webdocs.cs.ualberta.ca/~zichen2/blog/coding/setup/2019/02/17/how-to-add-mathjax-support-to-jekyll.html">this link</a>,
+which does allow some math like \(\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\), but I find it a little odd.
+Should probably be possible to copy the setup from Math.SE.</p>
+
+<p>I tried to simply write a new tag into existence by using it (‘maths’) but it does not seem to automatically work.
+So I have manually added a page for the maths tag at <code class="highlighter-rouge">/pages/tags/maths.html</code>.</p>
+
+<p>Somehow, mousing over some of the project cards makes them disappear.
+Not entirely sure I can fix it myself, but maybe I can disable the mouseover animation.</p>
+
+<h2 id="2023-06-10-fleshing-out-some-pages">2023-06-10: Fleshing out some pages</h2>
+
+<p>The first issue of the day is that I don’t know how to override the width setting for images, or how to make them appear inline.
+My current workaround to make the image smaller, since I have multiple to show, is to place the images in a table.</p>
+
+<h2 id="2023-06-13-mathjax-doesnt-work-correctly">2023-06-13: Mathjax doesn’t work correctly</h2>
+
+<p>In the above the \(\int_{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\) renders fine only locally. Here’s a test with the backslash:
+\(\int<em>{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\)
+which also works locally. Display math with <code class="highlighter-rouge">\[...\]</code> also seems to work locally. \[\int</em>{-\infty}^\infty \mathrm e^{-x^2}\, \mathrm dx = \frac\pi2\]. But only locally.</p>
+
+<p>Need to figure out how to make it work…</p>
+
+<h2 id="2023-06-26-mathjax-is-working-correctly">2023-06-26: Mathjax is working correctly</h2>
+
+<p>I followed the <a href="https://docs.mathjax.org/en/latest/web/start.html">Mathjax 3 documentation</a> and it now works.
+I’m using the configuration block from <a href="https://docs.mathjax.org/en/latest/options/input/tex.html?highlight=displaymath#the-configuration-block">this part</a> of the docs.
+Specifically, in <code class="highlighter-rouge">_includes/header.html</code>, I have put</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!--</span> <span class="k">for</span> <span class="nx">mathjax</span> <span class="nx">support</span> <span class="o">--&gt;</span>
+
+  <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="dl">"</span><span class="s2">text/x-mathjax-config</span><span class="dl">"</span><span class="o">&gt;</span>
+    <span class="nx">MathJax</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="na">tex</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">packages</span><span class="p">:</span> <span class="p">[</span><span class="dl">'</span><span class="s1">base</span><span class="dl">'</span><span class="p">],</span>        <span class="c1">// extensions to use</span>
+        <span class="na">inlineMath</span><span class="p">:</span> <span class="p">[</span>              <span class="c1">// start/end delimiter pairs for in-line math</span>
+          <span class="p">[</span><span class="dl">'</span><span class="se">\\</span><span class="s1">(</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="se">\\</span><span class="s1">)</span><span class="dl">'</span><span class="p">]</span>
+        <span class="p">],</span>
+        <span class="na">displayMath</span><span class="p">:</span> <span class="p">[</span>             <span class="c1">// start/end delimiter pairs for display math</span>
+          <span class="p">[</span><span class="dl">'</span><span class="s1">$$</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">$$</span><span class="dl">'</span><span class="p">],</span>
+          <span class="p">[</span><span class="dl">'</span><span class="se">\\</span><span class="s1">[</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="se">\\</span><span class="s1">]</span><span class="dl">'</span><span class="p">]</span>
+        <span class="p">],</span>
+        <span class="na">processEscapes</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>      <span class="c1">// use \$ to produce a literal dollar sign</span>
+        <span class="na">processEnvironments</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="c1">// process \begin{xxx}...\end{xxx} outside math mode</span>
+        <span class="na">processRefs</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>         <span class="c1">// process \ref{...} outside of math mode</span>
+        <span class="na">digits</span><span class="p">:</span> <span class="sr">/^</span><span class="se">(?:[</span><span class="sr">0-9</span><span class="se">]</span><span class="sr">+</span><span class="se">(?:\{</span><span class="sr">,</span><span class="se">\}[</span><span class="sr">0-9</span><span class="se">]{3})</span><span class="sr">*</span><span class="se">(?:\.[</span><span class="sr">0-9</span><span class="se">]</span><span class="sr">*</span><span class="se">)?</span><span class="sr">|</span><span class="se">\.[</span><span class="sr">0-9</span><span class="se">]</span><span class="sr">+</span><span class="se">)</span><span class="sr">/</span><span class="p">,</span>
+                                   <span class="c1">// pattern for recognizing numbers</span>
+        <span class="na">tags</span><span class="p">:</span> <span class="dl">'</span><span class="s1">none</span><span class="dl">'</span><span class="p">,</span>              <span class="c1">// or 'ams' or 'all'</span>
+        <span class="na">tagSide</span><span class="p">:</span> <span class="dl">'</span><span class="s1">right</span><span class="dl">'</span><span class="p">,</span>          <span class="c1">// side for \tag macros</span>
+        <span class="na">tagIndent</span><span class="p">:</span> <span class="dl">'</span><span class="s1">0.8em</span><span class="dl">'</span><span class="p">,</span>        <span class="c1">// amount to indent tags</span>
+        <span class="na">useLabelIds</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>         <span class="c1">// use label name rather than tag for ids</span>
+        <span class="na">maxMacros</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>           <span class="c1">// maximum number of macro substitutions per expression</span>
+        <span class="na">maxBuffer</span><span class="p">:</span> <span class="mi">5</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>       <span class="c1">// maximum size for the internal TeX string (5K)</span>
+        <span class="na">baseURL</span><span class="p">:</span>                   <span class="c1">// URL for use with links to tags (when there is a &lt;base&gt; tag in effect)</span>
+           <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="dl">'</span><span class="s1">base</span><span class="dl">'</span><span class="p">).</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">?</span>
+            <span class="dl">''</span> <span class="p">:</span> <span class="nb">String</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">).</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/#.*$/</span><span class="p">,</span> <span class="dl">''</span><span class="p">)),</span>
+        <span class="na">formatError</span><span class="p">:</span>               <span class="c1">// function called when TeX syntax errors occur</span>
+            <span class="p">(</span><span class="nx">jax</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">jax</span><span class="p">.</span><span class="nx">formatError</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="dl">"</span><span class="s2">text/javascript</span><span class="dl">"</span> <span class="nx">id</span><span class="o">=</span><span class="dl">"</span><span class="s2">MathJax-script</span><span class="dl">"</span> <span class="k">async</span> <span class="nx">src</span><span class="o">=</span><span class="dl">"</span><span class="s2">https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</span><span class="dl">"</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>
+</code></pre></div></div>
+
+<p>Unfortunately, I need to use double slashes in the source i.e. <code class="highlighter-rouge">\\[...\\]</code>. Small price to pay.</p>
+
+<h2 id="2023-06-27-fixing-the-projects-page">2023-06-27: Fixing the projects page</h2>
+
+<p>Figured out that <code class="highlighter-rouge">card:hover</code> was the part not working in Safari. Works nicely in Edge though. Simply turned off the border for now.</p>
+
+<h2 id="2023-07-05-disqus-comments-turned-on">2023-07-05: Disqus comments turned on</h2>
+
+<p>Will need to see if this is useful or just noise.</p>
+
+<h2 id="2023-07-11-math-notes">2023-07-11: Math notes</h2>
+
+<p>Put links to some math notes up. Also: for consideration in the future:</p>
+
+<ul>
+  <li>perhaps try to recreate <a href="https://pme123.github.io/github-pages-demo/develop/2019/04/28/how-to.html">this homepage</a> which allows embedding e.g. graphs using Scala.js.</li>
+  <li>switch comments to <a href="https://giscus.app">giscus</a> which has support for mathjax natively</li>
+</ul>
+:ET
