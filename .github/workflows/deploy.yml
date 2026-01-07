@@ -29,7 +29,7 @@ jobs:
           bun-version: latest
 
       - name: Install Typst CLI
-        run: curl -fsSL https://typst.app/install.sh | sh
+        run: curl -fsSL https://typst.app/install.sh | sh && echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: bun install
