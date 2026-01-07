@@ -3,16 +3,30 @@ import { extractColorsFromHtml } from '../utils/svg-colors.js';
 
   export function parseMetadata(content: string): PostMetadata {
   const metadata: Record<string, any> = {};
-  const commentBlock = content.match(/^\/\/.*$/gm);
 
-  commentBlock?.forEach((line) => {
+  // Parse metadata from comment block at the top of the file
+  // Stop at first non-comment line (metadata is only at the very beginning)
+  const lines = content.split('\n');
+
+  for (const line of lines) {
+    // Stop parsing at first non-comment line (allow #import in metadata section)
+    if (!line.startsWith('//') && !line.startsWith('#import')) {
+      break;
+    }
+
+    // Only process metadata from // lines, not #import
+    if (!line.startsWith('//')) {
+      continue;
+    }
+
     const parts = line.replace('// ', '').split(':');
     if (parts.length >= 2) {
       const key = parts[0].trim();
       const value = parts.slice(1).join(':').trim();
 
       if (key === 'title') {
-        return;
+        // Title is extracted from first h1 in content, not metadata
+        continue;
       } else if (key === 'tags') {
         metadata[key] = value.split(',').map((t: string) => t.trim());
       } else if (key === 'updated') {
@@ -39,7 +53,7 @@ import { extractColorsFromHtml } from '../utils/svg-colors.js';
         metadata[key] = value;
       }
     }
-  });
+  }
 
   return metadata as PostMetadata;
 }

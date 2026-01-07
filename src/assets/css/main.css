@@ -12,6 +12,7 @@
   --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   color-scheme: auto;
+  --color-ctp-code-bg: color-mix(in srgb, var(--color-ctp-base), var(--color-ctp-surface0) 20%);
 }
 
 body {
@@ -48,6 +49,20 @@ body {
   font-style: normal !important;
   font-weight: normal !important;
   color: var(--ctp-text) !important;
+}
+
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none !important;
+}
+
+.prose pre {
+  color: inherit !important;
+  background-color: var(--color-ctp-code-bg) !important;
+}
+
+.prose code {
+  color: inherit !important;
 }
 
 .tag-pink {
