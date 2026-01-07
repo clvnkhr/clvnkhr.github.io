@@ -1,13 +1,13 @@
 // date: 2025-01-15, 2026-01-02
 // tags: tutorial, typst, test
 
-#import "../../../../templates/math.typ": html_fmt
+#import "../templates/math.typ": html_fmt
 #show: html_fmt
 
 #import "@preview/lilaq:0.5.0" as lq
 
 
-#set document(title: "My First Typst Post")
+#set document(title: "Hello Typst Post")
 #title()
 
 This is a sample blog post written in Typst format.
@@ -37,7 +37,7 @@ $a+b=#{a+b}$
 ```
 
 == Image:
-#image("../../../../img/image-9.jpg", width: 300pt)
+#image("../img/image-9.jpg", width: 300pt)
 
 == Third party library usage
 

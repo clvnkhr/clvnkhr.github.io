@@ -12,68 +12,55 @@ async function discoverPosts(): Promise<Post[]> {
   const posts: Post[] = [];
   const postsDir = 'blog/posts';
 
-  async function scanDirectory(dir: string, basePath?: string): Promise<void> {
-    const entries = await readdir(dir);
+  const entries = await readdir(postsDir);
 
-    for (const entry of entries) {
-      const fullPath = join(dir, entry);
-      const entryStat = await stat(fullPath);
+  for (const entry of entries) {
+    if (!entry.endsWith('.typ')) continue;
 
-      if (entryStat.isDirectory()) {
-        if (entry.match(/^\d{4}$/)) {
-          await scanDirectory(fullPath, entry);
-        } else if (entry.match(/^\d{2}$/) && basePath && !basePath.includes('/')) {
-          await scanDirectory(fullPath, `${basePath}/${entry}`);
-        } else if (entry.match(/^\d{2}$/) && basePath && basePath.includes('/')) {
-          const dayEntries = await readdir(fullPath);
+    const typstPath = join(postsDir, entry);
+    const content = await Bun.file(typstPath).text();
 
-          for (const dayEntry of dayEntries) {
-            if (dayEntry.endsWith('.typ')) {
-              const typstPath = join(fullPath, dayEntry);
-              const content = await Bun.file(typstPath).text();
+    try {
+      const metadata = parseMetadata(content);
+      const typstResult = await compileTypst(typstPath);
+      const title = extractTitleFromHtml(typstResult.html);
 
-              try {
-                const metadata = parseMetadata(content);
-                const typstResult = await compileTypst(typstPath);
-                const title = extractTitleFromHtml(typstResult.html);
-
-                if (!title) {
-                  console.warn(`Warning: No h1 tag found in ${typstPath}, skipping post`);
-                  continue;
-                }
-
-                // Strip the first H1 from HTML content since title is displayed separately
-                const htmlContent = stripFirstHeading(typstResult.html);
-
-                const slug = dayEntry.replace('.typ', '');
-                const path = `/blog/${basePath}/${entry}/${slug}/`;
-
-                posts.push({
-                  ...metadata,
-                  title,
-                  slug,
-                  path,
-                  htmlContent,
-                  svgColors: typstResult.svgColors
-                });
-              } catch (error) {
-                console.error(`Error processing ${typstPath}:`, error);
-                throw error;
-              }
-            }
-          }
-        }
+      if (!title) {
+        console.warn(`Warning: No h1 tag found in ${typstPath}, skipping post`);
+        continue;
       }
+
+      const htmlContent = stripFirstHeading(typstResult.html);
+
+      const slug = entry.replace('.typ', '');
+
+      const year = metadata.date.getFullYear();
+      const month = String(metadata.date.getMonth() + 1).padStart(2, '0');
+      const day = String(metadata.date.getDate()).padStart(2, '0');
+      const path = `/blog/${year}/${month}/${day}/${slug}/`;
+
+      posts.push({
+        ...metadata,
+        title,
+        slug,
+        path,
+        htmlContent,
+        svgColors: typstResult.svgColors
+      });
+    } catch (error) {
+      console.error(`Error processing ${typstPath}:`, error);
+      throw error;
     }
   }
 
-  await scanDirectory(postsDir);
-
-  // Sort posts by date (newest first)
   posts.sort((a, b) => b.date.getTime() - a.date.getTime());
 
-  // Filter out drafts
-  return posts.filter(post => !post.draft);
+  const hiddenPosts = posts.filter(post => post.hidden);
+  if (hiddenPosts.length > 0) {
+    console.log(`🙈 Hidden posts: ${hiddenPosts.map(p => p.title).join(', ')}`);
+  }
+
+  return posts.filter(post => !post.draft && !post.hidden);
 }
 
 async function checkTypstVersion(): Promise<void> {

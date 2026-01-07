@@ -6,6 +6,7 @@ export interface PostMetadata {
   description?: string;
   splash?: string;
   draft?: boolean;
+  hidden?: boolean;
 }
 
 export interface Post extends PostMetadata {

@@ -9,6 +9,7 @@ describe('Metadata Parser', () => {
 // splash: /assets/img/post-splash.png
 // splash_caption: Caption text
 // draft: false
+// hidden: false
 
 = My First Post
 
@@ -23,6 +24,7 @@ Content here...`;
     expect(metadata.splash).toBe('/assets/img/post-splash.png');
     expect(metadata.splash_caption).toBe('Caption text');
     expect(metadata.draft).toBe(false);
+    expect(metadata.hidden).toBe(false);
   });
 
   it('should parse minimal metadata', () => {
@@ -73,6 +75,23 @@ Content...`;
     expect(parseMetadata(falseContent).draft).toBe(false);
   });
 
+  it('should parse boolean hidden field', () => {
+    const trueContent = `// title: Hidden Post
+// date: 2025-01-15
+// hidden: true
+
+= Hidden`;
+
+    const falseContent = `// title: Visible Post
+// date: 2025-01-15
+// hidden: false
+
+= Visible`;
+
+    expect(parseMetadata(trueContent).hidden).toBe(true);
+    expect(parseMetadata(falseContent).hidden).toBe(false);
+  });
+
   it('should handle empty value gracefully', () => {
     const typstContent = `// title: Test Post
 // date: 2025-01-15
@@ -112,7 +131,7 @@ function parseMetadata(content: string): Record<string, any> {
         metadata[key] = value.split(',').map((t: string) => t.trim());
       } else if (key === 'date' || key === 'updated') {
         metadata[key] = new Date(value.trim());
-      } else if (key === 'draft') {
+      } else if (key === 'draft' || key === 'hidden') {
         metadata[key] = value.trim() === 'true';
       } else {
         metadata[key] = value.trim();

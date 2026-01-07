@@ -88,4 +88,26 @@ describe('Build Integration', () => {
     expect(content).toContain('typst-frame');
     expect(content).toContain('<svg');
   });
+
+  it('should not include hidden posts in blog index', async () => {
+    const blogPath = join(distDir, 'blog', 'index.html');
+    const content = await Bun.file(blogPath).text();
+    expect(content).not.toContain("Blagger's guide to the Navier-Stokes Equations Millenium Problem");
+  });
+
+  it('should not create dist folder for hidden posts', async () => {
+    const hiddenPostDir = join(distDir, 'blog', '2024', '04', '24', 'blagger-s-guide-to-the-navier-stokes-equations-mil');
+    try {
+      await stat(hiddenPostDir);
+      throw new Error('Hidden post directory should not exist');
+    } catch (error) {
+      expect((error as NodeJS.ErrnoException).code).toBe('ENOENT');
+    }
+  });
+
+  it('should use metadata date for dist folder structure', async () => {
+    const testPostDir = join(distDir, 'blog', '2024', '04', '14');
+    const statResult = await stat(testPostDir);
+    expect(statResult.isDirectory()).toBe(true);
+  });
 });

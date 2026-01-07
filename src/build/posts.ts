@@ -20,6 +20,8 @@ import { extractColorsFromHtml } from '../utils/svg-colors.js';
         metadata.updated = dates.length > 0 ? dates.map((d: string) => new Date(d)) : undefined;
       } else if (key === 'draft') {
         metadata[key] = value === 'true';
+      } else if (key === 'hidden') {
+        metadata[key] = value === 'true';
       } else if (key === 'date') {
         const dates = value.split(',').map((d: string) => d.trim()).filter(Boolean);
         if (dates.length > 0) {
@@ -47,7 +49,7 @@ export async function compileTypst(typstFile: string): Promise<{
   svgColors: string[];
 }> {
   const fontPath = 'fonts/LeteSansMath';
-  const result = await Bun.$`typst compile --format html --features html --root ../../../../ --font-path ${fontPath} ${typstFile} -`.quiet();
+  const result = await Bun.$`typst compile --format html --features html --root .. --font-path ${fontPath} ${typstFile} -`.quiet();
   const html = result.stdout.toString();
 
   const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
