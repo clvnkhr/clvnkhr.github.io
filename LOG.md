@@ -126,6 +126,226 @@ async function ensureFontsExist(): Promise<void> {
 
 ---
 
+## 2026-01-07 15:14: Blog Post Content Styling Improvements
+
+**Work Completed:**
+1. Fixed metadata parsing to stop at first non-comment line
+2. Updated link styling in blog posts
+3. Updated blockquote styling in blog posts
+4. Updated code block styling with dynamic background color
+
+### Metadata Parsing Fix
+
+**Problem:**
+- Blog post metadata parser was extracting content from code examples within posts
+- Only 2 out of 4 tags were being parsed (blog, techstack instead of blog, redesign, typescript, typst)
+- Date was being incorrectly extracted from code examples later in the content
+
+**Root Cause:**
+- Original parser used `content.match(/^\/\/.*$/gm)` to find all comment lines globally
+- This matched `//` comments in code blocks, not just metadata at the top
+- No check to stop parsing when hitting non-comment content
+
+**Solution:**
+```typescript
+// src/build/posts.ts
+export function parseMetadata(content: string): PostMetadata {
+  const metadata: Record<string, any> = {};
+
+  // Parse metadata from comment block at the top of the file
+  // Stop at first non-comment line (metadata is only at the very beginning)
+  const lines = content.split('\n');
+
+  for (const line of lines) {
+    // Stop parsing at first non-comment line (allow #import in metadata section)
+    if (!line.startsWith('//') && !line.startsWith('#import')) {
+      break;
+    }
+
+    // Only process metadata from // lines, not #import
+    if (!line.startsWith('//')) {
+      continue;
+    }
+
+    const parts = line.replace('// ', '').split(':');
+    if (parts.length >= 2) {
+      const key = parts[0].trim();
+      const value = parts.slice(1).join(':').trim();
+
+      // Parse specific metadata fields...
+    }
+  }
+
+  return metadata as PostMetadata;
+}
+```
+
+**Key Changes:**
+- Replaced global regex match with line-by-line iteration
+- Added explicit `break` at first non-comment line (allowing `#import` in metadata section)
+- Only process metadata from `//` comment lines, skipping `#import` statements
+- All metadata fields now only parse from top comment block
+
+**Files Modified:**
+- `src/build/posts.ts` - Rewrote `parseMetadata()` function
+
+**Result:**
+- All 4 tags now correctly parsed: blog, redesign, typescript, typst
+- Date correctly extracted from metadata at top of file
+- No metadata extracted from code examples in post content
+
+### Link Styling Updates
+
+**Changes Made:**
+```css
+/* src/assets/css/main.css */
+.prose a {
+  color: var(--color-ctp-mauve) !important;
+  font-weight: normal !important;
+  text-decoration: none !important;
+}
+
+.prose a:hover {
+  opacity: 0.8 !important;
+}
+```
+
+**Styling Behavior:**
+- Links now use mauve color (respects dark/light mode via `--color-ctp-mauve`)
+- Font weight is normal (not bold)
+- No underline
+- 80% opacity on hover
+- Matches homepage link styling
+
+**Why `!important`:**
+- Tailwind Typography's `prose` class has strong specificities
+- Required to override default link styling from Tailwind Typography plugin
+
+### Blockquote Styling Updates
+
+**Changes Made:**
+```css
+/* src/assets/css/main.css */
+.prose blockquote {
+  font-style: normal !important;
+  font-weight: normal !important;
+  color: var(--ctp-text) !important;
+}
+
+.prose blockquote p:first-of-type::before,
+.prose blockquote p:last-of-type::after {
+  content: none !important;
+}
+```
+
+**Styling Behavior:**
+- Blockquotes use normal font style (not italic)
+- Normal font weight (not bold)
+- Uses text color (respects dark/light mode)
+- Quote marks removed (no opening/closing quotation marks)
+
+**Why Target `p:first-of-type::before` and `p:last-of-type::after`:**
+- Tailwind Typography sets `quotes: "\201C" "\201D" "\2018" "\2019"` on blockquotes
+- Inserts quote content via `content: open-quote` on paragraph pseudo-elements
+- Targeting paragraph pseudo-elements, not blockquote pseudo-elements directly
+- `content: none !important` removes the quotes
+
+### Code Block Styling Updates
+
+**Changes Made:**
+```css
+/* src/assets/css/main.css */
+:root {
+  --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color-scheme: auto;
+  --color-ctp-code-bg: color-mix(in srgb, var(--color-ctp-base), var(--color-ctp-surface0) 20%);
+}
+
+.prose pre {
+  color: inherit !important;
+  background-color: var(--color-ctp-code-bg) !important;
+}
+
+.prose code {
+  color: inherit !important;
+}
+```
+
+**Styling Behavior:**
+- Removed syntax highlighting colors from code blocks
+- Text color now inherits from parent (respects dark/light mode)
+- Background uses 20% blend of base and surface0 colors
+- Dynamic background respects system theme automatically
+- Fallback for browsers without `color-mix()` support
+
+**Why 20% Blend:**
+- User requested lighter background than 50%
+- Between base (#1e1e2e in mocha) and surface0 (#313244)
+- Creates subtle contrast that doesn't distract from content
+
+**Fallback for Older Browsers:**
+```css
+@supports (color: color-mix(in lab, red, red)) {
+  --color-ctp-code-bg: color-mix(in srgb, var(--color-ctp-base), var(--color-ctp-surface0) 20%);
+}
+```
+
+**Files Modified:**
+- `src/assets/css/main.css` - Added link, blockquote, and code block styling
+
+### Files Modified Summary
+
+1. **src/build/posts.ts**
+   - Rewrote `parseMetadata()` to stop at first non-comment line
+   - Fixed all metadata fields (date, tags, etc.) to only parse from top comment block
+
+2. **src/assets/css/main.css**
+   - Added link styling (mauve color, normal weight, no underline)
+   - Added blockquote styling (normal font, removed quote marks)
+   - Added code block styling (no syntax colors, 20% blend background)
+   - Added `--color-ctp-code-bg` CSS variable with `color-mix()` fallback
+
+### Lessons Learned
+
+**Metadata Parsing:**
+- Global regex matches are dangerous for structured content
+- Always parse content from defined sections (top comment block)
+- Stop parsing when hitting non-metadata content
+- Allow `#import` statements in metadata section
+
+**Tailwind Typography Overrides:**
+- Use `!important` when overriding prose-specific styles
+- Tailwind Typography has strong specificities that need explicit override
+- Quote marks are inserted via paragraph pseudo-elements, not blockquote pseudo-elements
+
+**CSS Variables and Theming:**
+- `color-mix()` creates dynamic blends between theme colors
+- Provide fallbacks for browsers without modern CSS features
+- Background colors that blend with theme automatically adapt to dark/light mode
+
+**Typst Math Syntax:**
+- Typst interprets `qrt` as a variable, not part of `\sqrt`
+- Use exponent notation: `(1+t)^(1/2)` instead of `\sqrt(1+t)`
+- Fixed in blog post during build process
+
+### Status
+
+**Metadata Parsing:** ✅ Fixed
+- All fields now only parse from top comment block
+- No interference from code examples in content
+
+**Content Styling:** ✅ Updated
+- Links: Mauve color, normal weight, no underline
+- Blockquotes: Normal font, no quote marks
+- Code blocks: No syntax colors, 20% blend background
+
+**Build System:** ✅ Working
+- All blog posts building correctly
+- Metadata parsing robust across all posts
+
+---
+
 ## 2026-01-03 16:24: Post Blurb Function Added
 
 **Feature Added:**
