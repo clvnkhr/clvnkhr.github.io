@@ -1,5 +1,5 @@
 // date: 2023-06-23
-// tags: projects, python, latex, web-scraping, math
+// tags: projects, python, latex, web-scraping, maths
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt
