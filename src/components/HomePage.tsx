@@ -15,7 +15,19 @@ export function HomePage() {
           </p>
         </section>
 
-        <section className="grid gap-6 md:grid-cols-2">
+        <section className="grid gap-6 md:grid-cols-3">
+          <a
+            href="/blog/2023/06/09/mathematics/"
+            className="border border-ctp-surface1 rounded-lg p-8 hover:border-ctp-mauve transition-colors group"
+          >
+            <h2 className="text-3xl font-bold mb-3 text-ctp-mauve group-hover:text-ctp-mauve/80">
+              Mathematics
+            </h2>
+            <p className="text-ctp-subtext0">
+              Publications, notes, teaching materials, and translations.
+            </p>
+          </a>
+
           <a
             href="/blog/"
             className="border border-ctp-surface1 rounded-lg p-8 hover:border-ctp-mauve transition-colors group"
