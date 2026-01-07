@@ -10,12 +10,21 @@ export function HomePage() {
           <h1 className="text-5xl font-bold mb-6 text-ctp-mauve">
             {site.title}
           </h1>
-          <p className="text-xl text-ctp-subtext0 max-w-2xl mx-auto">
+          <p className="text-xl text-ctp-subtext0 max-w-2xl mx-auto mb-6">
             {site.description}
+          </p>
+          <p className="text-lg text-ctp-text mb-2">
+            I'm looking for interesting opportunities: <a href="https://github.com/clvnkhr/resume/blob/master/cv-llt.pdf" target="_blank" rel="noopener noreferrer" className="text-ctp-mauve hover:text-ctp-mauve/80 transition-colors">check out my resume</a>. PhD in Mathematics.
+          </p>
+          <p className="text-lg text-ctp-text mb-2">
+            Contact me at <a href="mailto:calvin_khor@hotmail.com" className="text-ctp-mauve hover:text-ctp-mauve/80 transition-colors">calvin_khor@hotmail.com</a>.
+          </p>
+          <p className="text-lg text-ctp-text">
+            Happily married to <a href="https://sites.google.com/view/xiaoyan-su" target="_blank" rel="noopener noreferrer" className="text-ctp-mauve hover:text-ctp-mauve/80 transition-colors">Xiaoyan Su</a>!
           </p>
         </section>
 
-        <section className="grid gap-6 md:grid-cols-3">
+        <section className="grid gap-6 md:grid-cols-3 mt-12">
           <a
             href="/blog/2023/06/09/mathematics/"
             className="border border-ctp-surface1 rounded-lg p-8 hover:border-ctp-mauve transition-colors group"
