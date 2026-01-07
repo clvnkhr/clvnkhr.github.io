@@ -1,5 +1,5 @@
 // date: 2026-01-07
-// tags: blog, techstack, redesign, typescript, typst
+// tags: blog, redesign, typescript, typst
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt

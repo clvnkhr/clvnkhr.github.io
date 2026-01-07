@@ -34,6 +34,22 @@ body {
   margin-right: auto;
 }
 
+.prose a {
+  color: var(--color-ctp-mauve) !important;
+  font-weight: normal !important;
+  text-decoration: none !important;
+}
+
+.prose a:hover {
+  opacity: 0.8 !important;
+}
+
+.prose blockquote {
+  font-style: normal !important;
+  font-weight: normal !important;
+  color: var(--ctp-text) !important;
+}
+
 .tag-pink {
   color: var(--color-ctp-pink);
 }

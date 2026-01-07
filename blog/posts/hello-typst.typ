@@ -1,5 +1,5 @@
 // date: 2025-01-15, 2026-01-02
-// tags: tutorial, typst, test
+// tags: typst, test
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt
@@ -7,7 +7,7 @@
 #import "@preview/lilaq:0.5.0" as lq
 
 
-#set document(title: "Hello Typst Post")
+#set document(title: "Hello Typst")
 #title()
 
 This is a sample blog post written in Typst format.

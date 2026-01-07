@@ -28,28 +28,20 @@ The proof given there is as follows:
 
 #quote[
   We only need to prove the theorem for the 2-dimensional case, since we can then generalize it to n-dimensions by applying the theorem sequentially to each pair of coordinates.
-]
 
-#quote[
   Since rotating by $90$ degrees preserves the joint distribution, both $X_1, X_2$ has the same probability measure. Let it be $mu$. If $mu$ is a Dirac delta distribution at zero, then it's a gaussian distribution, just degenerate. Now assume that it is not.
-]
 
-#quote[
-  we decompose it to a sum of regular measure and an atomic measure: $mu = mu_r + mu_s$. We need to show that $mu_s = 0$, with a proof by contradiction.
-]
+  By Lebesgue's decomposition theorem, we decompose it to a sum of regular measure and an atomic measure: $mu = mu_r + mu_s$. We need to show that $mu_s = 0$, with a proof by contradiction.
 
-#quote[
-  Suppose $mu_s$ contains an atomic part, then there exists some $x in RR$ such that $mu_s({x}) > 0$. By independence of $X_1, X_2$, the conditional variable $X_2 | \{X_1 = x\)$ is distributed the same way as $X_2$. Suppose $x=0$, then since we assumed $mu$ is not concentrated at zero, $"Pr"(X_2 \neq 0) > 0$, and so the double ray ${(x_1, x_2): x_1 = 0, x_2 \neq 0}$ has nonzero probability. Now by rotational symmetry of $mu times mu$, any rotation of the double ray also has the same nonzero probability, and since any two rotations are disjoint, their union has infinite probability, contradiction.
-]
-#quote[
-  As far as we can find, there is no literature about the case where $mu_s$ is singularly continuous, so we will let that case go.)
-]
+  Suppose $mu_s$ contains an atomic part, then there exists some $x in RR$ such that $mu_s ({x}) > 0$.
+  By independence of $X_1, X_2$, the conditional variable $X_2 | \{X_1 = x\)$ is distributed the same way as $X_2$.
+  Suppose $x=0$, then since we assumed $mu$ is not concentrated at zero, $"Pr"(X_2 \neq 0) > 0$, and so the double ray ${(x_1, x_2): x_1 = 0, x_2 \neq 0}$ has nonzero probability.
+  Now by rotational symmetry of $mu times mu$, any rotation of the double ray also has the same nonzero probability, and since any two rotations are disjoint, their union has infinite probability, contradiction.
 
-#quote[
+
   So now let $mu$ have probability density function $rho$, and the problem reduces to solving the functional equation
+  $ rho(x)rho(y) = rho(x cos theta + y sin theta)rho(x sin theta - y cos theta) $
 ]
-
-#quote[$rho(x)rho(y) = rho(x cos theta + y sin theta)rho(x sin theta - y cos theta)$]
 
 
 Ignoring that the proof isn't complete, the Wikipedia article points out that that it is assumed that there is a distribution function.
