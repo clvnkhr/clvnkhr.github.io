@@ -29,7 +29,11 @@ jobs:
           bun-version: latest
 
       - name: Install Typst CLI
-        run: curl -fsSL https://typst.app/install.sh | sh && echo "$HOME/.local/bin" >> $GITHUB_PATH
+        run: |
+          curl -L https://github.com/typst/typst/releases/latest/download/typst-x86_64-unknown-linux-musl.tar.xz -o typst.tar.xz
+          tar -xf typst.tar.xz
+          mv typst-x86_64-unknown-linux-musl/typst /usr/local/bin/typst
+          rm -rf typst.tar.xz typst-x86_64-unknown-linux-musl
 
       - name: Install dependencies
         run: bun install
