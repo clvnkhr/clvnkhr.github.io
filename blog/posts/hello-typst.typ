@@ -1,4 +1,4 @@
-// date: 2025-01-15, 2026-01-02
+// date: 2026-01-02
 // tags: typst, test
 
 #import "../templates/math.typ": html_fmt

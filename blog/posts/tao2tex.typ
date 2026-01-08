@@ -7,10 +7,11 @@
 #set document(title: "tao2tex")
 #title()
 
-Goes through a HTML version of one of Prof Tao's blogposts, and spits out a beautiful LaTeX version.
+A Python tool that converts HTML versions of mathematical blog posts (primarily from Prof. Terry Tao's WordPress blog) into beautifully formatted LaTeX documents using regex and BeautifulSoup. It serves as a partial inverse to LaTeX2WP, with the added benefit of preserving comment sections which often contain valuable insights. The tool correctly processes hyperlinks, references, theorem boxes, and definitions while supporting multiple usage modes including URL processing, local file conversion, and batch operations. Output can be customized through the preamble.tex file, and the tool includes emoji processing with configurable LaTeX support.
 
-Made with Python and BeautifulSoup. Correctly hyperlinks, references, boxes definitions and theorems, and includes all comments.
 
 == Links
 
 #link("https://github.com/clvnkhr/tao2tex")[Repository]
+
+Check out the repository for usage instructions, requirements, and customization options.

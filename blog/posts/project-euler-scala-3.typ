@@ -7,8 +7,11 @@
 #set document(title: "Project Euler in Scala 3")
 #title()
 
-Solutions to the first few Project Euler problems in Scala 3
+A collection of solutions to the first 57 Project Euler problems implemented in Scala 3.
 
 == Links
 
-#link("https://github.com/clvnkhr/Project-Euler-in-Scala-3/")[Repository]
+Check out the repository to explore the solutions and see which problems have been implemented.
+
+#link("https://github.com/clvnkhr/Project-Euler-in-Scala-3")[Repository]
+
