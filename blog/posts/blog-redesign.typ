@@ -24,7 +24,7 @@ We now have a custom static site generator built with Bun + TypeScript + Typst. 
 == Design choices
 Using Typst, math equations are formatted by wrapping them in ```typ html.frame``` blocks, which convert the inner content into SVGs. This allows for high quality rendering of mathematical content without relying on JavaScript libraries like MathJax or KaTeX.
 
-A side effect is that we can use arbitrary fonts as long as they are present during the Typst compilation step. For this blog, I am using Lete Sans Math which pairs very nicely with Atkinson Hyperlegible for body text. Unforunately this means that we can't copy the math out as text but maybe this will improve in the future.
+A side effect is that we can use arbitrary fonts as long as they are present during the Typst compilation step. For this blog, I am using #link("https://github.com/abccsss/LeteSansMath")[Lete Sans Math] which pairs very nicely with #link("https://www.brailleinstitute.org/freefont/")[Atkinson Hyperlegible] for body text. Unforunately this means that we can't copy the math out as text but maybe this will improve in the future.
 
 = Processing Pipeline
 
