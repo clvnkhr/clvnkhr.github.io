@@ -142,6 +142,7 @@ export async function buildBlog() {
   // Copy public assets to dist
   console.log('📦 Copying assets...');
   await Bun.$`cp -r public/* dist/`.quiet();
+  await Bun.$`cp -r src/assets/js dist/assets/`.quiet();
 
   // Build Tailwind CSS (after svg-colors.css is generated)
   console.log('🎨 Building Tailwind CSS...');

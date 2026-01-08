@@ -2,6 +2,7 @@ export const site = {
   title: "Calvin Khor",
   description: "Personal blog about mathematics, programming, and technology",
   url: "https://clvnkhr.github.io",
+  repository: "https://github.com/clvnkhr/clvnkhr.github.io",
   author: {
     name: "Calvin Khor",
     email: "",

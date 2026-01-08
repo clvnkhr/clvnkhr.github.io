@@ -13,7 +13,7 @@ interface PostPageProps {
 export function PostPage({ post }: PostPageProps) {
 
   return (
-    <Layout title={`${post.title} - ${site.title}`}>
+    <Layout title={`${post.title} - ${site.title}`} postSlug={post.slug}>
       <article className="max-w-4xl mx-auto px-4 py-8">
         <header className="mb-8 border-b border-ctp-surface1">
           <h1 className="text-4xl font-bold mb-4 text-ctp-mauve">
