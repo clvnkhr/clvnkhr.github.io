@@ -59,4 +59,4 @@ After Typst compilation:
 
 = Example pages
 - #link("/blog/2026/01/02/hello-typst/")[Hello Typst - basic example of features]
-- #link("/tag/maths")[Posts tagged with `maths`]
+- #link("/tags/maths")[Posts tagged with `maths`]
