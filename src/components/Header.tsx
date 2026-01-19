@@ -16,7 +16,14 @@ export function Header() {
                   href={item.href}
                   className="text-ctp-subtext0 hover:text-ctp-text transition-colors"
                 >
-                  {item.label}
+                  {item.label === "Mathematics" ? (
+                    <>
+                      <span className="md:hidden">Maths</span>
+                      <span className="hidden md:inline">Mathematics</span>
+                    </>
+                  ) : (
+                    item.label
+                  )}
                 </a>
               </li>
             ))}
