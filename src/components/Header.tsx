@@ -6,7 +6,8 @@ export function Header() {
       <div className="max-w-4xl mx-auto px-4 py-4">
         <nav className="flex items-center justify-between">
           <a href="/" className="text-xl font-bold text-ctp-mauve hover:text-ctp-mauve/80 transition-colors">
-            {site.title}
+            <span className="md:hidden">CK</span>
+            <span className="hidden md:inline">{site.title}</span>
           </a>
           <ul className="flex space-x-6">
             {site.navigation.map((item) => (
