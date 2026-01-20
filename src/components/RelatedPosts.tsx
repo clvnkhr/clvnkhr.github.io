@@ -12,11 +12,11 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
   }
 
   return (
-    <section className="mt-12 pt-8 border-t border-ctp-surface1">
-      <h2 className="text-2xl font-bold mb-6 text-ctp-mauve">
+    <section className="mt-8 pt-6 border-t border-ctp-surface1">
+      <h2 className="text-xl font-semibold mb-4">
         Related Posts
       </h2>
-      <ul className="space-y-3">
+      <ul className="space-y-2">
         {posts.map((post) => (
           <li key={post.slug}>
             <a

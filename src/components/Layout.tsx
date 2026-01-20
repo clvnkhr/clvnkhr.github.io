@@ -6,10 +6,9 @@ interface LayoutProps {
   children: React.ReactNode;
   title?: string;
   darkMode?: boolean;
-  postSlug?: string;
 }
 
-export function Layout({ children, title, darkMode = true, postSlug }: LayoutProps) {
+export function Layout({ children, title, darkMode = true }: LayoutProps) {
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
       <head>
@@ -33,7 +32,7 @@ export function Layout({ children, title, darkMode = true, postSlug }: LayoutPro
         <main className="min-h-[calc(100vh-theme(spacing.64))]">
           {children}
         </main>
-        <Footer postSlug={postSlug} />
+        <Footer />
       </body>
     </html>
   );
