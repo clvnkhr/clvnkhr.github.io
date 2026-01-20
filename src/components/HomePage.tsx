@@ -2,10 +2,7 @@ import React from 'react';
 import { Layout } from './Layout';
 import { site } from '../config/site';
 import type { Post } from '../types/post';
-import { getTagColorClass } from '../utils/tags';
-import { formatDate } from '../utils/date';
-import { getPostBlurb } from '../utils/post';
-import { UpdateDatesTooltip } from './UpdateDatesTooltip';
+import { PostCard } from './PostCard';
 
 interface HomePageProps {
   newestPost?: Post;
@@ -35,41 +32,11 @@ export function HomePage({ newestPost }: HomePageProps) {
 
         {newestPost && (
           <div className="max-w-4xl mx-auto px-4 mb-12">
-            <section>
-              <h2 className="text-l font-semibold text-ctp-mauve">
+            <section className="">
+              <h2 className="font-semibold text-ctp-mauve">
                 Newest Blog Post
               </h2>
-              <article className="border border-ctp-surface1 rounded-lg p-6 hover:border-ctp-mauve transition-colors">
-                <div className="flex items-center gap-4 mb-3">
-                  <time className="text-ctp-subtext0 text-sm">
-                    {formatDate(newestPost.date)}
-                  </time>
-                  <UpdateDatesTooltip
-                    updated={newestPost.updated}
-                    date={newestPost.date}
-                    formatDate={formatDate}
-                  />
-                </div>
-                <h2 className="text-2xl font-bold mb-3">
-                  <a href={newestPost.path} className="text-ctp-text hover:text-ctp-mauve transition-colors">
-                    {newestPost.title}
-                  </a>
-                </h2>
-                {(newestPost.description || newestPost.htmlContent) && (
-                  <p className="text-ctp-subtext0 mb-4">
-                    {newestPost.description || getPostBlurb(newestPost.htmlContent)}
-                  </p>
-                )}
-                {newestPost.tags && newestPost.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {newestPost.tags.map((tag: string) => (
-                      <a key={tag} href={`/tags/${tag}`} className={`px-3 py-1 text-sm transition-colors ${getTagColorClass(tag)}`}>
-                        {tag}
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </article>
+              <PostCard post={newestPost} />
             </section>
           </div>
         )}
