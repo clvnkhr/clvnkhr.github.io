@@ -150,7 +150,7 @@ export async function buildBlog() {
 
   // Generate homepage
   console.log('🏠 Generating homepage...');
-  const homeHtml = renderHomePage();
+  const homeHtml = renderHomePage(posts.length > 0 ? posts[0] : undefined);
   await Bun.write('dist/index.html', homeHtml);
 
   // Generate blog index

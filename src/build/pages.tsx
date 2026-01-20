@@ -8,8 +8,8 @@ import { ProjectsPage } from '../components/ProjectsPage';
 import { NotFoundPage } from '../components/NotFoundPage';
 import type { Post } from '../types/post';
 
-export function renderHomePage(): string {
-  const html = renderToString(<HomePage />);
+export function renderHomePage(newestPost?: import('../types/post').Post): string {
+  const html = renderToString(<HomePage newestPost={newestPost} />);
   return `<!DOCTYPE html>${html}`;
 }
 

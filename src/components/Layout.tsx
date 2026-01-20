@@ -6,9 +6,10 @@ interface LayoutProps {
   children: React.ReactNode;
   title?: string;
   darkMode?: boolean;
+  showBackToTop?: boolean;
 }
 
-export function Layout({ children, title, darkMode = true }: LayoutProps) {
+export function Layout({ children, title, darkMode = true, showBackToTop = true }: LayoutProps) {
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
       <head>
@@ -32,7 +33,7 @@ export function Layout({ children, title, darkMode = true }: LayoutProps) {
         <main className="min-h-[calc(100vh-theme(spacing.64))]">
           {children}
         </main>
-        <Footer />
+        <Footer showBackToTop={showBackToTop} />
       </body>
     </html>
   );

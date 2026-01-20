@@ -26,7 +26,7 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
               <time className="text-sm text-ctp-subtext0 shrink-0">
                 {formatDate(post.date)}
               </time>
-              <span className="text-lg font-medium group-hover:text-ctp-mauve transition-colors">
+              <span className="group-hover:text-ctp-mauve transition-colors">
                 {post.title}
               </span>
             </a>
