@@ -18,8 +18,8 @@ export function renderBlogIndex(posts: Post[]): string {
   return `<!DOCTYPE html>${html}`;
 }
 
-export function renderPostPage(post: Post): string {
-  const html = renderToString(<PostPage post={post} />);
+export function renderPostPage(post: Post, allPosts: Post[]): string {
+  const html = renderToString(<PostPage post={post} allPosts={allPosts} />);
   return `<!DOCTYPE html>${html}`;
 }
 

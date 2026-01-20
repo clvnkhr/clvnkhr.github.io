@@ -5,12 +5,16 @@ import type { Post } from '../types/post';
 import { getTagColorClass } from '../utils/tags';
 import { formatDate } from '../utils/date';
 import { UpdateDatesTooltip } from './UpdateDatesTooltip';
+import { RelatedPosts } from './RelatedPosts';
+import { getRelatedPosts } from '../utils/post';
 
 interface PostPageProps {
   post: Post;
+  allPosts: Post[];
 }
 
-export function PostPage({ post }: PostPageProps) {
+export function PostPage({ post, allPosts }: PostPageProps) {
+  const relatedPosts = getRelatedPosts(post, allPosts, 3);
 
   return (
     <Layout title={`${post.title} - ${site.title}`} postSlug={post.slug}>
@@ -47,6 +51,7 @@ export function PostPage({ post }: PostPageProps) {
           className="prose dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: post.htmlContent }}
         />
+        <RelatedPosts posts={relatedPosts} />
       </article>
     </Layout>
   );

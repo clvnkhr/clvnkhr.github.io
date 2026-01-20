@@ -161,7 +161,7 @@ export async function buildBlog() {
   // Generate individual post pages
   console.log('📄 Generating post pages...');
   for (const post of posts) {
-    const postHtml = renderPostPage(post);
+    const postHtml = renderPostPage(post, posts);
     const outputPath = `dist${post.path}index.html`;
     await Bun.write(outputPath, postHtml);
   }
