@@ -43,7 +43,7 @@
 
 
 // #align(center)[
-= On Fluid Motion with Very Small Friction#footnote[I wrote this as a standard typst document compiling to a PDF and let my blog setup compile it to HTML. See source for details.]#footnote[English translation aided by GPT5.2. Original paper "Über Flüssigkeitsbewegung bei sehr kleiner Reibung." available at #link("https://www.damtp.cam.ac.uk/user/tong/fluids/prandtl.pdf").]
+= On Fluid Motion with Very Small Friction#footnote[I wrote this as a standard typst document compiling to a PDF and let my blog setup compile it to HTML. See source for details.]#footnote[English translation #link("https://t3.chat/share/gmfd91f6ss")[aided by GPT5.2]. Original paper "Über Flüssigkeitsbewegung bei sehr kleiner Reibung." available at #link("https://www.damtp.cam.ac.uk/user/tong/fluids/prandtl.pdf"). In the course of looking for the missing plate of figures, I found that there is an english translation already, at #link("https://ntrs.nasa.gov/citations/19930090813"). Unfortunately the quality of this scan is not very good so I have not bothered to include the plate.]
 #text(size: 10pt)[By L. Prandtl (Hannover)]
 #text(size: 10pt)[(With one plate of figures.)]
 // ]
@@ -188,24 +188,24 @@ formula for the drag:
 $ R = 1.1 b sqrt(k rho) l u_0^(3/2). $
 
 ($b$ width, $l$ length of the plate, $u_0$ speed of the undisturbed water
-relative to the plate). The course of $u$ is given in Fig. 1.
+relative to the plate). The course of $u$ is given in @fig1.
 #[
   #set image(width: 90%)
   #table(
     columns: (40%, 60%),
-    figure(
+    [#figure(
       image("../img/prandtl-trans/figures/fig1.png"),
       // caption: [Fig. 1. The course of $u$ along a thin plate.],
-    ),
-    figure(
+    )<fig1>],
+    [#figure(
       image("../img/prandtl-trans/figures/fig2.png"),
       // caption: [Fig. 2. Flow separation from a wall.],
-    ),
+    )<fig2>],
   )
 ]
 But the result most important for applications of these investigations is that
 in certain cases, at a location completely determined by the external
-conditions, the fluid stream detaches from the wall (cf. Fig. 2). Thus a layer
+conditions, the fluid stream detaches from the wall (cf. @fig2). Thus a layer
 of fluid set into rotation by friction at the wall pushes out into the free
 fluid and there, effecting a complete transformation of the motion, plays the
 same role as Helmholtz’s separation sheets. When the viscosity constant $k$
@@ -246,26 +246,26 @@ potential form an orthogonal (square-meshed) curvilinear net.
   #set image(width: 90%)
   #table(
     columns: (50%, 50%),
-    figure(
+    [#figure(
       image("../img/prandtl-trans/figures/fig3.png"),
       // caption: [Fig. 1. The course of $u$ along a thin plate.],
-    ),
-    figure(
+    )<fig3>],
+    [#figure(
       image("../img/prandtl-trans/figures/fig5.png"),
       // caption: [Fig. 2. Flow separation from a wall.],
-    ),
+    )<fig5>],
 
-    figure(
+    [#figure(
       image("../img/prandtl-trans/figures/fig4.png"),
       // caption: [Fig. 3. Beginning of motion around a wall projecting into the stream (stage 1).],
-    ),
-    table.cell(align: bottom, figure(
+    )<fig4>],
+    table.cell(align: bottom, [#figure(
       image("../img/prandtl-trans/figures/fig6.png"),
       // caption: [Fig. 4. Beginning of motion around a wall projecting into the stream (stage 2).],
-    )),
+    )<fig6>]),
   )
 ]
-Figs. 3 and 4 show the beginning of the motion around a wall projecting into
+@fig3 and @fig4 show the beginning of the motion around a wall projecting into
 the stream in two stages. The irrotational initial motion is rapidly
 transformed by a separation sheet (dashed) issuing from the edge of the
 obstacle and winding up spirally; the vortex moves farther and farther away
@@ -276,12 +276,12 @@ and leaves behind, at the finally stationary separation sheet, water at rest.
 
 
 How the analogous process takes place for a circular cylinder can be seen
-from Figs. 5 and 6; the layers of fluid set into rotation by friction are again
+from @fig5 and @fig6; the layers of fluid set into rotation by friction are again
 indicated by dashes. The separation surfaces extend here too, in the steady
 state, to infinity.
 
 All these separation surfaces are known to be unstable; if a small sinusoidal
-disturbance is present, then motions arise such as are shown in Figs. 7 and 8.
+disturbance is present, then motions arise such as are shown in @fig7 and @fig8.
 One sees how, through the interlocking of the streams, distinctly separated
 vortices form.
 
@@ -297,15 +297,15 @@ would be obtained by adding dyed fluid.
     columns: (50%, 50%),
     table.cell(
       align: bottom,
-      figure(
+      [#figure(
         image("../img/prandtl-trans/figures/fig7.png"),
         // caption: [Fig. 1. The course of $u$ along a thin plate.],
-      ),
+      )<fig7>],
     ),
-    figure(
+    [#figure(
       image("../img/prandtl-trans/figures/fig8.png"),
       // caption: [Fig. 2. Flow separation from a wall.],
-    ),
+    )<fig8>],
   )
 ]
 
@@ -344,15 +344,15 @@ would be obtained by adding dyed fluid.
     columns: (50%, 50%),
     table.cell(
       align: bottom,
-      figure(
+      [#figure(
         image("../img/prandtl-trans/figures/fig9.png"),
         // caption: [Fig. 1. The course of $u$ along a thin plate.],
-      ),
+      )<fig9>],
     ),
-    figure(
+    [#figure(
       image("../img/prandtl-trans/figures/fig10.png"),
       // caption: [Fig. 2. Flow separation from a wall.],
-    ),
+    )<fig10>],
   )
 ]
 
