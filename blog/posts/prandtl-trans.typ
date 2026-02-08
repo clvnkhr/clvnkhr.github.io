@@ -195,11 +195,9 @@ relative to the plate). The course of $u$ is given in @fig1.
     columns: (40%, 60%),
     [#figure(
       image("../img/prandtl-trans/figures/fig1.png"),
-      // caption: [Fig. 1. The course of $u$ along a thin plate.],
     )<fig1>],
     [#figure(
       image("../img/prandtl-trans/figures/fig2.png"),
-      // caption: [Fig. 2. Flow separation from a wall.],
     )<fig2>],
   )
 ]
@@ -248,20 +246,16 @@ potential form an orthogonal (square-meshed) curvilinear net.
     columns: (50%, 50%),
     [#figure(
       image("../img/prandtl-trans/figures/fig3.png"),
-      // caption: [Fig. 1. The course of $u$ along a thin plate.],
     )<fig3>],
     [#figure(
       image("../img/prandtl-trans/figures/fig5.png"),
-      // caption: [Fig. 2. Flow separation from a wall.],
     )<fig5>],
 
     [#figure(
       image("../img/prandtl-trans/figures/fig4.png"),
-      // caption: [Fig. 3. Beginning of motion around a wall projecting into the stream (stage 1).],
     )<fig4>],
     table.cell(align: bottom, [#figure(
       image("../img/prandtl-trans/figures/fig6.png"),
-      // caption: [Fig. 4. Beginning of motion around a wall projecting into the stream (stage 2).],
     )<fig6>]),
   )
 ]
@@ -288,7 +282,7 @@ vortices form.
 
 
 The vortex sheet is rolled up in the interior of these vortices, as indicated
-in Fig. 9. The lines of this figure are not streamlines, but rather such as
+in @fig9. The lines of this figure are not streamlines, but rather such as
 would be obtained by adding dyed fluid.
 
 #[
@@ -299,12 +293,10 @@ would be obtained by adding dyed fluid.
       align: bottom,
       [#figure(
         image("../img/prandtl-trans/figures/fig7.png"),
-        // caption: [Fig. 1. The course of $u$ along a thin plate.],
       )<fig7>],
     ),
     [#figure(
       image("../img/prandtl-trans/figures/fig8.png"),
-      // caption: [Fig. 2. Flow separation from a wall.],
     )<fig8>],
   )
 ]
@@ -314,7 +306,7 @@ would be obtained by adding dyed fluid.
 
 
 #let fig9wrap = [I shall now briefly report on experiments I undertook for comparison with the
-  theory. The experimental apparatus (shown in Fig. 10 in elevation and plan)
+  theory. The experimental apparatus (shown in @fig10 in elevation and plan)
   consists of a 1½ m long trough with an intermediate floor. The water is set
   into circulation by a paddle wheel and enters the upper channel, ordered and
   calmed by a guide apparatus $a$ and four screens $b$, fairly free of
@@ -346,12 +338,10 @@ would be obtained by adding dyed fluid.
       align: bottom,
       [#figure(
         image("../img/prandtl-trans/figures/fig9.png"),
-        // caption: [Fig. 1. The course of $u$ along a thin plate.],
       )<fig9>],
     ),
     [#figure(
       image("../img/prandtl-trans/figures/fig10.png"),
-      // caption: [Fig. 2. Flow separation from a wall.],
     )<fig10>],
   )
 ]
