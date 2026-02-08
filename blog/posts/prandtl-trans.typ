@@ -43,7 +43,7 @@
 
 
 // #align(center)[
-= On Fluid Motion with Very Small Friction#footnote[I wrote this as a standard typst document compiling to a PDF and let my blog setup compile it to HTML. See source for details.]#footnote[English translation #link("https://t3.chat/share/gmfd91f6ss")[aided by GPT5.2]. Original paper "Über Flüssigkeitsbewegung bei sehr kleiner Reibung." available at #link("https://www.damtp.cam.ac.uk/user/tong/fluids/prandtl.pdf"). In the course of looking for the missing plate of figures, I found that there is an english translation already, at #link("https://ntrs.nasa.gov/citations/19930090813"). Unfortunately the quality of this scan is not very good so I have not bothered to include the plate.]
+= On Fluid Motion with Very Small Friction#footnote[I wrote this as a standard typst document compiling to a PDF and let my blog setup compile it to HTML. See source for details.]#footnote[English translation #link("https://t3.chat/share/gmfd91f6ss")[aided by GPT5.2]. Figures were extracted with AI assisted tool use and manual finetuning. Original paper "Über Flüssigkeitsbewegung bei sehr kleiner Reibung." available at #link("https://www.damtp.cam.ac.uk/user/tong/fluids/prandtl.pdf"). In the course of looking for the missing plate of figures, I found that there is an english translation already, at #link("https://ntrs.nasa.gov/citations/19930090813"). Unfortunately the quality of this scan is not very good so I have not bothered to include the plate.]
 #text(size: 10pt)[By L. Prandtl (Hannover)]
 #text(size: 10pt)[(With one plate of figures.)]
 // ]
