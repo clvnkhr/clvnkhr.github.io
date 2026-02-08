@@ -1,5 +1,5 @@
 // date: 2026-02-08
-// tags: maths
+// tags: maths, fluid-dynamics, translation
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt
