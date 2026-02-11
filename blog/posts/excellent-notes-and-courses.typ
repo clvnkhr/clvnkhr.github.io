@@ -4,7 +4,7 @@
 #import "../templates/math.typ": html_fmt
 #show: html_fmt
 
-#set document(title: "Excellent Notes and Courses")
+#set document(title: "Excellent Notes, Books, and Courses")
 #title()
 
 The purpose of this post is to link to well-polished or otherwise exceptional educational content online.
@@ -16,7 +16,7 @@ If I have done at least part of the courses I will usually add some commentary.
 - #link("https://www.edx.org/learn/computer-science/harvard-university-cs50-s-introduction-to-computer-science")[CS50X - Introduction to Computer Science] Full of enthusiasm and fun. And free.
 - #link("https://docs.scala-lang.org/online-courses.html")[Scala 3 Courses] - Amazing courses for Scala and functional programming; the first few are taught by the creator of Scala himself, and have been updated for Scala 3. The automated assignment grading and the excellent compiler gives sufficient feedback to keep you from being stuck. IMO the Scala Actors course is a huge ramp up in difficulty but I learned a lot pushing through the assignments.
 - #link("https://www.youtube.com/playlist?list=PLsazbLqk0ktfTAYxZeaWTFD-mwZIpInHC")[Introduction to Banach-Valued Analysis] One of the few silver linings of COVID. Among other things, contains Bourgain's result on UMD spaces and a quick intro to Schatten spaces. Regrettably I was too busy to do the exercises consistently. Very clear presentation of the material.
-
+- #link("https://mitpress.mit.edu/9780262019347/functional-differential-geometry/")[Functional Differential Geometry]. There is an 'executable book' version #link("https://github.com/mentat-collective/fdg-book")[here].
 - #link("https://github.com/barbagroup/CFDPython")[Computational Fluid Dynamics in Python]
 - #link("https://www.feynmanlectures.caltech.edu")[The Feynman Lectures]
 - Resources for Lexers, Parsers, Interpreters:
