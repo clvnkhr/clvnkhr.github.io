@@ -1,5 +1,5 @@
 // date: 2026-01-02
-// tags: typst, test
+// tags: typst, test, ai-assisted
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt
