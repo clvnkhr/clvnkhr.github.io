@@ -19,6 +19,7 @@ If I have done at least part of the courses I will usually add some commentary.
 - #link("https://www.youtube.com/playlist?list=PLsazbLqk0ktfTAYxZeaWTFD-mwZIpInHC")[Introduction to Banach-Valued Analysis] One of the few silver linings of COVID. Among other things, contains Bourgain's result on UMD spaces and a quick intro to Schatten spaces. Regrettably I was too busy to do the exercises consistently. Very clear presentation of the material.
 - #link("https://mitpress.mit.edu/9780262019347/functional-differential-geometry/")[Functional Differential Geometry]. There is an 'executable book' version #link("https://github.com/mentat-collective/fdg-book")[here].
 - #link("https://github.com/barbagroup/CFDPython")[Computational Fluid Dynamics in Python]
+- #link("https://alexkontorovich.github.io/2025F311H/")[Introduction to Real Analysis] - the selling point of this course is that the exercises are to be solved *in Lean*. Unfortunately at time of writing the exercises are slightly buggy but it should iron itself out in time.
 - #link("https://www.feynmanlectures.caltech.edu")[The Feynman Lectures]
 - Resources for Lexers, Parsers, Interpreters:
   - #link("https://craftinginterpreters.com/")[Crafting Interpreters book]
