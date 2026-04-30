@@ -2,7 +2,7 @@
 // tags: maths, notation
 
 #import "../templates/math.typ": html_fmt
-// #show: html_fmt
+#show: html_fmt
 
 
 

@@ -1,5 +1,6 @@
 // date: 2026-04-30
 // tags: maths, notation
+// hidden: true
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt
