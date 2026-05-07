@@ -1,6 +1,6 @@
 // date: 2026-05-07
 // tags: maths, functional-analysis, notes, rough
-// hidden: true
+
 
 #set par(justify: true)
 // #set page(fill: red.darken(70%))
@@ -93,7 +93,18 @@ $
 
 - $(A, D(A))$ is *symmetric* if $bangle(v, A w) = bangle(A v, w)$ for all $v,w in D(A)$. Equivalently $G(A) subset G(A^*)$.
 - Exercise: show that if $A$ is symmetric then its closure is as well. [This is trivial as $G(A) subset G(overline(A)) subset G(A^*)$ by minimality]
-- Theorem (Spectrum of symmetric operators): Let $(A, D(A))$ be a symmetric operator. Then its spectrum is either: #[
+- Theorem (Spectrum of symmetric operators): Let $(A, D(A))$ be a symmetric operator. Then its spectrum is nonempty, and is either: #[
     #set enum(numbering: "(i)")
-    +
+    + all of $CC$,
+    + closed upper half plane ${Im z >= 0}$,
+    + closed lower half plane ${Im z <= 0}$,
+    + some nonempty subset of $RR$.
   ]
+  - Proof uses the important identity for symmetric operators: for $a,b in RR$,
+  $
+    norm((A - a - i b) u)^2 = norm((A - a) u)^2 + b^2 norm(u)^2 > b^2 norm(u)^2.
+  $
+  Hence
+  + if $b!=0$ then $(A - a - i b) u = 0$ implies $u=0$. So all eigenvalues must be real.
+  + if $b!=0$ and $A - a - i b$ is invertible then it is automatically bounded by $1/b$.
+  So the only way to be in the spectrum when $b!=0$ is for $A - a - i b$ to be not surjective.

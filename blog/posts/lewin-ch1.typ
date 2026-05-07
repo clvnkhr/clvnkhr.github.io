@@ -1,6 +1,6 @@
 // date: 2026-05-01
 // tags: maths, quantum-mechanics, notes, rough, hamiltonian-operators
-// hidden: true
+
 
 #set par(justify: true)
 // #set page(fill: red.darken(70%))
