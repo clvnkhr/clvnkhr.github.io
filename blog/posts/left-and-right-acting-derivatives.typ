@@ -21,7 +21,7 @@ Saw an interesting notation in this #link("https://math.stackexchange.com/questi
   $
   by the binomial theorem $-$ which can be applied straightforwardly, since $lD$ and $rD$ commute. Now, this result can be extended to non-integer $n$ by using [generalized binomial coefficients][1], leading to the following von Neumann series :
   $
-    "D"^alpha equiv sum_(k=0)^oo binom(alpha, k) lD^{alpha-k} rD^k
+    "D"^alpha equiv sum_(k=0)^oo binom(alpha, k) lD^(alpha-k) rD^k
   $
   where the equivalent symbol means that the this relation has to be considered when applied to products of functions. Eq. $(3)$ corresponds with the case $alpha = 1$.
 
