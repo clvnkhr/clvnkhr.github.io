@@ -1,6 +1,6 @@
 // date: 2026-05-07
 // tags: maths, functional-analysis, notes, rough
-
+// hidden: true
 
 #set par(justify: true)
 // #set page(fill: red.darken(70%))

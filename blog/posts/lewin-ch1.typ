@@ -9,7 +9,7 @@
 #title("Notes on Lewin Ch1: Introduction to Quantum Mechanics")
 
 #import "../templates/math.typ": html_fmt
-// #show: html_fmt
+#show: html_fmt
 
 
 #import "@preview/quick-maths:0.2.1": shorthands
