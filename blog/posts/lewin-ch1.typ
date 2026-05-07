@@ -1,4 +1,4 @@
-// date: 2026-04-30
+// date: 2026-05-01
 // tags: maths, quantum-mechanics, notes, rough, hamiltonian-operators
 // hidden: true
 

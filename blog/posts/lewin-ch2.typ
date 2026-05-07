@@ -1,4 +1,4 @@
-// date: 2026-04-30
+// date: 2026-05-07
 // tags: maths, functional-analysis, notes, rough
 // hidden: true
 
@@ -87,3 +87,13 @@ $
     this is a reformulation of the graph definition above, which you can see by projecting $G(A^*)$ to the first coordinate.
 - If $A$ is closeable then $A^*$ is closed. Also, $overline(A) = A^(**)$ and $A^* = overline(A)^*$.
 - If $(A, D(A))$ is a closeable operator, then $ker(A^* - overline(z)) = ran(A- z)^perp = ran(overline(A)- z)^perp$.
+- Exercise: If $A in B(fH)$ then $D(A^*)=fH$ also. [this is an application of Riesz representation. The start of proof: Let $v$ be fixed, and consider $f_v (x) = bangle(v, A x)$...]
+
+= Symmetry
+
+- $(A, D(A))$ is *symmetric* if $bangle(v, A w) = bangle(A v, w)$ for all $v,w in D(A)$. Equivalently $G(A) subset G(A^*)$.
+- Exercise: show that if $A$ is symmetric then its closure is as well. [This is trivial as $G(A) subset G(overline(A)) subset G(A^*)$ by minimality]
+- Theorem (Spectrum of symmetric operators): Let $(A, D(A))$ be a symmetric operator. Then its spectrum is either: #[
+    #set enum(numbering: "(i)")
+    +
+  ]
