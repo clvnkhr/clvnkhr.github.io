@@ -1,6 +1,6 @@
 // date: 2024-04-24
 // tags: maths, notes, quantum-mechanics, sobolev-spaces, functional-analysis
-// hidden: true
+// hidden: false
 
 #import "../templates/math.typ": html_fmt
 // #show: html_fmt
