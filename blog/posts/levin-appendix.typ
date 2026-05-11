@@ -1,9 +1,9 @@
 // date: 2024-04-24
-// tags: maths, notes, quantum-mechanics, sobolev-spaces, functional-analysis
+// tags: maths, notes, quantum-mechanics, sobolev-spaces, functional-analysis, rough
 // hidden: false
 
 #import "../templates/math.typ": html_fmt
-// #show: html_fmt
+#show: html_fmt
 
 #set document(title: "Notes on Lewin's QM book - Appendix")
 #title()
