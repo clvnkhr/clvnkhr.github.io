@@ -4,6 +4,7 @@
 
 
 #set par(justify: true)
+#set math.equation(numbering: "(1)")
 // #set page(fill: red.darken(70%))
 // #set text(fill: white.darken(10%))
 
@@ -16,6 +17,7 @@
 
 #show: shorthands.with(
   ($+-$, $plus.minus$),
+  ($-+$, $minus.plus$),
   ($=<$, $arrow.double.l$),
   ($<~$, $≲$),
   ($>~$, $≳$),
@@ -24,15 +26,22 @@
 #let grad = $nabla$
 #let dd = $dif$
 #let del = $partial$
-#let infty = $oo$ // for the poor LLM that keeps trying to use latex's \infty
+#let infty = $oo$ // for the poor LLM that keeps trying to  use latex's \infty
 #let Subset = $subset.double$
 #let ran = math.op("ran")
 
+
 #let bangle(..xs) = {
-  math.lr(
-    math.chevron.l + xs.pos().intersperse([, #math.thin]).join() + math.chevron.r,
-  )
+  $
+    lr(
+      chevron.l
+      #xs.pos().intersperse([, #math.thin]).join()
+      chevron.r
+    )
+  $
 }
+
+
 #let fH = $frak(H)$
 Let $fH$ be a separable Hilbert space over $CC$.
 
@@ -42,7 +51,6 @@ Let $fH$ be a separable Hilbert space over $CC$.
 $
   G(A) = {(v, A v): v in D(A)} subset D(A) times fH
 $
-
 - Lemma: $G subset fH times fH$ is the graph of an operator $(A, D(A))$ iff #[
     #set enum(numbering: "(i)")
     + (vector space) $G$ is a vector subspace of $fH times fH$
@@ -80,6 +88,7 @@ $
 - generically $overline(G(A))$ will always satisfy (i),(ii) of the above lemma characterising graphs. But it is (ii) that may fail, i.e. there can be some nonzero $y$ with $(0,y) in G$, (giving the absurdity $A 0 = y != 0$). Evaluation on $L^2 -> L^2$ is like this, since convergence in $L^2$ of highly oscillatory functions to 0 can break evaluation (the next exercise).
 - We say that $A$ is *closable* if $A$ has at least one closed extension. Then $overline(G(A)) = G(overline(A))$ for a uniquely defined operator $(overline(A), D(overline(A)))$, called the *closure* of $A$.
 - For $-i del_j$, $Delta$ on $C^oo_c (RR^d)$ the domain of the closure are $H^1$ and $H^2$ respectively.
+  - proof idea: the operator is clearly closed on $H^1$ and $H^2$ resp. To show that the closure of the operator is this closed operator, we can directly check what the closure of the graph is, which amounts to checking convergence of $C^oo_c$ functions to Sobolev functions.
 
 = Adjoint
 - cute observation: the wanted equality $bangle(v, A u) = bangle(A^* v, u)$ can be written $ bangle((v, A^*v), (A u, -u))_(fH times fH) = 0 $ So we make the definition
@@ -95,7 +104,7 @@ $
 - If $A$ is closeable then $A^*$ is closed. Also, $overline(A) = A^(**)$ and $A^* = overline(A)^*$.
 - If $(A, D(A))$ is a closeable operator, then $ker(A^* - overline(z)) = ran(A- z)^perp = ran(overline(A)- z)^perp$.
   - Proof:
-    Observe that #h(1fr) 
+    Observe that #h(1fr)
     $
       v in ker (A^* - overline(z)) "iff" A^* v = overline(z)v.
     $
@@ -214,13 +223,74 @@ $ <eq2.17>
 The latter is a self-adjoint operator whose spectrum is
 
 $
-  sigma(overline(A)) = overline({ lambda_n, n >= 1 }.)
+  sigma(overline(A)) = overline({ lambda_n, n >= 1 }).
 $ <eq2.18>
 
 In other words, $(A, D(A))$ is essentially self-adjoint.
 
 == Momentum and Laplacian on $RR^d$
-- 
+- $P_j:=-i del_j, A:=-Delta$ with $D(P_j):={f in L^2 : del_j f in L^2} subset fH = L^2$ and $D(A) = H^2$ are self-adjoint. Moreover, $sigma(P_j) = RR$ and $sigma(A) = [0, infty)$, and they have no eigenvalues.
+  - Only proof for $Delta$ is given. Symmetry (integration by parts) is easy. Then to check self-adjointness we can check the surjectivity of $A-lambda$ for $lambda=-1=overline(lambda)$, which is convenient as this gives us a japanese bracket on the Fourier side to work with. The claim on the spectrum comes from
 == Momentum on $(0,1)$
+- Let $D(P^"min") = C^oo_c$, $D(P^"max") = H^1$ and $D(P_0) = H^1_0(0,1)$. Then #h(1fr)
+  $
+    P^"min" subset (P^"max")^* = P_0 subset.neq P_0^* = (P^"min")^* = P^"max"
+  $ <inclusions>
+  in particular/addition
+  - $P^"min"$ is symmetric but not self-adjoint, and its closure is $P_0$.
+  - $P^"max" = (P^"min")^* = P_0^*$, and is not symmetric.
+  - $P_0$ is closed and symmetric but not self-adjoint.
+    - A symmetric operator has $A subset A^*$. So $A^*$ is always a closed extension of such an operator. But this example shows that the closure of a symmetric operator need not be self-adjoint, and that the adjoint of a symmetric operator need not be symmetric. When we try to compute the adjoint we see the issues: the domain has all functions in $L^2$ satisfying the adjoint equation, and the vanishing of $v in D(P_0)$ gives freedom to have a nonzero value at the boundary for $v in D(P_0^*)$, and breaks symmetry.
+  - We have $sigma(P_0) = sigma(P^"min") = sigma(P^"max") = CC$. The spectrum of $P^"max"$ consists only of eigenvalues, while the other spectra have none.
+    - this is because all solutions to the eigenvalue equation for $P^"max"$ are $e^(i lambda x)$, and also separately check that $0 != e^(i lambda x) in ran(P_0 - lambda)^perp$.
+- #let Pper(f: $P$, t: $theta$) = $#{ f } _("per", #t)$
+
+  The strict symmetric extensions of $P_0$ are defined by $Pper() f = - i f'$ on the domain
+  $
+    D(Pper()) = {f in H^1 : f(1) = e^(i theta) f(0)}.
+  $
+  These operators are all self-adjoint, and their spectrum is $sigma(Pper()) = {2 pi n + theta : n in ZZ}$, consisting only of eigenvalues.
+  - the condition $f(1) = e^(i theta) f(0)$ is known as the Born-von Karman boundary condition.
+  - In the proof it is shown that $H^1_0$ is codimension 1 in $H_("per",theta)$.
+
+
+
 == Momentum on $RR_+$
-== Laplacian on $(0,1)$
+Making the similar definitions of $H^1, H^1_0, P^"min", P^"max"$, and  $P_0$ _mutatis mutandis_ we have @inclusions, but $P_0$ in this case has no self-adjoint extensions, with $sigma(P_0) = CC_- := {z in CC : Im(z) < 0}$, without eigenvalues.
+
+= Exercises
++ ($H^1_("per")$ and Fourier Series) Skipping for now as it seems routine
++ (Beware of Commutators) The issue here is that $P_"per" X$ wont necessarily be defined as $X$ could take you out of $D(P_"per")$.
++ Exercise 2.48 (Deficiency Indices) Let $(A, D(A))$ be a closed symmetric operator.
+
+  1. Show that $norm((A + i)v) = norm((A - i)v)$ for all $v in D(A)$. Deduce that the operator
+    $U = (A + i)(A - i)^(-1)$
+    is an isometry from $op("ran")(A - i)$ into $op("ran")(A + i)$.
+    - This follows from the nice identity from before that $ norm(A - a - i b) u^2 = norm((A-a) u)^2 + b^2 norm(u)^2 $
+      with $a=0$ and $b= +- 1$. (GPT tells me the formula for $U$ has the inverse defined only as a map on $ran(A - i)$, not necessarily a proper resolvent.)
+  2. What can we conclude in finite dimension?
+    - Peeking ahead at the later parts of the exercise, I think we are supposed to see that $dim ker(A - i) = dim ker(A + i)$ (using the finiteness of dimension to conclude from the rank).
+
+  3. Let $B = B^ast$ be a self-adjoint extension of $A$. Show that
+    $V = (B + i)(B - i)^(-1)$
+    is an isometry from $fH$ into $fH$, which is an extension of $U$, that is, such that
+    $V f = U f$
+    for all $f in D(A)$.
+    - This is easy because we already know that $i in.not sigma(B)$ and that $B+i$ is surjective.
+
+  4. Then show that the image of $op("ran")(A + i)^perp = ker(A^ast - i)$ by $V$ contains
+    $op("ran")(A - i)^perp = ker(A^ast + i)$.
+    - We want to show that $V (ker(A^ast - i) ) supset ker (A^* + i)$. Let $A^* v = - i v$; we want to show that there is $w$ in $ker (A^* - i)$ such that $V w = v$. Clearly such $w$ would be defined by $w = V^(-1) v = (B-i)(B+i)^(-1)v$. Lets check that $w in ker(A^* + i) = ran(A - i)^perp$. For $u in D(A) subset D(B)$:
+    $
+      bangle((A-i)u, w) & = bangle(u, (B+i)(B-i)(B+i)^(-1)v) \
+                        & = bangle(u, (B-i)(B+i)(B+i)^(-1)v) \
+                        & = bangle(u, (B-i)v) \
+                        & = bangle((B+i)u, v) \
+                        & = bangle((A+i)u, v) = 0.
+    $
+  5. Deduce that a symmetric operator can only have self-adjoint extensions if
+    $dim ker(A^ast - i) = dim ker(A^ast + i)$
+    (which can be finite or infinite). [Follows as $V$ is an isometry]
+
+  6. Reinterpret the result of Theorem 2.40 in this perspective.
+    - (This theorem concerns the lack of self adjoint extensions for the momentum operator on the half line.) The result on the spectrum $sigma(P) = CC_-$ is enough to show that there can be no self adjoint extension.

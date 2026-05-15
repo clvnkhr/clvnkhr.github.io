@@ -1,5 +1,5 @@
 // date: 2026-04-30
-// tags: maths, notation
+// tags: maths, math-se, notation
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt

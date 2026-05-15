@@ -1,5 +1,5 @@
 // date: 2026-02-11
-// tags: tags
+// tags: blog, tags
 
 #import "../templates/math.typ": html_fmt
 
