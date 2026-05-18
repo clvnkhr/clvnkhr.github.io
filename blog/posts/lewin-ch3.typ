@@ -8,8 +8,7 @@
 // #set page(fill: red.darken(70%))
 // #set text(fill: white.darken(10%))
 
-#title("Notes on Lewin Ch3: Self-adjointness Criteria: Rellich, Kato
-and Friedrichs")
+#title("Notes on Lewin Ch3: Self-adjointness Criteria: Rellich, Kato and Friedrichs")
 
 #import "../templates/math.typ": html_fmt
 #show: html_fmt

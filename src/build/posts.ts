@@ -5,7 +5,7 @@ import { extractColorsFromHtml } from '../utils/svg-colors.js';
 
 const toError = (e: unknown) => e instanceof Error ? e : new Error(String(e));
 
-  export function parseMetadata(content: string): PostMetadata {
+export function parseMetadata(content: string): PostMetadata {
   const metadata: Record<string, any> = {};
 
   const lines = content.split('\n');
