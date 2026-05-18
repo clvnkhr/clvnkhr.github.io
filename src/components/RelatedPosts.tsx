@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Post } from '../types/post';
 import { formatDate } from '../utils/date';
 

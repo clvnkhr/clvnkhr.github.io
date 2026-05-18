@@ -1,15 +1,14 @@
 import { describe, it, expect, beforeAll } from 'bun:test';
-import { readdir, stat } from 'fs/promises';
+import { Effect } from 'effect';
+import { stat } from 'fs/promises';
 import { join } from 'path';
 import { buildBlog } from '../src/build/index';
-import { parseMetadata } from '../src/build/posts';
 
 describe('Build Integration', () => {
   const distDir = 'dist';
 
   beforeAll(async () => {
-    // Run the full build
-    await buildBlog();
+    await Effect.runPromise(buildBlog);
   });
 
   it('should create dist directory', async () => {

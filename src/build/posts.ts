@@ -1,4 +1,4 @@
-import { Post, PostMetadata } from '../types/post.js';
+import { PostMetadata } from '../types/post.js';
 import { extractColorsFromHtml } from '../utils/svg-colors.js';
 
   export function parseMetadata(content: string): PostMetadata {

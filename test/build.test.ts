@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'bun:test';
+import { Effect } from 'effect';
 import { buildBlog } from '../src/build/index.js';
 
 describe('Build System Integration', () => {
   it('should initialize build system without errors', async () => {
-    await buildBlog();
+    await Effect.runPromise(buildBlog);
   });
 
   it('should log build initialization messages', async () => {
@@ -12,7 +13,7 @@ describe('Build System Integration', () => {
 
     console.log = (...args) => logs.push(args.join(' '));
 
-    await buildBlog();
+    await Effect.runPromise(buildBlog);
 
     console.log = originalLog;
 
@@ -21,8 +22,6 @@ describe('Build System Integration', () => {
   });
 
   it('should handle build system errors gracefully', async () => {
-    const originalBuild = buildBlog;
-
     const mockBuild = async () => {
       throw new Error('Build failed');
     };

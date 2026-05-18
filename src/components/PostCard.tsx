@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Post } from '../types/post';
 import { getTagColorClass } from '../utils/tags';
 import { formatDate } from '../utils/date';

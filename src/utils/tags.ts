@@ -1,5 +1,3 @@
-import React from 'react';
-
 export function getTagColorClass(tagName: string): string {
   const colors = [
     'pink', 'mauve', 'red', 'maroon',

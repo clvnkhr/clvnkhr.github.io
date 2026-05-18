@@ -45,8 +45,6 @@ export function isGrayscaleColor(hex: string): boolean {
 export function invertGrayscaleColor(hex: string): string {
   const hasAlpha = hex.length === 9;
   const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
   const alpha = hasAlpha ? hex.slice(7) : '';
 
   // Invert all channels (same value for grayscale)

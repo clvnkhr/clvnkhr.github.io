@@ -1,4 +1,3 @@
-import React from 'react';
 import { Layout } from './Layout';
 import { site } from '../config/site';
 import { getTagColorClass } from '../utils/tags';

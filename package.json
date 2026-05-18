@@ -11,10 +11,11 @@
     "serve": "bunx serve dist -l 3000",
     "dev": "bun run build:watch & bun run serve",
     "clean": "rm -rf dist",
-    "test": "bun test",
-    "test:watch": "bun test --watch"
+    "test": "bun test test/",
+    "test:watch": "bun test --watch test/"
   },
   "dependencies": {
+    "effect": "file:./lib/effect/packages/effect",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "pagefind": "^1.0.0"
