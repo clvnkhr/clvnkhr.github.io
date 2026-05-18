@@ -1,5 +1,5 @@
 // date: 2026-05-15
-// tags: maths, functional-analysis, notes, rough
+// tags: maths, functional-analysis, self-adjointness, notes, rough
 // hidden: false
 
 
