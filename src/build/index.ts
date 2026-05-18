@@ -98,21 +98,7 @@ async function checkTypstVersion(): Promise<void> {
 async function ensureFontsExist(): Promise<void> {
   const fontDir = 'fonts/LeteSansMath';
   const { stat } = await import('fs/promises');
-
-  try {
-    await stat(fontDir);
-    console.log(`✅ Fonts directory exists: ${fontDir}`);
-  } catch {
-    console.log(`📥 Fonts directory not found. Cloning submodule...`);
-    try {
-      await Bun.$`git submodule update --init --recursive -- fonts/LeteSansMath`.quiet();
-      console.log(`✅ Cloned fonts submodule successfully`);
-    } catch {
-      console.warn(`⚠️  Could not clone submodule via git, trying direct clone...`);
-      await Bun.$`rm -rf fonts/LeteSansMath && git clone https://github.com/abccsss/LeteSansMath.git fonts/LeteSansMath --depth 1`.quiet();
-      console.log(`✅ Cloned fonts repository directly`);
-    }
-  }
+  await stat(fontDir);
 }
 
 export async function buildBlog() {

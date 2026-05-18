@@ -1,7 +1,7 @@
 [install]
 lockfile = true
 no-save-workspace-prefix = true
-minimumReleaseAge = "30d"
+minimumReleaseAge = 2592000
 minimumReleaseAgeExcludes = ["@types/bun"]
 
 [test]
