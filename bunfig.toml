@@ -1,6 +1,8 @@
 [install]
 lockfile = true
 no-save-workspace-prefix = true
+minimumReleaseAge = "30d"
+minimumReleaseAgeExcludes = ["@types/bun"]
 
 [test]
 preload = ["./test/setup.ts"]
