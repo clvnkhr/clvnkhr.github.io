@@ -48,22 +48,22 @@
     "coverage": "vitest --coverage"
   },
   "peerDependencies": {
-    "@effect/cluster": "workspace:^",
-    "@effect/platform": "workspace:^",
-    "@effect/rpc": "workspace:^",
-    "@effect/sql": "workspace:^",
-    "effect": "workspace:^"
+    "@effect/cluster": "^0.58.2",
+    "@effect/platform": "^0.96.1",
+    "@effect/rpc": "^0.75.1",
+    "@effect/sql": "^0.51.1",
+    "effect": "^3.21.2"
   },
   "dependencies": {
-    "@effect/platform-node-shared": "workspace:^",
+    "@effect/platform-node-shared": "^0.59.0",
     "multipasta": "^0.2.7"
   },
   "devDependencies": {
-    "@effect/cluster": "workspace:^",
-    "@effect/platform": "workspace:^",
-    "@effect/rpc": "workspace:^",
-    "@effect/sql": "workspace:^",
+    "@effect/cluster": "^0.58.2",
+    "@effect/platform": "^0.96.1",
+    "@effect/rpc": "^0.75.1",
+    "@effect/sql": "^0.51.1",
     "@types/bun": "^1.2.2",
-    "effect": "workspace:^"
+    "effect": "^3.21.2"
   }
 }

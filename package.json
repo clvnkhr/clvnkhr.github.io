@@ -16,6 +16,9 @@
   },
   "dependencies": {
     "effect": "file:./lib/effect/packages/effect",
+    "@effect/platform": "file:./lib/effect/packages/platform",
+    "@effect/platform-bun": "file:./lib/effect/packages/platform-bun",
+    "@effect/platform-node-shared": "file:./lib/effect/packages/platform-node-shared",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "pagefind": "^1.0.0"

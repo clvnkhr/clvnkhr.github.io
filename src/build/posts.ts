@@ -1,20 +1,20 @@
+import { Effect } from "effect";
+import { Command } from "@effect/platform";
 import { PostMetadata } from '../types/post.js';
 import { extractColorsFromHtml } from '../utils/svg-colors.js';
+
+const toError = (e: unknown) => e instanceof Error ? e : new Error(String(e));
 
   export function parseMetadata(content: string): PostMetadata {
   const metadata: Record<string, any> = {};
 
-  // Parse metadata from comment block at the top of the file
-  // Stop at first non-comment line (metadata is only at the very beginning)
   const lines = content.split('\n');
 
   for (const line of lines) {
-    // Stop parsing at first non-comment line (allow #import in metadata section)
     if (!line.startsWith('//') && !line.startsWith('#import')) {
       break;
     }
 
-    // Only process metadata from // lines, not #import
     if (!line.startsWith('//')) {
       continue;
     }
@@ -25,7 +25,6 @@ import { extractColorsFromHtml } from '../utils/svg-colors.js';
       const value = parts.slice(1).join(':').trim();
 
       if (key === 'title') {
-        // Title is extracted from first h1 in content, not metadata
         continue;
       } else if (key === 'tags') {
         metadata[key] = value.split(',').map((t: string) => t.trim());
@@ -58,21 +57,21 @@ import { extractColorsFromHtml } from '../utils/svg-colors.js';
   return metadata as PostMetadata;
 }
 
-export async function compileTypst(typstFile: string): Promise<{
-  html: string;
-  svgColors: string[];
-}> {
-  const fontPath = 'fonts/LeteSansMath';
-  const result = await Bun.$`typst compile --format html --features html --root .. --font-path ${fontPath} ${typstFile} -`.quiet();
-  const html = result.stdout.toString();
-
-  const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
-  if (!bodyMatch) {
-    throw new Error(`Could not find body tag in Typst output for ${typstFile}`);
-  }
-
-  const htmlContent = bodyMatch[1].trim();
-  const svgColors = extractColorsFromHtml(htmlContent);
-
-  return { html: htmlContent, svgColors };
-}
+export const compileTypst = (typstFile: string) =>
+  Command.string(
+    Command.make("typst", "compile", "--format", "html", "--features", "html", "--root", "..", "--font-path", "fonts/LeteSansMath", typstFile, "-"),
+  ).pipe(
+    Effect.flatMap((html) =>
+      Effect.try({
+        try: () => {
+          const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
+          if (!bodyMatch) throw new Error(`Could not find body tag in Typst output for ${typstFile}`);
+          const htmlContent = bodyMatch[1].trim();
+          const svgColors = extractColorsFromHtml(htmlContent);
+          return { html: htmlContent, svgColors };
+        },
+        catch: toError,
+      }),
+    ),
+    Effect.catchAll((e) => Effect.fail(e instanceof Error ? e : new Error(String(e)))),
+  );

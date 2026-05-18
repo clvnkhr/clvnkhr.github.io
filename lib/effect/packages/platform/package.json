@@ -52,10 +52,6 @@
     "multipasta": "^0.2.7"
   },
   "peerDependencies": {
-    "effect": "workspace:^"
-  },
-  "devDependencies": {
-    "ajv": "^8.17.1",
-    "effect": "workspace:^"
+    "effect": "^3.21.2"
   }
 }

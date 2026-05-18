@@ -1,7 +1,9 @@
-import { Effect, Console, pipe } from "effect";
+import { Effect, pipe, ManagedRuntime } from "effect";
+import { Command } from "@effect/platform";
+import { BunContext } from "@effect/platform-bun";
 import { readdir, stat } from "fs/promises";
 import { join } from "path";
-import { parseMetadata, compileTypst } from "./posts";
+import { compileTypst, parseMetadata } from "./posts";
 import {
   renderHomePage,
   renderBlogIndex,
@@ -20,59 +22,57 @@ import packageJson from "../../package.json" with { type: "json" };
 
 const toError = (e: unknown) => e instanceof Error ? e : new Error(String(e));
 
-const shell = (strings: TemplateStringsArray, ...args: Bun.ShellExpression[]) =>
-  Effect.tryPromise({
-    try: () => Bun.$(strings, ...args).quiet().then(() => {}),
-    catch: toError,
-  });
+const run = (cmd: Command.Command) =>
+  Command.exitCode(cmd).pipe(
+    Effect.flatMap((code) =>
+      Number(code) === 0
+        ? Effect.void
+        : Effect.fail(new Error(`Command failed with exit code ${String(code)}`)),
+    ),
+  );
 
 // ── Build Steps ──
 
 const ensureFontsExist = Effect.tryPromise({
-  try: () => stat("fonts/LeteSansMath").then(() => {}),
+  try: () => stat("fonts/LeteSansMath").then(() => { }),
   catch: toError,
 });
 
 const checkTypstVersion = Effect.gen(function* () {
   const expectedVersion = packageJson.engines?.typst;
   if (!expectedVersion) {
-    yield* Console.warn(
+    yield* Effect.logWarning(
       "⚠️  No expected Typst version specified in package.json engines.typst",
     );
     return;
   }
 
   const version = yield* pipe(
-    Effect.tryPromise({
-      try: async () => {
-        const result = await Bun.$`typst --version`.quiet();
-        const match = result.stdout
-          .toString()
-          .match(/typst (\d+\.\d+\.\d+)/);
-        return match?.[1] ?? null;
-      },
-      catch: toError,
+    Command.string(Command.make("typst", "--version")),
+    Effect.map((stdout) => {
+      const match = stdout.match(/typst (\d+\.\d+\.\d+)/);
+      return match?.[1] ?? null;
     }),
     Effect.catchAll(() => Effect.succeed(null as string | null)),
   );
 
   if (!version) {
-    yield* Console.warn("⚠️  Could not parse Typst version");
+    yield* Effect.logWarning("⚠️  Could not parse Typst version");
     return;
   }
 
   if (version !== expectedVersion) {
-    yield* Console.warn("\n⚠️  WARNING: Typst version mismatch!");
-    yield* Console.warn(`   Expected: ${expectedVersion}`);
-    yield* Console.warn(`   Actual:   ${version}`);
-    yield* Console.warn(
+    yield* Effect.logWarning("\n⚠️  WARNING: Typst version mismatch!");
+    yield* Effect.logWarning(`   Expected: ${expectedVersion}`);
+    yield* Effect.logWarning(`   Actual:   ${version}`);
+    yield* Effect.logWarning(
       "   This blog relies on Typst HTML export (experimental feature).",
     );
-    yield* Console.warn(
+    yield* Effect.logWarning(
       "   Unexpected version changes may break the build.\n",
     );
   } else {
-    yield* Console.log(
+    yield* Effect.log(
       `✅ Typst version ${version} matches expected ${expectedVersion}`,
     );
   }
@@ -90,36 +90,40 @@ const discoverPosts = Effect.gen(function* () {
     typFiles,
     (entry: string) =>
       pipe(
-        Effect.tryPromise<Post | null, Error>({
-          try: async () => {
-            const typstPath = join(postsDir, entry);
-            const content = await Bun.file(typstPath).text();
-            const metadata = parseMetadata(content);
-            const typstResult = await compileTypst(typstPath);
-            const title = extractTitleFromHtml(typstResult.html);
-            if (!title) return null;
+        Effect.gen(function* () {
+          const typstPath = join(postsDir, entry);
 
-            const slug = entry.replace(".typ", "");
-            const year = metadata.date.getFullYear();
-            const month = String(metadata.date.getMonth() + 1).padStart(2, "0");
-            const day = String(metadata.date.getDate()).padStart(2, "0");
+          const content = yield* Effect.tryPromise({
+            try: () => Bun.file(typstPath).text(),
+            catch: toError,
+          });
 
-            return {
-              ...metadata,
-              title,
-              slug,
-              path: `/blog/${year}/${month}/${day}/${slug}/`,
-              htmlContent: stripFirstHeading(typstResult.html),
-              svgColors: typstResult.svgColors,
-            } as Post;
-          },
-          catch: toError,
+          const metadata = parseMetadata(content);
+          const typstResult = yield* compileTypst(typstPath);
+          const title = extractTitleFromHtml(typstResult.html);
+          if (!title) return null;
+
+          const slug = entry.replace(".typ", "");
+          const year = metadata.date.getFullYear();
+          const month = String(metadata.date.getMonth() + 1).padStart(2, "0");
+          const day = String(metadata.date.getDate()).padStart(2, "0");
+
+          return {
+            ...metadata,
+            title,
+            slug,
+            path: `/blog/${year}/${month}/${day}/${slug}/`,
+            htmlContent: stripFirstHeading(typstResult.html),
+            svgColors: typstResult.svgColors,
+          } as Post;
         }),
-        Effect.catchAll((e: Error) => {
-          Console.error(`Error processing ${entry}:`, e.message);
-          return Effect.die(e);
-        }),
+        Effect.catchAll((e: Error) =>
+          Effect.logError(`Error processing ${entry}:`, e.message).pipe(
+            Effect.zipRight(Effect.die(e)),
+          ),
+        ),
       ),
+    { concurrency: "unbounded" },
   );
 
   const posts: Post[] = results.filter((p): p is Post => p !== null);
@@ -127,7 +131,7 @@ const discoverPosts = Effect.gen(function* () {
 
   const hiddenPosts = posts.filter((p) => p.hidden);
   if (hiddenPosts.length > 0) {
-    yield* Console.log(
+    yield* Effect.log(
       `🙈 Hidden posts: ${hiddenPosts.map((p) => p.title).join(", ")}`,
     );
   }
@@ -135,16 +139,27 @@ const discoverPosts = Effect.gen(function* () {
   return posts.filter((p) => !p.draft && !p.hidden);
 });
 
-const setupDist =
-  shell`rm -rf dist && mkdir -p dist/blog dist/projects dist/assets/css dist/assets/img dist/assets/js dist/fonts`;
+const setupDist = Effect.gen(function* () {
+  yield* run(Command.make("rm", "-rf", "dist"));
+  yield* run(
+    Command.make(
+      "mkdir", "-p",
+      "dist/blog", "dist/projects", "dist/assets/css", "dist/assets/img", "dist/assets/js", "dist/fonts",
+    ),
+  );
+});
 
 const copyAssets = Effect.gen(function* () {
-  yield* shell`cp -r public/* dist/`;
-  yield* shell`cp -r src/assets/js dist/assets/`;
+  yield* run(
+    Command.make("cp", "-r", "public/*", "dist/").pipe(Command.runInShell(true)),
+  );
+  yield* run(
+    Command.make("cp", "-r", "src/assets/js", "dist/assets/"),
+  );
 });
 
 const buildTailwind =
-  shell`bunx @tailwindcss/cli -i src/assets/css/main.css -o dist/assets/css/main.css`;
+  run(Command.make("bunx", "@tailwindcss/cli", "-i", "src/assets/css/main.css", "-o", "dist/assets/css/main.css"));
 
 const generateSvgCss = (allColors: Set<string>) =>
   Effect.tryPromise({
@@ -195,7 +210,7 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
       });
     });
 
-    yield* shell`mkdir -p dist/tags`;
+    yield* run(Command.make("mkdir", "-p", "dist/tags"));
 
     const tagsIndexHtml = renderTagsIndex(
       Array.from(allTags).sort(),
@@ -211,7 +226,7 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
         post.tags?.includes(tag),
       );
       const tagHtml = renderTagPage(tag, tagPostsList);
-      yield* shell`mkdir -p dist/tags/${tag}`;
+      yield* run(Command.make("mkdir", "-p", `dist/tags/${tag}`));
       yield* Effect.tryPromise({
         try: () => Bun.write(`dist/tags/${tag}/index.html`, tagHtml),
         catch: toError,
@@ -238,7 +253,7 @@ const generateNotFoundPage = Effect.tryPromise({
 // ── Main Build Program ──
 
 const buildBlog = Effect.gen(function* () {
-  yield* Console.log("🔨 Building blog...");
+  yield* Effect.log("🔨 Building blog...");
   yield* ensureFontsExist;
 
   yield* checkTypstVersion;
@@ -252,50 +267,52 @@ const buildBlog = Effect.gen(function* () {
     post.svgColors?.forEach((c: string) => allColors.add(c)),
   );
 
-  yield* Console.log("🎨 Generating SVG color CSS...");
+  yield* Effect.log("🎨 Generating SVG color CSS...");
   yield* generateSvgCss(allColors);
 
   yield* setupDist;
 
-  yield* Console.log("📦 Copying assets...");
+  yield* Effect.log("📦 Copying assets...");
   yield* copyAssets;
 
-  yield* Console.log("🎨 Building Tailwind CSS...");
+  yield* Effect.log("🎨 Building Tailwind CSS...");
   yield* buildTailwind;
 
-  yield* Console.log("🏠 Generating homepage...");
+  yield* Effect.log("🏠 Generating homepage...");
   yield* generateHomepage(posts);
 
-  yield* Console.log("📋 Generating blog index...");
+  yield* Effect.log("📋 Generating blog index...");
   yield* generateBlogIndex(posts);
 
-  yield* Console.log("📄 Generating post pages...");
+  yield* Effect.log("📄 Generating post pages...");
   yield* generatePostPages(posts);
 
-  yield* Console.log("🏷️  Generating tag pages...");
+  yield* Effect.log("🏷️  Generating tag pages...");
   const allTags = new Set<string>();
   posts.forEach((post: Post) =>
     post.tags?.forEach((tag: string) => allTags.add(tag)),
   );
   yield* generateTagPages(posts, allTags);
 
-  yield* Console.log("🚀 Generating projects page...");
+  yield* Effect.log("🚀 Generating projects page...");
   yield* generateProjectsPage;
 
-  yield* Console.log("🔍 Generating 404 page...");
+  yield* Effect.log("🔍 Generating 404 page...");
   yield* generateNotFoundPage;
 
-  yield* Console.log("✅ Build complete!");
-  yield* Console.log(
+  yield* Effect.log("✅ Build complete!");
+  yield* Effect.log(
     `Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 projects page, 1 404 page`,
   );
 
   if (!isWatchMode) {
-    yield* Console.log("\n🌐 To view your blog:");
-    yield* Console.log("   bun run serve     # Start local server");
-    yield* Console.log("   Then visit: http://localhost:3000\n");
+    yield* Effect.log("🌐 To view your blog:");
+    yield* Effect.log("   bun run serve     # Start local server");
+    yield* Effect.log("   Then visit: http://localhost:3000\n");
   }
 });
 
-export { buildBlog };
-await Effect.runPromise(buildBlog);
+const runtime = ManagedRuntime.make(BunContext.layer as any);
+
+export { buildBlog, runtime };
+runtime.runPromise(buildBlog);
