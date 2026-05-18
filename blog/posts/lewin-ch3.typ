@@ -12,7 +12,7 @@
 and Friedrichs")
 
 #import "../templates/math.typ": html_fmt
-// #show: html_fmt
+#show: html_fmt
 
 #import "@preview/quick-maths:0.2.1": shorthands
 
@@ -56,7 +56,7 @@ $
   Finally, if $sigma(A) subset [a,oo)$ for some $a in RR$, then $sigma(A+B) subset [a - C/(1-alpha), oo)$.
   - $cal(D)$ in the above theorem is called the *core* of the operator $A$.
   - Proof uses the identity $ A+B+i mu = (1 + B(A + i mu)^(-1))(A+i mu) $ and then exploits
-   $alpha < 1$ to get invertibility of $(1 + B(A + i mu)^(-1))$ for large enough $mu$.
+    $alpha < 1$ to get invertibility of $(1 + B(A + i mu)^(-1))$ for large enough $mu$.
 - *Theorem* Let $V in L^p + L^oo$ where
   $
     cases(p=2 "if" p<4, p>2 "if" p=4, p=d/2 "otherwise")
@@ -106,28 +106,26 @@ The associated sesquilinear form is $phi_A(v,w) := bangle(v, A w)$.
   == Self-adjoint Operators
 
   - *Theorem* Let $A >= alpha$ and let $overline(phi_A)$ be the associated closed form defined in the previous Theorem. For any $v,z in fH$, the following are equivalent:
-    + $v in cal(Q)_A$ and $overline(phi_A)(v,h) = bangle(z,h)$ for all $h in cal(Q)_A$.
+    + $v in cal(Q)_A$ and $overline(phi_A)(v,h) = bangle(z, h)$ for all $h in cal(Q)_A$.
     + $v in D(A)$ and $A v = z$.
     In particular we can reconstruct $A$ from the closure of its quadratic form.
-    - The equation $overline(phi_A)(v,h) = bangle(z,h)$ is the _weak formulation_ of the equation $A v = z$. It is "weak" because we only suppose that $v$ belongs to $cal(Q)_A$. $D(A)$ is the subset 
+    - The equation $overline(phi_A)(v,h) = bangle(z, h)$ is the _weak formulation_ of the equation $A v = z$. It is "weak" because we only suppose that $v$ belongs to $cal(Q)_A$. $D(A)$ is the subset
     $
-      D(A) = {v in cal(Q)_A : exists z in fH : overline(phi_A)(v,h) = bangle(z,h), forall h in cal(Q)_A}.
+      D(A) = {v in cal(Q)_A : exists z in fH : overline(phi_A)(v,h) = bangle(z, h), forall h in cal(Q)_A}.
     $
   - As a self-adjoint operator is fully characterized by the closure $overline(q_A)$, we will abusively write $q_A eq.def overline(q_A)$, $phi_A eq.def overline(phi_A),$ $Q(A) eq.def cal(Q)_A$.
 
   == Friedrichs Realisation
   - Theorem 3.14 showed that every semi-bounded self-adjoint operator is given by a closed quadratic form. Below we show that every closed quadratic form that is bounded below is given by a self-adjoint operator.
-    - this allows us to define the Friedrichs extension of any bounded below symmetric operator $A$: from $A$ compute $q_A$. Since it is bounded below, we can close it. Then the Theorem gives us a self-adjoint operator that extends $A$. 
+    - this allows us to define the Friedrichs extension of any bounded below symmetric operator $A$: from $A$ compute $q_A$. Since it is bounded below, we can close it. Then the Theorem gives us a self-adjoint operator that extends $A$.
   - *Theorem* Let $cal(Q) subset fH$ be Hilbert spaces such that $cal(Q)$ is dense and continuously embedded in $fH$. Then there is a unique self-adjoint operator $A$ on $D(A) subset fH$, with
-  $
-    D(A) = {v in cal(Q) : exists v in fH : bangle(v,h)_cal(Q) = bangle(z,h)_fH, forall h in fH}
-  $ such that $q_A = norm(dot)^2_cal(Q),$ $phi_A = bangle(dot,dot)_(cal(Q))$, and $cal(Q) = Q(A)$.
+  $ D(A) = {v in cal(Q) : exists v in fH : bangle(v, h)_cal(Q) = bangle(z, h)_fH, forall h in fH} $ such that $q_A = norm(dot)^2_cal(Q),$ $phi_A = bangle(dot, dot)_(cal(Q))$, and $cal(Q) = Q(A)$.
 
   Moreover, if $B$ is a self-adjoint operator on $D(B) subset cal(Q)$ such that $D(B)$ is dense on $cal(Q)$ and $q_B = q$ on $D(B)$, then $B = A$.
 
-  *Theorem* (Kato-Lions-Milgram-Nelson) Let $A$ be a coercive self-adjoint operator and let $q_A$ be its associated closed quadratic form with domain $Q(A)$. Let $b$ be another quadratic form on $Q(A)$ such that for some $eta in [0,1)$, $kappa>0$ and for all $v in Q(A)$, 
+  *Theorem* (Kato-Lions-Milgram-Nelson) Let $A$ be a coercive self-adjoint operator and let $q_A$ be its associated closed quadratic form with domain $Q(A)$. Let $b$ be another quadratic form on $Q(A)$ such that for some $eta in [0,1)$, $kappa>0$ and for all $v in Q(A)$,
   $
-    |b(v)| ≤ eta q_A (v) + kappa norm(v)^2 
+    |b(v)| ≤ eta q_A (v) + kappa norm(v)^2
   $
   Then $q_A + b$ is closed and coercive on $Q(A)$, and hence it is associated with a unique self-adjoint operator $C$, with $Q(C) = Q(A)$.
 
