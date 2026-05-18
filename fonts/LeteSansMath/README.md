@@ -1,0 +1,135 @@
+# Lete Sans Math
+
+**Authors:** Chenjing Bu and Daniel Flipo
+
+**Lete Sans Math** is an OpenType sans-serif math font,
+based on the
+[Lato](https://github.com/latofonts/lato-source) font.
+
+![Lete Sans Math](https://github.com/abccsss/LeteSansMath/assets/23280392/49a23583-f63c-45ba-83cd-ec4cdfc6d1a1)
+
+This repository contains the content of the LaTeX package `lete-sans-math`,
+including OpenType font files, LaTeX style files, and documentation.
+You can also view the package on
+[CTAN](https://ctan.org/pkg/lete-sans-math).
+
+## Contents
+
+- `LeteSansMath.otf`
+  — The OpenType font file.
+- `LeteSansMath-Bold.otf`
+  — The OpenType font file for the bold variant (limited coverage).
+- `lete-sans-math.sty`
+  — The LaTeX style file.
+- `LeteSansMath.ltx`
+  — Source file for documentation of the package.
+- `unimath-lete.ltx`
+  — Source file for a modified version of `unimath-symbols.pdf`
+  from the `unicode-math` package,
+  showing available Lete Sans Math symbols compared
+  to other sans-serif math fonts.
+
+## Usage
+
+This package is meant to be installed automatically by TeX Live, MikTeX, etc. Use
+
+```latex
+\usepackage{lete-sans-math}
+```
+
+to load the package.
+The package requires XeLaTeX or LuaLaTeX to compile.
+For more information such as package options,
+see the documentation.
+
+To load the package manually, place the files
+`lete-sans-math.sty`, `LeteSansMath.otf`, and `LeteSansMath-Bold.otf`
+in your project directory,
+and use the same call as above.
+
+It is also possible to use the font without the `lete-sans-math` package.
+See the documentation for details.
+
+## License
+
+- The font files `LeteSansMath.otf` and `LeteSansMath-Bold.otf`
+  are licensed under the
+  [SIL Open Font License (OFL) Version 1.1](http://scripts.sil.org/OFL).
+
+- The other files are distributed under the terms of the
+  [LaTeX Project Public License (LPPL) Version 1.3c](https://ctan.org/tex-archive/macros/latex/base/lppl.txt).
+
+## Changes
+
+### v0.61 (2026-03-22)
+
+- Fixed variation selectors (U+FE00 and U+FE01)
+  ([#20](https://github.com/abccsss/LeteSansMath/issues/20)).
+- Fixed spaces width (U+2000 to U+200B and U+205F)
+  ([#21](https://github.com/abccsss/LeteSansMath/issues/21)).
+
+### v0.60 (2026-03-18)
+
+- New calligraphic capitals (unmodulated script) replace the former
+  Chancery style which are still accessible with `StylisticSet=1`.
+- Former Chancery style capitals have been slightly emboldened
+  ([#9](https://github.com/abccsss/LeteSansMath/issues/9)).
+- New `StylisticSet=9` converts slanted negations into vertical ones.
+- Display version added to `biginterleave` (U+2AFC) and `bigtalloblong` (U+2AFF)
+- Invisible Math operators (U+2061 to U+2064) added.
+- Variation Selectors (U+FE00 and U+FE01) added.
+- Compatibility with Typst v0.14: all glyphs used in vertical compositions
+  now sit on the baseline (only up and down arrows had to be fixed).
+- Extensible over/under-accents and over/under-arrows resized for smoother
+  variation.
+- Math table Sub/Superscripts parameters tuned, see
+  [here](https://tex.stackexchange.com/questions/759695/).
+- Math table fixes for better positioning subscripts of italic and
+  calligraphic glyphs.
+- Documentation updated to cover the new features.
+
+### v0.50 (2025-08-30)
+
+- Fixed issue [#14](https://github.com/abccsss/LeteSansMath/issues/14)
+  (discrepancy between `\usepackage` and `\setmathfont`).
+- Math table fixes for glyph horizontal/vertical composition.
+- `DisplayOperatorMinHeight` and `DelimitedSubFormulaMinHeight` set 
+  to `1400` instead of `1500`.
+- Glyphs U+2A00 to U+2A0B vertically centered on the math axis.
+- Glyphs U+2032 to U+2037 and U+2057 (prime and co.) resized so that f.i. 
+  `\(f'\)`, `\(f\prime\)` and `\(f^{\prime}\)` produce the same output, see 
+  [here](https://github.com/notofonts/math/blob/main/documentation/building-math-fonts/).
+
+### v0.45 (2024-12-14)
+
+- Displayed integrals and big operators are now vertically aligned on
+  the math axis ([#13](https://github.com/abccsss/LeteSansMath/issues/13)).
+
+### v0.44 (2024-11-24)
+
+- Triple and quadruple stroked arrows (U+21DA, U+21DB, U+2B45, U+2B46)
+  are extensible again.
+
+### v0.43 (2024-11-23)
+
+- Glyphs U+0332 and U+23DC to U+23DF resized for consistency.
+- Fixed vertical composition of int symbol (U+222B).
+- Glyphs U+21D0 to U+21D5, U+27F8 to U+27FA, U+27FD, and U+27FE
+  slightly changed to be constent with the equal sign (U+003D).
+  Horizontal composition of these arrows reworked.
+
+### v0.41 (2024-07-18)
+
+- Added feature `cv11` to provide a single-storey variant for the lowercase letter g.
+
+### v0.40 (2024-05-12)
+
+- Rename the font as 'Lete Sans Math' due to copyright reasons.
+
+### v0.37 (2024-04-18)
+
+- Glyphs U+2234–U+223B and sans-serif Greek letters U+1D756–U+1D7CB added to the bold variant.
+
+### v0.36 (2024-03-14)
+
+- First public release.
