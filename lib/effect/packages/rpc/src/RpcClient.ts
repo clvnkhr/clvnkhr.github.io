@@ -1049,18 +1049,18 @@ const defaultRetrySchedule = Schedule.exponential(500, 1.5).pipe(
 )
 
 const makePinger = Effect.fnUntraced(function*<A, E, R>(writePing: Effect.Effect<A, E, R>) {
-  let receivedPong = true
+  let recievedPong = true
   const latch = Effect.unsafeMakeLatch()
   const reset = () => {
-    receivedPong = true
+    recievedPong = true
     latch.unsafeClose()
   }
   const onPong = () => {
-    receivedPong = true
+    recievedPong = true
   }
   yield* Effect.suspend(() => {
-    if (!receivedPong) return latch.open
-    receivedPong = false
+    if (!recievedPong) return latch.open
+    recievedPong = false
     return writePing
   }).pipe(
     Effect.delay("10 seconds"),
