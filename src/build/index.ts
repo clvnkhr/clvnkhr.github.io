@@ -20,6 +20,7 @@ import packageJson from "../../package.json" with { type: "json" };
 
 // ── Helpers ──
 
+/** Run a shell command and fail if it returns non-zero. */
 const run = (cmd: Command.Command) =>
   Command.exitCode(cmd).pipe(
     Effect.flatMap((code) =>
@@ -31,11 +32,13 @@ const run = (cmd: Command.Command) =>
 
 // ── Build Steps ──
 
+/** Fail if the LeteSansMath font directory is missing. */
 const ensureFontsExist = Effect.gen(function* () {
   const fs = yield* FileSystem;
   yield* fs.stat("fonts/LeteSansMath");
 });
 
+/** Log a warning if the installed Typst version doesn't match package.json. */
 const checkTypstVersion = Effect.gen(function* () {
   const expectedVersion = packageJson.engines?.typst;
   if (!expectedVersion) {
@@ -76,6 +79,7 @@ const checkTypstVersion = Effect.gen(function* () {
   }
 });
 
+/** Parse all .typ posts, compile them, and return non-draft/non-hidden posts sorted by date. */
 const discoverPosts = Effect.gen(function* () {
   const postsDir = "blog/posts";
   const fs = yield* FileSystem;
@@ -146,6 +150,7 @@ const discoverPosts = Effect.gen(function* () {
   return posts.filter((p) => !p.draft && !p.hidden);
 });
 
+/** Wipe the dist directory and recreate the output folder structure. */
 const setupDist = Effect.gen(function* () {
   const fs = yield* FileSystem;
   yield* fs.remove("dist", { recursive: true, force: true });
@@ -157,6 +162,7 @@ const setupDist = Effect.gen(function* () {
   yield* fs.makeDirectory("dist/fonts", { recursive: true });
 });
 
+/** Copy public/ contents and src/assets/js into dist/. */
 const copyAssets = Effect.gen(function* () {
   const fs = yield* FileSystem;
   const publicEntries = yield* fs.readDirectory("public");
@@ -168,9 +174,11 @@ const copyAssets = Effect.gen(function* () {
   yield* fs.copy("src/assets/js", "dist/assets/js", { overwrite: true });
 });
 
+/** Compile Tailwind CSS to dist/assets/css/main.css. */
 const buildTailwind =
   run(Command.make("bunx", "@tailwindcss/cli", "-i", "src/assets/css/main.css", "-o", "dist/assets/css/main.css"));
 
+/** Generate SVG color utility CSS from colors used across all posts. */
 const generateSvgCss = (allColors: Set<string>) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem;
@@ -178,6 +186,7 @@ const generateSvgCss = (allColors: Set<string>) =>
     yield* fs.writeFileString("src/assets/css/svg-colors.css", css);
   });
 
+/** Write the homepage with the most recent post featured. */
 const generateHomepage = (posts: Post[]) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem;
@@ -185,6 +194,7 @@ const generateHomepage = (posts: Post[]) =>
     yield* fs.writeFileString("dist/index.html", html);
   });
 
+/** Write the blog listing page. */
 const generateBlogIndex = (posts: Post[]) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem;
@@ -192,6 +202,7 @@ const generateBlogIndex = (posts: Post[]) =>
     yield* fs.writeFileString("dist/blog/index.html", html);
   });
 
+/** Write each post's individual page. */
 const generatePostPages = (posts: Post[]) =>
   Effect.forEach(
     posts,
@@ -205,6 +216,7 @@ const generatePostPages = (posts: Post[]) =>
       }),
   );
 
+/** Write the tags index and a page per tag. */
 const generateTagPages = (posts: Post[], allTags: Set<string>) =>
   Effect.gen(function* () {
     const tagPosts: Record<string, number> = {};
@@ -237,12 +249,14 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
     );
   });
 
+/** Write the projects page. */
 const generateProjectsPage = Effect.gen(function* () {
   const fs = yield* FileSystem;
   const html = renderProjectsPage();
   yield* fs.writeFileString("dist/projects/index.html", html);
 });
 
+/** Write the custom 404 page. */
 const generateNotFoundPage = Effect.gen(function* () {
   const fs = yield* FileSystem;
   const html = renderNotFoundPage();
@@ -251,6 +265,7 @@ const generateNotFoundPage = Effect.gen(function* () {
 
 // ── Main Build Program ──
 
+/** Orchestrate the full blog build pipeline. */
 const buildBlog = Effect.gen(function* () {
   yield* Effect.log("🔨 Building blog...");
   yield* ensureFontsExist;
