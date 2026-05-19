@@ -1,8 +1,8 @@
 import { Effect, ManagedRuntime } from "effect";
 import { Command } from "@effect/platform";
+import { FileSystem } from "@effect/platform/FileSystem";
 import { BunContext } from "@effect/platform-bun";
-import { readdir, stat } from "fs/promises";
-import { join } from "path";
+import { Path } from "@effect/platform/Path";
 import { compileTypst, parseMetadata } from "./posts";
 import {
   renderHomePage,
@@ -20,8 +20,6 @@ import packageJson from "../../package.json" with { type: "json" };
 
 // ── Helpers ──
 
-const toError = (e: unknown) => e instanceof Error ? e : new Error(String(e));
-
 const run = (cmd: Command.Command) =>
   Command.exitCode(cmd).pipe(
     Effect.flatMap((code) =>
@@ -33,9 +31,9 @@ const run = (cmd: Command.Command) =>
 
 // ── Build Steps ──
 
-const ensureFontsExist = Effect.tryPromise({
-  try: () => stat("fonts/LeteSansMath").then(() => { }),
-  catch: toError,
+const ensureFontsExist = Effect.gen(function* () {
+  const fs = yield* FileSystem;
+  yield* fs.stat("fonts/LeteSansMath");
 });
 
 const checkTypstVersion = Effect.gen(function* () {
@@ -62,7 +60,7 @@ const checkTypstVersion = Effect.gen(function* () {
   }
 
   if (version !== expectedVersion) {
-    yield* Effect.logWarning("\n⚠️  WARNING: Typst version mismatch!");
+    yield* Effect.logWarning("⚠️  WARNING: Typst version mismatch!");
     yield* Effect.logWarning(`   Expected: ${expectedVersion}`);
     yield* Effect.logWarning(`   Actual:   ${version}`);
     yield* Effect.logWarning(
@@ -80,22 +78,19 @@ const checkTypstVersion = Effect.gen(function* () {
 
 const discoverPosts = Effect.gen(function* () {
   const postsDir = "blog/posts";
-  const entries = yield* Effect.tryPromise({
-    try: () => readdir(postsDir),
-    catch: toError,
-  });
+  const fs = yield* FileSystem;
+  const path = yield* Path;
+  const entries = yield* fs.readDirectory(postsDir);
   const typFiles: string[] = entries.filter((e) => e.endsWith(".typ"));
 
   const results = yield* Effect.forEach(
     typFiles,
     (entry: string) =>
       Effect.gen(function* () {
-        const typstPath = join(postsDir, entry);
+        const typstPath = path.join(postsDir, entry);
 
-        const content = yield* Effect.tryPromise({
-          try: () => Bun.file(typstPath).text(),
-          catch: toError,
-        });
+        const fs = yield* FileSystem;
+        const content = yield* fs.readFileString(typstPath);
 
         const metadata = parseMetadata(content);
 
@@ -176,42 +171,36 @@ const buildTailwind =
   run(Command.make("bunx", "@tailwindcss/cli", "-i", "src/assets/css/main.css", "-o", "dist/assets/css/main.css"));
 
 const generateSvgCss = (allColors: Set<string>) =>
-  Effect.tryPromise({
-    try: () => {
-      const css = generateSvgColorCss(Array.from(allColors));
-      return Bun.write("src/assets/css/svg-colors.css", css);
-    },
-    catch: toError,
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const css = generateSvgColorCss(Array.from(allColors));
+    yield* fs.writeFileString("src/assets/css/svg-colors.css", css);
   });
 
 const generateHomepage = (posts: Post[]) =>
-  Effect.tryPromise({
-    try: () => {
-      const html = renderHomePage(posts.length > 0 ? posts[0] : undefined);
-      return Bun.write("dist/index.html", html);
-    },
-    catch: toError,
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const html = renderHomePage(posts.length > 0 ? posts[0] : undefined);
+    yield* fs.writeFileString("dist/index.html", html);
   });
 
 const generateBlogIndex = (posts: Post[]) =>
-  Effect.tryPromise({
-    try: () => {
-      const html = renderBlogIndex(posts);
-      return Bun.write("dist/blog/index.html", html);
-    },
-    catch: toError,
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const html = renderBlogIndex(posts);
+    yield* fs.writeFileString("dist/blog/index.html", html);
   });
 
 const generatePostPages = (posts: Post[]) =>
   Effect.forEach(
     posts,
     (post: Post) =>
-      Effect.tryPromise({
-        try: () => {
-          const html = renderPostPage(post, posts);
-          return Bun.write(`dist${post.path}index.html`, html);
-        },
-        catch: toError,
+      Effect.gen(function* () {
+        const fs = yield* FileSystem;
+        const html = renderPostPage(post, posts);
+        const dir = `dist${post.path}`;
+        yield* fs.makeDirectory(dir, { recursive: true });
+        yield* fs.writeFileString(`${dir}index.html`, html);
       }),
   );
 
@@ -226,14 +215,12 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
 
     yield* run(Command.make("mkdir", "-p", "dist/tags"));
 
+    const fs = yield* FileSystem;
     const tagsIndexHtml = renderTagsIndex(
       Array.from(allTags).sort(),
       tagPosts,
     );
-    yield* Effect.tryPromise({
-      try: () => Bun.write("dist/tags/index.html", tagsIndexHtml),
-      catch: toError,
-    });
+    yield* fs.writeFileString("dist/tags/index.html", tagsIndexHtml);
 
     yield* Effect.forEach(
       Array.from(allTags),
@@ -244,29 +231,22 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
           );
           const tagHtml = renderTagPage(tag, tagPostsList);
           yield* run(Command.make("mkdir", "-p", `dist/tags/${tag}`));
-          yield* Effect.tryPromise({
-            try: () => Bun.write(`dist/tags/${tag}/index.html`, tagHtml),
-            catch: toError,
-          });
+          yield* fs.writeFileString(`dist/tags/${tag}/index.html`, tagHtml);
         }),
       { concurrency: "unbounded" },
     );
   });
 
-const generateProjectsPage = Effect.tryPromise({
-  try: () => {
-    const html = renderProjectsPage();
-    return Bun.write("dist/projects/index.html", html);
-  },
-  catch: toError,
+const generateProjectsPage = Effect.gen(function* () {
+  const fs = yield* FileSystem;
+  const html = renderProjectsPage();
+  yield* fs.writeFileString("dist/projects/index.html", html);
 });
 
-const generateNotFoundPage = Effect.tryPromise({
-  try: () => {
-    const html = renderNotFoundPage();
-    return Bun.write("dist/404.html", html);
-  },
-  catch: toError,
+const generateNotFoundPage = Effect.gen(function* () {
+  const fs = yield* FileSystem;
+  const html = renderNotFoundPage();
+  yield* fs.writeFileString("dist/404.html", html);
 });
 
 // ── Main Build Program ──
