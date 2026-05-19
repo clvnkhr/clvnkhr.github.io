@@ -88,8 +88,6 @@ const discoverPosts = Effect.gen(function* () {
     (entry: string) =>
       Effect.gen(function* () {
         const typstPath = path.join(postsDir, entry);
-
-        const fs = yield* FileSystem;
         const content = yield* fs.readFileString(typstPath);
 
         const metadata = parseMetadata(content);
@@ -149,22 +147,25 @@ const discoverPosts = Effect.gen(function* () {
 });
 
 const setupDist = Effect.gen(function* () {
-  yield* run(Command.make("rm", "-rf", "dist"));
-  yield* run(
-    Command.make(
-      "mkdir", "-p",
-      "dist/blog", "dist/projects", "dist/assets/css", "dist/assets/img", "dist/assets/js", "dist/fonts",
-    ),
-  );
+  const fs = yield* FileSystem;
+  yield* fs.remove("dist", { recursive: true, force: true });
+  yield* fs.makeDirectory("dist/blog", { recursive: true });
+  yield* fs.makeDirectory("dist/projects", { recursive: true });
+  yield* fs.makeDirectory("dist/assets/css", { recursive: true });
+  yield* fs.makeDirectory("dist/assets/img", { recursive: true });
+
+  yield* fs.makeDirectory("dist/fonts", { recursive: true });
 });
 
 const copyAssets = Effect.gen(function* () {
-  yield* run(
-    Command.make("cp", "-r", "public/*", "dist/").pipe(Command.runInShell(true)),
+  const fs = yield* FileSystem;
+  const publicEntries = yield* fs.readDirectory("public");
+  yield* Effect.forEach(
+    publicEntries,
+    (entry) => fs.copy(`public/${entry}`, `dist/${entry}`, { overwrite: true }),
+    { concurrency: "unbounded" },
   );
-  yield* run(
-    Command.make("cp", "-r", "src/assets/js", "dist/assets/"),
-  );
+  yield* fs.copy("src/assets/js", "dist/assets/js", { overwrite: true });
 });
 
 const buildTailwind =
@@ -213,9 +214,8 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
       });
     });
 
-    yield* run(Command.make("mkdir", "-p", "dist/tags"));
-
     const fs = yield* FileSystem;
+    yield* fs.makeDirectory("dist/tags", { recursive: true });
     const tagsIndexHtml = renderTagsIndex(
       Array.from(allTags).sort(),
       tagPosts,
@@ -230,7 +230,7 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
             post.tags?.includes(tag),
           );
           const tagHtml = renderTagPage(tag, tagPostsList);
-          yield* run(Command.make("mkdir", "-p", `dist/tags/${tag}`));
+          yield* fs.makeDirectory(`dist/tags/${tag}`, { recursive: true });
           yield* fs.writeFileString(`dist/tags/${tag}/index.html`, tagHtml);
         }),
       { concurrency: "unbounded" },
