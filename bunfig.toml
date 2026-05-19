@@ -2,7 +2,7 @@
 lockfile = true
 no-save-workspace-prefix = true
 minimumReleaseAge = 2592000
-minimumReleaseAgeExcludes = ["@types/bun", "bun-types", "msgpackr", "effect", "@effect/platform", "@effect/platform-bun", "@effect/platform-node-shared", "@effect/cluster", "@effect/rpc", "@effect/sql"]
+minimumReleaseAgeExcludes = ["@types/bun", "bun-types", "msgpackr"]
 
 [test]
 preload = ["./test/setup.ts"]

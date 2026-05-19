@@ -1,4 +1,4 @@
-import { Effect, pipe, ManagedRuntime } from "effect";
+import { Effect, ManagedRuntime } from "effect";
 import { Command } from "@effect/platform";
 import { BunContext } from "@effect/platform-bun";
 import { readdir, stat } from "fs/promises";
@@ -25,9 +25,9 @@ const toError = (e: unknown) => e instanceof Error ? e : new Error(String(e));
 const run = (cmd: Command.Command) =>
   Command.exitCode(cmd).pipe(
     Effect.flatMap((code) =>
-      Number(code) === 0
+      code === 0
         ? Effect.void
-        : Effect.fail(new Error(`Command failed with exit code ${String(code)}`)),
+        : Effect.fail(new Error(`Command failed with exit code ${code}`)),
     ),
   );
 
@@ -47,14 +47,14 @@ const checkTypstVersion = Effect.gen(function* () {
     return;
   }
 
-  const version = yield* pipe(
-    Command.string(Command.make("typst", "--version")),
-    Effect.map((stdout) => {
-      const match = stdout.match(/typst (\d+\.\d+\.\d+)/);
-      return match?.[1] ?? null;
-    }),
-    Effect.catchAll(() => Effect.succeed(null as string | null)),
-  );
+  const version = yield* Command.string(Command.make("typst", "--version"))
+    .pipe(
+      Effect.map((stdout: string) => {
+        const match = stdout.match(/typst (\d+\.\d+\.\d+)/);
+        return match?.[1] ?? null;
+      }),
+      Effect.catchAll(() => Effect.succeed(null as string | null)),
+    );
 
   if (!version) {
     yield* Effect.logWarning("⚠️  Could not parse Typst version");
@@ -89,49 +89,48 @@ const discoverPosts = Effect.gen(function* () {
   const results = yield* Effect.forEach(
     typFiles,
     (entry: string) =>
-      pipe(
-        Effect.gen(function* () {
-          const typstPath = join(postsDir, entry);
+      Effect.gen(function* () {
+        const typstPath = join(postsDir, entry);
 
-          const content = yield* Effect.tryPromise({
-            try: () => Bun.file(typstPath).text(),
-            catch: toError,
-          });
+        const content = yield* Effect.tryPromise({
+          try: () => Bun.file(typstPath).text(),
+          catch: toError,
+        });
 
-          const metadata = parseMetadata(content);
+        const metadata = parseMetadata(content);
 
-          if (!metadata.draft && !metadata.hidden) {
-            const hasImport = /^\s*#import "\.\.\/templates\/math\.typ": html_fmt\s*$/m.test(content);
-            const hasShow = /^\s*#show: html_fmt\s*$/m.test(content);
-            if (!hasImport || !hasShow) {
-              const missing = [
-                !hasImport ? '#import "../templates/math.typ": html_fmt' : null,
-                !hasShow ? "#show: html_fmt" : null,
-              ].filter(Boolean).join(" and ");
-              return yield* Effect.fail(
-                new Error(`${entry}: missing required template ${missing}. Post must include both lines.`),
-              );
-            }
+        if (!metadata.draft && !metadata.hidden) {
+          const hasImport = /^\s*#import "\.\.\/templates\/math\.typ": html_fmt\s*$/m.test(content);
+          const hasShow = /^\s*#show: html_fmt\s*$/m.test(content);
+          if (!hasImport || !hasShow) {
+            const missing = [
+              !hasImport ? '#import "../templates/math.typ": html_fmt' : null,
+              !hasShow ? "#show: html_fmt" : null,
+            ].filter(Boolean).join(" and ");
+            return yield* Effect.fail(
+              new Error(`${entry}: missing required template ${missing}. Post must include both lines.`),
+            );
           }
+        }
 
-          const typstResult = yield* compileTypst(typstPath);
-          const title = extractTitleFromHtml(typstResult.html);
-          if (!title) return null;
+        const typstResult = yield* compileTypst(typstPath);
+        const title = extractTitleFromHtml(typstResult.html);
+        if (!title) return null;
 
-          const slug = entry.replace(".typ", "");
-          const year = metadata.date.getFullYear();
-          const month = String(metadata.date.getMonth() + 1).padStart(2, "0");
-          const day = String(metadata.date.getDate()).padStart(2, "0");
+        const slug = entry.replace(".typ", "");
+        const year = metadata.date.getFullYear();
+        const month = String(metadata.date.getMonth() + 1).padStart(2, "0");
+        const day = String(metadata.date.getDate()).padStart(2, "0");
 
-          return {
-            ...metadata,
-            title,
-            slug,
-            path: `/blog/${year}/${month}/${day}/${slug}/`,
-            htmlContent: stripFirstHeading(typstResult.html),
-            svgColors: typstResult.svgColors,
-          } as Post;
-        }),
+        return {
+          ...metadata,
+          title,
+          slug,
+          path: `/blog/${year}/${month}/${day}/${slug}/`,
+          htmlContent: stripFirstHeading(typstResult.html),
+          svgColors: typstResult.svgColors,
+        } as Post;
+      }).pipe(
         Effect.catchAll((e: Error) =>
           Effect.logError(`Error processing ${entry}:`, e.message).pipe(
             Effect.zipRight(Effect.die(e)),
@@ -236,17 +235,22 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
       catch: toError,
     });
 
-    for (const tag of Array.from(allTags)) {
-      const tagPostsList = posts.filter((post: Post) =>
-        post.tags?.includes(tag),
-      );
-      const tagHtml = renderTagPage(tag, tagPostsList);
-      yield* run(Command.make("mkdir", "-p", `dist/tags/${tag}`));
-      yield* Effect.tryPromise({
-        try: () => Bun.write(`dist/tags/${tag}/index.html`, tagHtml),
-        catch: toError,
-      });
-    }
+    yield* Effect.forEach(
+      Array.from(allTags),
+      (tag: string) =>
+        Effect.gen(function* () {
+          const tagPostsList = posts.filter((post: Post) =>
+            post.tags?.includes(tag),
+          );
+          const tagHtml = renderTagPage(tag, tagPostsList);
+          yield* run(Command.make("mkdir", "-p", `dist/tags/${tag}`));
+          yield* Effect.tryPromise({
+            try: () => Bun.write(`dist/tags/${tag}/index.html`, tagHtml),
+            catch: toError,
+          });
+        }),
+      { concurrency: "unbounded" },
+    );
   });
 
 const generateProjectsPage = Effect.tryPromise({
@@ -282,10 +286,10 @@ const buildBlog = Effect.gen(function* () {
     post.svgColors?.forEach((c: string) => allColors.add(c)),
   );
 
+  yield* setupDist;
+
   yield* Effect.log("🎨 Generating SVG color CSS...");
   yield* generateSvgCss(allColors);
-
-  yield* setupDist;
 
   yield* Effect.log("📦 Copying assets...");
   yield* copyAssets;
@@ -327,7 +331,10 @@ const buildBlog = Effect.gen(function* () {
   }
 });
 
-const runtime = ManagedRuntime.make(BunContext.layer as any);
+const runtime = ManagedRuntime.make(BunContext.layer);
 
 export { buildBlog, runtime };
-runtime.runPromise(buildBlog);
+
+if (import.meta.main) {
+  runtime.runPromise(buildBlog);
+}

@@ -15,10 +15,10 @@
     "test:watch": "bun test --watch --path-ignore-patterns='lib/**' --path-ignore-patterns='node_modules/**' test/"
   },
   "dependencies": {
-    "effect": "file:./lib/effect/packages/effect",
-    "@effect/platform": "file:./lib/effect/packages/platform",
-    "@effect/platform-bun": "file:./lib/effect/packages/platform-bun",
-    "@effect/platform-node-shared": "file:./lib/effect/packages/platform-node-shared",
+    "effect": "3.21.1",
+    "@effect/platform": "0.95.0",
+    "@effect/platform-bun": "0.88.0",
+    "@effect/platform-node-shared": "0.59.0",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",
     "pagefind": "^1.0.0"
@@ -28,7 +28,7 @@
     "@seangenabe/catppuccin-tailwindcss-v4": "^1.0.2",
     "@tailwindcss/cli": "^4.1.18",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/bun": "latest",
+    "@types/bun": "1.2.0",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
