@@ -2,6 +2,7 @@
 // tags: blog, tags
 
 #import "../templates/math.typ": html_fmt
+#show: html_fmt
 
 #set document(title: "Blog Tags")
 #title()

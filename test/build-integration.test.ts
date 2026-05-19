@@ -28,13 +28,13 @@ describe('Build Integration', () => {
   });
 
   it('should create post directory structure', async () => {
-    const postDir = join(distDir, 'blog', '2025', '01', '15');
+    const postDir = join(distDir, 'blog', '2026', '01', '02');
     const postStat = await stat(postDir);
     expect(postStat.isDirectory()).toBe(true);
   });
 
   it('should create individual post page', async () => {
-    const postPath = join(distDir, 'blog', '2025', '01', '15', 'my-first-post', 'index.html');
+    const postPath = join(distDir, 'blog', '2026', '01', '02', 'hello-typst', 'index.html');
     const postStat = await stat(postPath);
     expect(postStat.isFile()).toBe(true);
   });
@@ -53,35 +53,34 @@ describe('Build Integration', () => {
     expect(content).toContain('ctp-');
   });
 
-  it('should include post title in blog index', async () => {
+  it('should include real post title in blog index', async () => {
     const blogPath = join(distDir, 'blog', 'index.html');
     const content = await Bun.file(blogPath).text();
-    expect(content).toContain('My First Typst Post');
+    expect(content).toContain('Hello Typst');
   });
 
   it('should include post date in blog index', async () => {
     const blogPath = join(distDir, 'blog', 'index.html');
     const content = await Bun.file(blogPath).text();
-    expect(content).toContain('January 15, 2025');
+    expect(content).toContain('January 2, 2026');
   });
 
   it('should include tags in blog index', async () => {
     const blogPath = join(distDir, 'blog', 'index.html');
     const content = await Bun.file(blogPath).text();
-    expect(content).toContain('tutorial');
     expect(content).toContain('typst');
-    expect(content).toContain('test');
+    expect(content).toContain('ai-assisted');
   });
 
   it('should render full post page with content', async () => {
-    const postPath = join(distDir, 'blog', '2025', '01', '15', 'my-first-post', 'index.html');
+    const postPath = join(distDir, 'blog', '2026', '01', '02', 'hello-typst', 'index.html');
     const content = await Bun.file(postPath).text();
-    expect(content).toContain('My First Typst Post');
-    expect(content).toContain('This is a sample blog post');
+    expect(content).toContain('Hello Typst');
+    expect(content).toContain('sample blog post written in Typst format');
   });
 
   it('should include math rendering in post page', async () => {
-    const postPath = join(distDir, 'blog', '2025', '01', '15', 'my-first-post', 'index.html');
+    const postPath = join(distDir, 'blog', '2026', '01', '02', 'hello-typst', 'index.html');
     const content = await Bun.file(postPath).text();
     expect(content).toContain('typst-frame');
     expect(content).toContain('<svg');

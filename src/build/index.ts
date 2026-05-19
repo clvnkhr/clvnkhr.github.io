@@ -99,6 +99,21 @@ const discoverPosts = Effect.gen(function* () {
           });
 
           const metadata = parseMetadata(content);
+
+          if (!metadata.draft && !metadata.hidden) {
+            const hasImport = /^\s*#import "\.\.\/templates\/math\.typ": html_fmt\s*$/m.test(content);
+            const hasShow = /^\s*#show: html_fmt\s*$/m.test(content);
+            if (!hasImport || !hasShow) {
+              const missing = [
+                !hasImport ? '#import "../templates/math.typ": html_fmt' : null,
+                !hasShow ? "#show: html_fmt" : null,
+              ].filter(Boolean).join(" and ");
+              return yield* Effect.fail(
+                new Error(`${entry}: missing required template ${missing}. Post must include both lines.`),
+              );
+            }
+          }
+
           const typstResult = yield* compileTypst(typstPath);
           const title = extractTitleFromHtml(typstResult.html);
           if (!title) return null;

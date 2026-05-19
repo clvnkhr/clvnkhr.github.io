@@ -5,7 +5,7 @@
 #import "../templates/math.typ": html_fmt
 #show: html_fmt
 
-#set document(title: "Notes on Lewin's QM book - Appendix")
+#set document(title: "Notes on Lewin Appendix")
 #title()
 
 #let footnote-ac-w11 = [In fact, $W^(1,1)([0,1]) = "AC"([0,1])$. the space $"AC"$ of absolutely continuous functions is given by the following modification of uniform continuity -- instead of saying that we have $epsilon$ control on any $delta$ interval, we require this control on arbitrary finite collections of disjoint intervals, whose total length is at most $delta$. This helps rule out counterexamples like the Cantor function, where the $epsilon$ control is maintained on each small interval, but not on a null set (which can be approximated by a collection of intervals of small total length).

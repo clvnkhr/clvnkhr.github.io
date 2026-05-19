@@ -11,8 +11,8 @@
     "serve": "bunx serve dist -l 3000",
     "dev": "bun run build:watch & bun run serve",
     "clean": "rm -rf dist",
-    "test": "bun test test/",
-    "test:watch": "bun test --watch test/"
+    "test": "bun test --path-ignore-patterns='lib/**' --path-ignore-patterns='node_modules/**' test/",
+    "test:watch": "bun test --watch --path-ignore-patterns='lib/**' --path-ignore-patterns='node_modules/**' test/"
   },
   "dependencies": {
     "effect": "file:./lib/effect/packages/effect",

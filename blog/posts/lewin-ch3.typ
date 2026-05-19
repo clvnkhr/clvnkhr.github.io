@@ -47,7 +47,7 @@
 $
   norm(B v) <= alpha norm(A v) + C norm(v).
 $
-- $B$ is infinitesimally $A$-bounded if it is *A* bounded with relative bound $alpha$ for all $alpha>0$.
+- $B$ is infinitesimally $A$-bounded if it is $A$-bounded with relative bound $alpha$ for all $alpha>0$.
 - *Theorem (Rellich--Kato)* Suppose that $B$ is $A$-bounded with relative bound $alpha$. Then $A+B$ is self-adjoint on $D(A)$.
 
   Moreover, if $cal(D) subset D(A)$ is a dense subspace such that $overline(A|_cal(D))=A$, then we also have $A+B = overline((A+B)|_cal(D))$, i.e. $(A+B)|_cal(D)$ is essentially self-adjoint.
