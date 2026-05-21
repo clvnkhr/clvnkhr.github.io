@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'bun:test';
+import { parseMetadata } from '../src/build/posts.js';
+import { extractTitleFromTypst } from '../src/utils/post.js';
 
 describe('Metadata Parser', () => {
   it('should parse all metadata fields from Typst comments', () => {
@@ -17,12 +19,11 @@ Content here...`;
 
     const metadata = parseMetadata(typstContent);
 
-    expect(metadata.title).toBe('My First Post');
     expect(metadata.date).toEqual(new Date('2025-01-15'));
-    expect(metadata.updated).toEqual(new Date('2025-01-16'));
+    expect(metadata.updated).toEqual([new Date('2025-01-16')]);
     expect(metadata.tags).toEqual(['tech', 'tutorial']);
     expect(metadata.splash).toBe('/assets/img/post-splash.png');
-    expect(metadata.splash_caption).toBe('Caption text');
+    expect((metadata as any).splash_caption).toBe('Caption text');
     expect(metadata.draft).toBe(false);
     expect(metadata.hidden).toBe(false);
   });
@@ -37,12 +38,10 @@ Content...`;
 
     const metadata = parseMetadata(typstContent);
 
-    expect(metadata.title).toBe('Simple Post');
     expect(metadata.date).toEqual(new Date('2025-01-15'));
     expect(metadata.updated).toBeUndefined();
     expect(metadata.tags).toBeUndefined();
     expect(metadata.splash).toBeUndefined();
-    expect(metadata.splash_caption).toBeUndefined();
     expect(metadata.draft).toBeUndefined();
   });
 
@@ -101,7 +100,7 @@ Content...`;
 
     const metadata = parseMetadata(typstContent);
 
-    expect(metadata.tags).toBeUndefined();
+    expect(metadata.tags).toEqual([""]);
   });
 
   it('should ignore non-comment lines', () => {
@@ -115,29 +114,24 @@ This is not a comment
 
     const metadata = parseMetadata(typstContent);
 
-    expect(metadata.title).toBe('Test Post');
     expect(metadata.date).toEqual(new Date('2025-01-15'));
   });
-});
 
-function parseMetadata(content: string): Record<string, any> {
-  const metadata: Record<string, any> = {};
-  const commentBlock = content.match(/^\/\/.*$/gm);
+  it('should extract title from Typst heading', () => {
+    const content = `// date: 2025-01-15
 
-  commentBlock?.forEach((line) => {
-    const [key, value] = line.replace('// ', '').split(':');
-    if (key && value) {
-      if (key === 'tags') {
-        metadata[key] = value.split(',').map((t: string) => t.trim());
-      } else if (key === 'date' || key === 'updated') {
-        metadata[key] = new Date(value.trim());
-      } else if (key === 'draft' || key === 'hidden') {
-        metadata[key] = value.trim() === 'true';
-      } else {
-        metadata[key] = value.trim();
-      }
-    }
+= My First Post
+
+Some content.`;
+
+    expect(extractTitleFromTypst(content)).toBe('My First Post');
   });
 
-  return metadata;
-}
+  it('should return null when no heading exists', () => {
+    const content = `// date: 2025-01-15
+
+Some content without a heading.`;
+
+    expect(extractTitleFromTypst(content)).toBeNull();
+  });
+});

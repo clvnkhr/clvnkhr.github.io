@@ -3,7 +3,13 @@ import { Command } from "@effect/platform";
 import { PostMetadata } from '../types/post.js';
 import { extractColorsFromHtml } from '../utils/svg-colors.js';
 
-const toError = (e: unknown) => e instanceof Error ? e : new Error(String(e));
+class TypstCompileFailed {
+  readonly _tag = "TypstCompileFailed";
+  constructor(
+    readonly file: string,
+    readonly message: string,
+  ) {}
+}
 
 export function parseMetadata(content: string): PostMetadata {
   const metadata: Record<string, any> = {};
@@ -61,17 +67,18 @@ export const compileTypst = (typstFile: string) =>
   Command.string(
     Command.make("typst", "compile", "--format", "html", "--features", "html", "--root", "..", "--font-path", "fonts/LeteSansMath", typstFile, "-"),
   ).pipe(
-    Effect.flatMap((html) =>
-      Effect.try({
-        try: () => {
-          const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
-          if (!bodyMatch) throw new Error(`Could not find body tag in Typst output for ${typstFile}`);
-          const htmlContent = bodyMatch[1].trim();
-          const svgColors = extractColorsFromHtml(htmlContent);
-          return { html: htmlContent, svgColors };
-        },
-        catch: toError,
-      }),
+    Effect.andThen((html) => {
+      const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
+      if (!bodyMatch) {
+        return Effect.fail(new TypstCompileFailed(typstFile, "Could not find body tag in Typst output"));
+      }
+      const htmlContent = bodyMatch[1].trim();
+      const svgColors = extractColorsFromHtml(htmlContent);
+      return Effect.succeed({ html: htmlContent, svgColors });
+    }),
+    Effect.catchAll((e) =>
+      e instanceof TypstCompileFailed
+        ? Effect.fail(e)
+        : Effect.fail(new TypstCompileFailed(typstFile, String(e))),
     ),
-    Effect.catchAll((e) => Effect.fail(e instanceof Error ? e : new Error(String(e)))),
   );

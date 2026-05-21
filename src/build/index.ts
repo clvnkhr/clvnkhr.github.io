@@ -18,27 +18,45 @@ import { extractTitleFromHtml, stripFirstHeading } from "../utils/post";
 import { generateSvgColorCss } from "../utils/svg-colors";
 import packageJson from "../../package.json" with { type: "json" };
 
+// ── Domain Errors ──
+
+export class MissingFontsDirectory {
+  readonly _tag = "MissingFontsDirectory";
+  constructor(readonly path: string) { }
+}
+
+export class InvalidPostTemplate {
+  readonly _tag = "InvalidPostTemplate";
+  constructor(readonly entry: string, readonly missing: string) { }
+}
+
+export class CommandFailed {
+  readonly _tag = "CommandFailed";
+  constructor(readonly name: string, readonly exitCode: number) { }
+}
+
 // ── Helpers ──
 
-/** Run a shell command and fail if it returns non-zero. */
-const run = (cmd: Command.Command) =>
+const step = <A, E, R>(label: string, effect: Effect.Effect<A, E, R>) =>
+  Effect.log(label).pipe(Effect.zipRight(effect));
+
+const runNamed = (name: string, cmd: Command.Command) =>
   Command.exitCode(cmd).pipe(
-    Effect.flatMap((code) =>
+    Effect.andThen((code) =>
       code === 0
         ? Effect.void
-        : Effect.fail(new Error(`Command failed with exit code ${code}`)),
+        : Effect.fail(new CommandFailed(name, code)),
     ),
   );
 
 // ── Build Steps ──
 
-/** Fail if the LeteSansMath font directory is missing. */
-const ensureFontsExist = Effect.gen(function* () {
-  const fs = yield* FileSystem;
-  yield* fs.stat("fonts/LeteSansMath");
-});
+const ensureFontsExist = FileSystem.pipe(
+  Effect.andThen((fs) => fs.stat("fonts/LeteSansMath")),
+  Effect.mapError(() => new MissingFontsDirectory("fonts/LeteSansMath")),
+  Effect.asVoid,
+);
 
-/** Log a warning if the installed Typst version doesn't match package.json. */
 const checkTypstVersion = Effect.gen(function* () {
   const expectedVersion = packageJson.engines?.typst;
   if (!expectedVersion) {
@@ -79,66 +97,77 @@ const checkTypstVersion = Effect.gen(function* () {
   }
 });
 
-/** Parse all .typ posts, compile them, and return non-draft/non-hidden posts sorted by date. */
+const validatePostTemplate = (
+  entry: string,
+  content: string,
+  metadata: ReturnType<typeof parseMetadata>,
+) => {
+  if (metadata.draft || metadata.hidden) return Effect.void;
+
+  const hasImport =
+    /^\s*#import "\.\.\/templates\/math\.typ": html_fmt\s*$/m.test(content);
+  const hasShow = /^\s*#show: html_fmt\s*$/m.test(content);
+
+  if (hasImport && hasShow) return Effect.void;
+
+  const missing = [
+    !hasImport ? '#import "../templates/math.typ": html_fmt' : null,
+    !hasShow ? "#show: html_fmt" : null,
+  ]
+    .filter(Boolean)
+    .join(" and ");
+
+  return Effect.fail(new InvalidPostTemplate(entry, missing));
+};
+
+const loadPost = (postsDir: string, entry: string) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const path = yield* Path;
+
+    const typstPath = path.join(postsDir, entry);
+    const content = yield* fs.readFileString(typstPath);
+    const metadata = parseMetadata(content);
+
+    yield* validatePostTemplate(entry, content, metadata);
+
+    const typstResult = yield* compileTypst(typstPath);
+    const title = extractTitleFromHtml(typstResult.html);
+    if (!title) return null;
+
+    const slug = entry.replace(".typ", "");
+    const year = metadata.date.getFullYear();
+    const month = String(metadata.date.getMonth() + 1).padStart(2, "0");
+    const day = String(metadata.date.getDate()).padStart(2, "0");
+
+    return {
+      ...metadata,
+      title,
+      slug,
+      path: `/blog/${year}/${month}/${day}/${slug}/`,
+      htmlContent: stripFirstHeading(typstResult.html),
+      svgColors: typstResult.svgColors,
+    } as Post;
+  });
+
 const discoverPosts = Effect.gen(function* () {
-  const postsDir = "blog/posts";
   const fs = yield* FileSystem;
-  const path = yield* Path;
+  const postsDir = "blog/posts";
   const entries = yield* fs.readDirectory(postsDir);
-  const typFiles: string[] = entries.filter((e) => e.endsWith(".typ"));
+  const typFiles = entries.filter((e) => e.endsWith(".typ"));
 
-  const results = yield* Effect.forEach(
+  const maybePosts = yield* Effect.forEach(
     typFiles,
-    (entry: string) =>
-      Effect.gen(function* () {
-        const typstPath = path.join(postsDir, entry);
-        const content = yield* fs.readFileString(typstPath);
-
-        const metadata = parseMetadata(content);
-
-        if (!metadata.draft && !metadata.hidden) {
-          const hasImport = /^\s*#import "\.\.\/templates\/math\.typ": html_fmt\s*$/m.test(content);
-          const hasShow = /^\s*#show: html_fmt\s*$/m.test(content);
-          if (!hasImport || !hasShow) {
-            const missing = [
-              !hasImport ? '#import "../templates/math.typ": html_fmt' : null,
-              !hasShow ? "#show: html_fmt" : null,
-            ].filter(Boolean).join(" and ");
-            return yield* Effect.fail(
-              new Error(`${entry}: missing required template ${missing}. Post must include both lines.`),
-            );
-          }
-        }
-
-        const typstResult = yield* compileTypst(typstPath);
-        const title = extractTitleFromHtml(typstResult.html);
-        if (!title) return null;
-
-        const slug = entry.replace(".typ", "");
-        const year = metadata.date.getFullYear();
-        const month = String(metadata.date.getMonth() + 1).padStart(2, "0");
-        const day = String(metadata.date.getDate()).padStart(2, "0");
-
-        return {
-          ...metadata,
-          title,
-          slug,
-          path: `/blog/${year}/${month}/${day}/${slug}/`,
-          htmlContent: stripFirstHeading(typstResult.html),
-          svgColors: typstResult.svgColors,
-        } as Post;
-      }).pipe(
-        Effect.catchAll((e: Error) =>
-          Effect.logError(`Error processing ${entry}:`, e.message).pipe(
-            Effect.zipRight(Effect.die(e)),
-          ),
+    (entry) =>
+      loadPost(postsDir, entry).pipe(
+        Effect.tapError((e) =>
+          Effect.logError(`Error processing ${entry}: ${String(e)}`),
         ),
       ),
     { concurrency: "unbounded" },
   );
 
-  const posts: Post[] = results.filter((p): p is Post => p !== null);
-  posts.sort((a, b) => b.date.getTime() - a.date.getTime());
+  const posts = maybePosts.filter((p): p is Post => p !== null);
 
   const hiddenPosts = posts.filter((p) => p.hidden);
   if (hiddenPosts.length > 0) {
@@ -147,10 +176,11 @@ const discoverPosts = Effect.gen(function* () {
     );
   }
 
-  return posts.filter((p) => !p.draft && !p.hidden);
+  return posts
+    .filter((p) => !p.draft && !p.hidden)
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
 });
 
-/** Wipe the dist directory and recreate the output folder structure. */
 const setupDist = Effect.gen(function* () {
   const fs = yield* FileSystem;
   yield* fs.remove("dist", { recursive: true, force: true });
@@ -162,7 +192,6 @@ const setupDist = Effect.gen(function* () {
   yield* fs.makeDirectory("dist/fonts", { recursive: true });
 });
 
-/** Copy public/ contents and src/assets/js into dist/. */
 const copyAssets = Effect.gen(function* () {
   const fs = yield* FileSystem;
   const publicEntries = yield* fs.readDirectory("public");
@@ -174,35 +203,45 @@ const copyAssets = Effect.gen(function* () {
   yield* fs.copy("src/assets/js", "dist/assets/js", { overwrite: true });
 });
 
-/** Compile Tailwind CSS to dist/assets/css/main.css. */
-const buildTailwind =
-  run(Command.make("bunx", "@tailwindcss/cli", "-i", "src/assets/css/main.css", "-o", "dist/assets/css/main.css"));
+const buildTailwind = runNamed(
+  "tailwind",
+  Command.make(
+    "bunx",
+    "@tailwindcss/cli",
+    "-i",
+    "src/assets/css/main.css",
+    "-o",
+    "dist/assets/css/main.css",
+  ),
+);
 
-/** Generate SVG color utility CSS from colors used across all posts. */
 const generateSvgCss = (allColors: Set<string>) =>
-  Effect.gen(function* () {
-    const fs = yield* FileSystem;
-    const css = generateSvgColorCss(Array.from(allColors));
-    yield* fs.writeFileString("src/assets/css/svg-colors.css", css);
-  });
+  FileSystem.pipe(
+    Effect.andThen((fs) =>
+      fs.writeFileString(
+        "src/assets/css/svg-colors.css",
+        generateSvgColorCss(Array.from(allColors)),
+      ),
+    ),
+  );
 
-/** Write the homepage with the most recent post featured. */
 const generateHomepage = (posts: Post[]) =>
-  Effect.gen(function* () {
-    const fs = yield* FileSystem;
-    const html = renderHomePage(posts.length > 0 ? posts[0] : undefined);
-    yield* fs.writeFileString("dist/index.html", html);
-  });
+  FileSystem.pipe(
+    Effect.andThen((fs) =>
+      fs.writeFileString(
+        "dist/index.html",
+        renderHomePage(posts.length > 0 ? posts[0] : undefined),
+      ),
+    ),
+  );
 
-/** Write the blog listing page. */
 const generateBlogIndex = (posts: Post[]) =>
-  Effect.gen(function* () {
-    const fs = yield* FileSystem;
-    const html = renderBlogIndex(posts);
-    yield* fs.writeFileString("dist/blog/index.html", html);
-  });
+  FileSystem.pipe(
+    Effect.andThen((fs) =>
+      fs.writeFileString("dist/blog/index.html", renderBlogIndex(posts)),
+    ),
+  );
 
-/** Write each post's individual page. */
 const generatePostPages = (posts: Post[]) =>
   Effect.forEach(
     posts,
@@ -216,15 +255,14 @@ const generatePostPages = (posts: Post[]) =>
       }),
   );
 
-/** Write the tags index and a page per tag. */
 const generateTagPages = (posts: Post[], allTags: Set<string>) =>
   Effect.gen(function* () {
-    const tagPosts: Record<string, number> = {};
-    posts.forEach((post: Post) => {
-      post.tags?.forEach((tag: string) => {
-        tagPosts[tag] = (tagPosts[tag] || 0) + 1;
-      });
-    });
+    const tagPosts = posts.reduce<Record<string, number>>((acc, post) => {
+      for (const tag of post.tags ?? []) {
+        acc[tag] = (acc[tag] || 0) + 1;
+      }
+      return acc;
+    }, {});
 
     const fs = yield* FileSystem;
     yield* fs.makeDirectory("dist/tags", { recursive: true });
@@ -249,87 +287,66 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
     );
   });
 
-/** Write the projects page. */
-const generateProjectsPage = Effect.gen(function* () {
-  const fs = yield* FileSystem;
-  const html = renderProjectsPage();
-  yield* fs.writeFileString("dist/projects/index.html", html);
-});
+const generateProjectsPage = FileSystem.pipe(
+  Effect.andThen((fs) =>
+    fs.writeFileString("dist/projects/index.html", renderProjectsPage()),
+  ),
+);
 
-/** Write the custom 404 page. */
-const generateNotFoundPage = Effect.gen(function* () {
-  const fs = yield* FileSystem;
-  const html = renderNotFoundPage();
-  yield* fs.writeFileString("dist/404.html", html);
-});
+const generateNotFoundPage = FileSystem.pipe(
+  Effect.andThen((fs) =>
+    fs.writeFileString("dist/404.html", renderNotFoundPage()),
+  ),
+);
 
 // ── Main Build Program ──
 
-/** Orchestrate the full blog build pipeline. */
-const buildBlog = Effect.gen(function* () {
-  yield* Effect.log("🔨 Building blog...");
-  yield* ensureFontsExist;
+const buildBlog = (options: { watch: boolean }) =>
+  Effect.gen(function* () {
+    yield* Effect.log("🔨 Building blog...");
+    yield* ensureFontsExist;
+    yield* checkTypstVersion;
 
-  yield* checkTypstVersion;
+    const posts: Post[] = yield* discoverPosts;
 
-  const isWatchMode = process.argv.includes("--watch");
+    const allColors = new Set(posts.flatMap((post) => post.svgColors ?? []));
+    const allTags = new Set(posts.flatMap((post) => post.tags ?? []));
 
-  const posts: Post[] = yield* discoverPosts;
+    yield* setupDist;
 
-  const allColors = new Set<string>();
-  posts.forEach((post: Post) =>
-    post.svgColors?.forEach((c: string) => allColors.add(c)),
-  );
+    yield* Effect.all([
+      step("🎨 Generating SVG color CSS...", generateSvgCss(allColors)),
+      step("📦 Copying assets...", copyAssets),
+      step("🚀 Generating projects page...", generateProjectsPage),
+      step("🔍 Generating 404 page...", generateNotFoundPage),
+    ], { concurrency: "unbounded" });
 
-  yield* setupDist;
+    yield* step("🎨 Building Tailwind CSS...", buildTailwind);
 
-  yield* Effect.log("🎨 Generating SVG color CSS...");
-  yield* generateSvgCss(allColors);
+    yield* Effect.all([
+      step("🏠 Generating homepage...", generateHomepage(posts)),
+      step("📋 Generating blog index...", generateBlogIndex(posts)),
+      step("📄 Generating post pages...", generatePostPages(posts)),
+      step("🏷️  Generating tag pages...", generateTagPages(posts, allTags)),
+    ], { concurrency: "unbounded" });
 
-  yield* Effect.log("📦 Copying assets...");
-  yield* copyAssets;
+    yield* Effect.log("✅ Build complete!");
+    yield* Effect.log(
+      `Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 projects page, 1 404 page`,
+    );
 
-  yield* Effect.log("🎨 Building Tailwind CSS...");
-  yield* buildTailwind;
-
-  yield* Effect.log("🏠 Generating homepage...");
-  yield* generateHomepage(posts);
-
-  yield* Effect.log("📋 Generating blog index...");
-  yield* generateBlogIndex(posts);
-
-  yield* Effect.log("📄 Generating post pages...");
-  yield* generatePostPages(posts);
-
-  yield* Effect.log("🏷️  Generating tag pages...");
-  const allTags = new Set<string>();
-  posts.forEach((post: Post) =>
-    post.tags?.forEach((tag: string) => allTags.add(tag)),
-  );
-  yield* generateTagPages(posts, allTags);
-
-  yield* Effect.log("🚀 Generating projects page...");
-  yield* generateProjectsPage;
-
-  yield* Effect.log("🔍 Generating 404 page...");
-  yield* generateNotFoundPage;
-
-  yield* Effect.log("✅ Build complete!");
-  yield* Effect.log(
-    `Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 projects page, 1 404 page`,
-  );
-
-  if (!isWatchMode) {
-    yield* Effect.log("🌐 To view your blog:");
-    yield* Effect.log("   bun run serve     # Start local server");
-    yield* Effect.log("   Then visit: http://localhost:3000\n");
-  }
-});
+    if (!options.watch) {
+      yield* Effect.log("🌐 To view your blog:");
+      yield* Effect.log("   bun run serve     # Start local server");
+      yield* Effect.log("   Then visit: http://localhost:3000\n");
+    }
+  });
 
 const runtime = ManagedRuntime.make(BunContext.layer);
 
-export { buildBlog, runtime };
-
 if (import.meta.main) {
-  runtime.runPromise(buildBlog);
+  const watch = process.argv.includes("--watch");
+  runtime.runPromise(buildBlog({ watch }));
 }
+
+export { buildBlog, runtime };

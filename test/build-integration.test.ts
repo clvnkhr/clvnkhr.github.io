@@ -7,7 +7,7 @@ describe('Build Integration', () => {
   const distDir = 'dist';
 
   beforeAll(async () => {
-    await runtime.runPromise(buildBlog);
+    await runtime.runPromise(buildBlog({ watch: false }));
   });
 
   it('should create dist directory', async () => {

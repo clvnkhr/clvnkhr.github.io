@@ -30,9 +30,10 @@
 #let del = $partial$
 #let infty = $oo$ // for the poor LLM that keeps trying to  use latex's \infty
 #let Subset = $subset.double$
+#let Supset = $supset.double$
 #let ran = math.op("ran")
 #let fH = $frak(H)$
-#let essran = math.op("ess-ran")
+#let essran = math.op("ess"+math.thin+"ran")
 
 #let bangle(..xs) = {
   $
@@ -95,5 +96,7 @@ $
     + if $|f_n (x)| <= C$ and $f_n -> f$ pointwise on $RR$, then $f_n (A)v -> f(A)v$ for all $v in fH$.
   ]
 - (Spectral measure) Let $v$ be a unit vector of $fH$. By the functional calculus, the map
-  $ f in C^0_b (RR,RR) mapsto phi_v (f) := bangle(v, f(A)v) in RR $
+  $
+    f in C^0_b (RR,RR) mapsto phi_v (f) := bangle(v, f(A)v) in RR
+  $
   is a continuous linear form. If in addition $f>=0$ we can write $f(A) = sqrt(f)(A)^2$ which shows that $phi_v$ is a positive linear form.
