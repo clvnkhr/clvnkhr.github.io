@@ -91,6 +91,23 @@ describe('Theme System', () => {
     expect(cssContent).toContain('.typst-frame [stroke="#cccccc"]');
   });
 
+  it('should center images in prose', async () => {
+    const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
+
+    expect(cssContent).toContain('.prose img');
+    expect(cssContent).toContain('margin-left: auto');
+    expect(cssContent).toContain('margin-right: auto');
+  });
+
+  it('should center figure SVGs and captions in prose', async () => {
+    const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
+
+    expect(cssContent).toContain('.prose figure svg');
+    expect(cssContent).toContain('margin-left: auto');
+    expect(cssContent).toContain('.prose figure figcaption');
+    expect(cssContent).toContain('text-align: center');
+  });
+
   it('should have tag color classes with CSS variables', async () => {
     const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
 

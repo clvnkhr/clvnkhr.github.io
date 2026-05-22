@@ -42,19 +42,22 @@ $a+b=#{a+b}$
 #let xs = (0, 1, 2, 3, 4)
 
 
-#html.frame(lq.diagram(
-  title: [Precious data],
-  xlabel: $x$,
-  ylabel: $y$,
+#figure(
+  html.frame(lq.diagram(
+    title: [Precious data],
+    xlabel: $x$,
+    ylabel: $y$,
 
-  lq.plot(xs, (3, 5, 4, 2, 3), mark: "s", label: [A]),
-  lq.plot(
-    xs,
-    x => 2 * calc.cos(x) + 3,
-    mark: "o",
-    label: [B],
-  ),
-))
+    lq.plot(xs, (3, 5, 4, 2, 3), mark: "s", label: [A]),
+    lq.plot(
+      xs,
+      x => 2 * calc.cos(x) + 3,
+      mark: "o",
+      label: [B],
+    ),
+  )),
+  caption: [Precious data],
+)
 
 = Conclusion
 

@@ -115,7 +115,7 @@ function makeMockCommandExecutor(): CommandExecutor {
 // ── Shared Mock Runtime ──
 
 const mockFs = makeMockFileSystem({
-  "blog/typ-templates/html-fmt-preamble.typ": '#import "../typ-templates/math.typ": html_fmt\n#show: html_fmt',
+  "blog/typ-templates/html-fmt-preamble.typ": '#import "../typ-templates/html-fmt.typ": html_fmt\n#show: html_fmt',
 });
 const mockCmd = makeMockCommandExecutor();
 

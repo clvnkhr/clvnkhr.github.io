@@ -35,6 +35,20 @@ body {
   margin-right: auto;
 }
 
+.prose img {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.prose figure svg {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.prose figure figcaption {
+  text-align: center;
+}
+
 .prose a {
   color: var(--color-ctp-mauve) !important;
   font-weight: normal !important;
