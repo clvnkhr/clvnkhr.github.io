@@ -6,11 +6,12 @@
     "typst": "0.14.2"
   },
   "scripts": {
-    "build": "bun run lint && bun run src/build/index.ts",
+    "build": "bun run typecheck && bun run lint && bun run src/build/index.ts",
     "build:watch": "bun --watch src/build/index.ts",
     "serve": "bunx serve dist -l 3000",
     "dev": "bun run build:watch & bun run serve",
     "clean": "rm -rf dist",
+    "typecheck": "bunx tsc --noEmit",
     "lint": "eslint src/ test/",
     "test": "bun test --path-ignore-patterns='lib/**' --path-ignore-patterns='node_modules/**' test/",
     "test:watch": "bun test --watch --path-ignore-patterns='lib/**' --path-ignore-patterns='node_modules/**' test/"

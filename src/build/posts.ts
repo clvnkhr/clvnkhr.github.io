@@ -13,7 +13,15 @@ class TypstCompileFailed {
   ) {}
 }
 
-export function parseMetadata(content: string): PostMetadata {
+class MetadataParseError {
+  readonly _tag = "MetadataParseError";
+  constructor(
+    readonly field: string,
+    readonly message: string,
+  ) {}
+}
+
+export function parseMetadata(content: string): Effect.Effect<PostMetadata, MetadataParseError> {
   const lines = content.split('\n');
 
   let date: Date | undefined;
@@ -73,8 +81,13 @@ export function parseMetadata(content: string): PostMetadata {
     }
   }
 
-  return {
-    date: date ?? new Date(NaN),
+  if (!date) {
+    return Effect.fail(new MetadataParseError("date", "Missing required date field"));
+  }
+
+  return Effect.succeed<PostMetadata>({
+    title: "",
+    date,
     tags,
     updated,
     draft,
@@ -82,7 +95,7 @@ export function parseMetadata(content: string): PostMetadata {
     description,
     splash,
     splash_caption,
-  };
+  });
 }
 
 export const compileTypst = (typstFile: string, content: string) =>

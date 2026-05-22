@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'bun:test';
 import { Effect, Layer, Logger, LogLevel, ManagedRuntime, Option, Stream } from "effect";
 import { FileSystem, File } from "@effect/platform/FileSystem";
+import type { Command } from "@effect/platform/Command";
 import { CommandExecutor, TypeId, ExitCode } from "@effect/platform/CommandExecutor";
 import { SystemError } from "@effect/platform/Error";
 import { BunContext } from "@effect/platform-bun";
@@ -101,7 +102,7 @@ function makeMockCommandExecutor(): CommandExecutor {
     [TypeId]: TypeId,
     start: () => Effect.die('unexpected CommandExecutor.start call'),
     exitCode: () => Effect.succeed(ExitCode(0)),
-    string: (cmd: { _tag: string; command: string; args: ReadonlyArray<string> }) => {
+    string: (cmd: Command) => {
       if (cmd._tag === 'StandardCommand' && cmd.command === 'typst') {
         if (cmd.args[0] === 'compile') {
           return Effect.succeed(MOCK_TYPST_HTML);
@@ -109,6 +110,9 @@ function makeMockCommandExecutor(): CommandExecutor {
         if (cmd.args[0] === '--version') {
           return Effect.succeed('typst 0.14.2');
         }
+      }
+      if (cmd._tag === 'PipedCommand') {
+        return Effect.succeed('');
       }
       return Effect.succeed('');
     },
@@ -261,7 +265,7 @@ describe('processTypstOutput', () => {
   });
 });
 
-// ── Metadata Parser Tests (pure function, no mocking needed) ──
+// ── Metadata Parser Tests (Effect-based, no mocking needed) ──
 
 describe('Metadata Parser without html_fmt', () => {
   it('should parse metadata when no #import lines exist after comments', () => {
@@ -273,7 +277,7 @@ describe('Metadata Parser without html_fmt', () => {
 
 Content here.`;
 
-    const metadata = parseMetadata(content);
+    const metadata = Effect.runSync(parseMetadata(content));
     expect(metadata.date).toEqual(new Date('2026-06-01'));
     expect(metadata.tags).toEqual(['test', 'metadata']);
   });
@@ -286,7 +290,7 @@ Content here.`;
 
 = Some Heading`;
 
-    const metadata = parseMetadata(content);
+    const metadata = Effect.runSync(parseMetadata(content));
     expect(metadata.date).toEqual(new Date('2026-06-01'));
     expect(metadata.tags).toEqual(['test']);
   });
@@ -300,7 +304,7 @@ Content here.`;
 
 = An Equation Post`;
 
-    const metadata = parseMetadata(content);
+    const metadata = Effect.runSync(parseMetadata(content));
     expect(metadata.date).toEqual(new Date('2026-06-01'));
     expect(metadata.tags).toEqual(['maths']);
   });

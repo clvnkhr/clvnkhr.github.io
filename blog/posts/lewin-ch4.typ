@@ -125,4 +125,4 @@ $
   $
   In words - $mu_(A,v)$ is the cyllindrical projection on $sigma(A)$ of the probability measure $|U v(s,n)|^2 dd mu(s, n)$ on $sigma(A) times NN$. We then have $v in D(A)$ iff $mu_(A,v)$ has a moment of order two, and in this case $integral_RR s^2 dd mu_(A,v) = norm(A v)^2$. We also have $integral_RR s dd mu_(A,v)(s) = bangle(v, A v)$.
 
-- *Corollary 4.10:Functional Calculus for locally bounded Borel functions* Let $(A, D(A))$ be self-adjoint and let $f: RR -> CC$ be a ocally bounded Borel function. Then $f(A)$ defined above is independent of the isomorphism $U$ used to represent $A$ as a multiplication operator.
+- *Corollary 4.10: Functional Calculus for locally bounded Borel functions* Let $(A, D(A))$ be self-adjoint and let $f: RR -> CC$ be a ocally bounded Borel function. Then $f(A)$ defined above is independent of the isomorphism $U$ used to represent $A$ as a multiplication operator.

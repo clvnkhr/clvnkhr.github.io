@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'bun:test';
+import { Effect } from "effect";
 import { parseMetadata } from '../src/build/posts.js';
 import { extractTitleFromTypst } from '../src/utils/post.js';
 
@@ -17,7 +18,7 @@ describe('Metadata Parser', () => {
 
 Content here...`;
 
-    const metadata = parseMetadata(typstContent);
+    const metadata = Effect.runSync(parseMetadata(typstContent));
 
     expect(metadata.date).toEqual(new Date('2025-01-15'));
     expect(metadata.updated).toEqual([new Date('2025-01-16')]);
@@ -36,7 +37,7 @@ Content here...`;
 
 Content...`;
 
-    const metadata = parseMetadata(typstContent);
+    const metadata = Effect.runSync(parseMetadata(typstContent));
 
     expect(metadata.date).toEqual(new Date('2025-01-15'));
     expect(metadata.updated).toBeUndefined();
@@ -52,7 +53,7 @@ Content...`;
 
 = Post`;
 
-    const metadata = parseMetadata(typstContent);
+    const metadata = Effect.runSync(parseMetadata(typstContent));
 
     expect(metadata.tags).toEqual(['tech', 'tutorial', 'typst']);
   });
@@ -70,8 +71,8 @@ Content...`;
 
 = Published`;
 
-    expect(parseMetadata(trueContent).draft).toBe(true);
-    expect(parseMetadata(falseContent).draft).toBe(false);
+    expect(Effect.runSync(parseMetadata(trueContent)).draft).toBe(true);
+    expect(Effect.runSync(parseMetadata(falseContent)).draft).toBe(false);
   });
 
   it('should parse boolean hidden field', () => {
@@ -87,8 +88,8 @@ Content...`;
 
 = Visible`;
 
-    expect(parseMetadata(trueContent).hidden).toBe(true);
-    expect(parseMetadata(falseContent).hidden).toBe(false);
+    expect(Effect.runSync(parseMetadata(trueContent)).hidden).toBe(true);
+    expect(Effect.runSync(parseMetadata(falseContent)).hidden).toBe(false);
   });
 
   it('should handle empty value gracefully', () => {
@@ -98,7 +99,7 @@ Content...`;
 
 = Test`;
 
-    const metadata = parseMetadata(typstContent);
+    const metadata = Effect.runSync(parseMetadata(typstContent));
 
     expect(metadata.tags).toEqual([""]);
   });
@@ -112,9 +113,17 @@ Content...`;
 This is not a comment
 = Another Heading`;
 
-    const metadata = parseMetadata(typstContent);
+    const metadata = Effect.runSync(parseMetadata(typstContent));
 
     expect(metadata.date).toEqual(new Date('2025-01-15'));
+  });
+
+  it('should fail on missing date', () => {
+    const content = `// title: No Date Post
+
+= No Date`;
+
+    expect(() => Effect.runSync(parseMetadata(content))).toThrow('Missing required date field');
   });
 
   it('should extract title from Typst heading', () => {

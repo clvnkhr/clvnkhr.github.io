@@ -101,7 +101,7 @@ const loadPost = (postsDir: string, entry: string) =>
 
     const typstPath = path.join(postsDir, entry);
     const content = yield* fs.readFileString(typstPath);
-    const metadata = parseMetadata(content);
+    const metadata = yield* parseMetadata(content);
 
     const rawHtml = yield* compileTypst(typstPath, content);
     const typstResult = yield* processTypstOutput(typstPath, rawHtml);
