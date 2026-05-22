@@ -24,6 +24,11 @@ $
   integral_(-oo)^oo e^(-x^2) dif x = sqrt(pi)
 $
 
+A numbered display equation:
+
+#set math.equation(numbering: "(1)")
+$ frac(x, y) = z $ <eq1>
+
 = Other Features
 
 == Code block:
