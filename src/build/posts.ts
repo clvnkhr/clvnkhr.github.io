@@ -74,7 +74,7 @@ export const compileTypst = (typstFile: string, content: string) =>
     const basename = path.basename(typstFile);
     const tmpFile = path.join(dir, `.tmp_${basename}`);
 
-    const preamble = yield* fs.readFileString("blog/templates/html-fmt-preamble.typ");
+    const preamble = yield* fs.readFileString("blog/typ-templates/html-fmt-preamble.typ");
     yield* fs.writeFileString(tmpFile, preamble + "\n\n" + content);
 
     const compile = Command.string(

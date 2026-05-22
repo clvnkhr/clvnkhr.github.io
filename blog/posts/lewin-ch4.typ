@@ -30,7 +30,7 @@
 #let Supset = $supset.double$
 #let ran = math.op("ran")
 #let fH = $frak(H)$
-#let essran = math.op("ess"+math.thin+"ran")
+#let essran = math.op("ess" + math.thin + "ran")
 
 #let bangle(..xs) = {
   $
@@ -96,4 +96,8 @@ $
   $
     f in C^0_b (RR,RR) mapsto phi_v (f) := bangle(v, f(A)v) in RR
   $
-  is a continuous linear form. If in addition $f>=0$ we can write $f(A) = sqrt(f)(A)^2$ which shows that $phi_v$ is a positive linear form on $C^0_b$, so by .
+  is a continuous linear form. If in addition $f>=0$ we can write $f(A) = sqrt(f)(A)^2$ which shows that $phi_v$ is a positive linear form on $C^0_b$, so by Riesz--Markov, there is a unique Borel probability measure $mu_(A,v)$ on $RR$ such that
+  $
+    bangle(v, f(A)v) = integral_RR f(s) dd mu_(A,v)(s).
+  $
+  With $mu, B=sigma(A) times NN, a(s,n)=s$ from the Spectral Theorem we can write
