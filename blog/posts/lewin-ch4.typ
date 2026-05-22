@@ -101,3 +101,6 @@ $
     bangle(v, f(A)v) = integral_RR f(s) dd mu_(A,v)(s).
   $
   With $mu, B=sigma(A) times NN, a(s,n)=s$ from the Spectral Theorem we can write
+  $
+    
+  $

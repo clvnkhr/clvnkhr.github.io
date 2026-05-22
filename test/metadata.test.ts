@@ -23,7 +23,7 @@ Content here...`;
     expect(metadata.updated).toEqual([new Date('2025-01-16')]);
     expect(metadata.tags).toEqual(['tech', 'tutorial']);
     expect(metadata.splash).toBe('/assets/img/post-splash.png');
-    expect((metadata as any).splash_caption).toBe('Caption text');
+    expect(metadata.splash_caption).toBe('Caption text');
     expect(metadata.draft).toBe(false);
     expect(metadata.hidden).toBe(false);
   });

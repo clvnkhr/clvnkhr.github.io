@@ -2,9 +2,10 @@ export interface PostMetadata {
   title: string;
   date: Date;
   updated?: Date[];
-  tags: string[];
+  tags?: string[];
   description?: string;
   splash?: string;
+  splash_caption?: string;
   draft?: boolean;
   hidden?: boolean;
 }

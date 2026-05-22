@@ -170,8 +170,7 @@ describe('Post Utils', () => {
     });
 
     it('should return empty array when current post has undefined tags', () => {
-      const current = makePost('current', []);
-      (current as any).tags = undefined;
+      const current = { ...makePost('current', []), tags: undefined };
       const allPosts = [current, makePost('other', ['tech'])];
 
       expect(getRelatedPosts(current, allPosts)).toEqual([]);
@@ -196,7 +195,7 @@ describe('Post Utils', () => {
       const allPosts = [
         current,
         makePost('tagged', ['tech']),
-        { ...makePost('untagged', []), tags: undefined } as any,
+        { ...makePost('untagged', []), tags: undefined },
       ];
 
       expect(getRelatedPosts(current, allPosts)).toHaveLength(1);

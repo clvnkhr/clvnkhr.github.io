@@ -14,9 +14,16 @@ class TypstCompileFailed {
 }
 
 export function parseMetadata(content: string): PostMetadata {
-  const metadata: Record<string, any> = {};
-
   const lines = content.split('\n');
+
+  let date: Date | undefined;
+  let tags: string[] | undefined;
+  let updated: Date[] | undefined;
+  let draft: boolean | undefined;
+  let hidden: boolean | undefined;
+  let description: string | undefined;
+  let splash: string | undefined;
+  let splash_caption: string | undefined;
 
   for (const line of lines) {
     if (!line.startsWith('//') && !line.startsWith('#import')) {
@@ -35,34 +42,47 @@ export function parseMetadata(content: string): PostMetadata {
       if (key === 'title') {
         continue;
       } else if (key === 'tags') {
-        metadata[key] = value.split(',').map((t: string) => t.trim());
+        tags = value.split(',').map((t: string) => t.trim());
       } else if (key === 'updated') {
         const dates = value.split(',').map((d: string) => d.trim()).filter(Boolean);
-        metadata.updated = dates.length > 0 ? dates.map((d: string) => new Date(d)) : undefined;
+        updated = dates.length > 0 ? dates.map((d: string) => new Date(d)) : undefined;
       } else if (key === 'draft') {
-        metadata[key] = value === 'true';
+        draft = value === 'true';
       } else if (key === 'hidden') {
-        metadata[key] = value === 'true';
+        hidden = value === 'true';
       } else if (key === 'date') {
         const dates = value.split(',').map((d: string) => d.trim()).filter(Boolean);
         if (dates.length > 0) {
-          metadata[key] = new Date(dates[0]);
+          date = new Date(dates[0]);
           if (dates.length > 1) {
             const additionalDates = dates.slice(1).map((d: string) => new Date(d));
-            if (!metadata.updated) {
-              metadata.updated = additionalDates;
+            if (updated) {
+              updated = [...updated, ...additionalDates];
             } else {
-              metadata.updated = [...metadata.updated, ...additionalDates];
+              updated = additionalDates;
             }
           }
         }
-      } else {
-        metadata[key] = value;
+      } else if (key === 'description') {
+        description = value;
+      } else if (key === 'splash') {
+        splash = value;
+      } else if (key === 'splash_caption') {
+        splash_caption = value;
       }
     }
   }
 
-  return metadata as PostMetadata;
+  return {
+    date: date ?? new Date(NaN),
+    tags,
+    updated,
+    draft,
+    hidden,
+    description,
+    splash,
+    splash_caption,
+  };
 }
 
 export const compileTypst = (typstFile: string, content: string) =>

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
-import { Effect, Layer, Logger, LogLevel, ManagedRuntime, Stream } from "effect";
-import { FileSystem } from "@effect/platform/FileSystem";
+import { Effect, Layer, Logger, LogLevel, ManagedRuntime, Option, Stream } from "effect";
+import { FileSystem, File } from "@effect/platform/FileSystem";
 import { CommandExecutor, TypeId, ExitCode } from "@effect/platform/CommandExecutor";
 import { SystemError } from "@effect/platform/Error";
 import { BunContext } from "@effect/platform-bun";
@@ -19,16 +19,22 @@ function makeMockFileSystem(files: Record<string, string>): FileSystem {
         case 'stat':
           return (path: string) => {
             if (dirs.has(path) || path === 'fonts/LeteSansMath') {
-              return Effect.succeed({
-                type: 2, mtime: new Date(), atime: new Date(), birthtime: new Date(),
-                dev: 0, ino: 0, mode: 0o755, nlink: undefined, uid: undefined,
-                gid: undefined, rdev: undefined, size: BigInt(0), blksize: undefined,
-                blocks: undefined,
-                isDirectory: () => path !== 'fonts/LeteSansMath',
-                isFile: () => path === 'fonts/LeteSansMath',
-                isBlockDevice: () => false, isCharacterDevice: () => false,
-                isFIFO: () => false, isSocket: () => false, isSymbolicLink: () => false,
-              } as any);
+              return Effect.succeed<File.Info>({
+                type: path === 'fonts/LeteSansMath' ? "File" : "Directory",
+                mtime: Option.some(new Date()),
+                atime: Option.some(new Date()),
+                birthtime: Option.some(new Date()),
+                dev: 0,
+                ino: Option.some(0),
+                mode: 0o755,
+                nlink: Option.none(),
+                uid: Option.none(),
+                gid: Option.none(),
+                rdev: Option.none(),
+                size: BigInt(0) as File.Info["size"],
+                blksize: Option.none(),
+                blocks: Option.none(),
+              });
             }
             return Effect.fail(new SystemError({
               reason: "NotFound", module: "FileSystem", method: "stat", pathOrDescriptor: path,
@@ -95,7 +101,7 @@ function makeMockCommandExecutor(): CommandExecutor {
     [TypeId]: TypeId,
     start: () => Effect.die('unexpected CommandExecutor.start call'),
     exitCode: () => Effect.succeed(ExitCode(0)),
-    string: (cmd: any) => {
+    string: (cmd: { _tag: string; command: string; args: ReadonlyArray<string> }) => {
       if (cmd._tag === 'StandardCommand' && cmd.command === 'typst') {
         if (cmd.args[0] === 'compile') {
           return Effect.succeed(MOCK_TYPST_HTML);
