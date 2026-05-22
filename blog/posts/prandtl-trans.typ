@@ -1,8 +1,6 @@
 // date: 2026-02-08
 // tags: maths, fluid-dynamics, translation, ai-assisted
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set document(title: "Translation of Prandtl's original paper on the boundary layer")
 #title()

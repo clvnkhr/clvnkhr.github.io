@@ -1,8 +1,6 @@
 // date: 2024-04-10
 // tags: coding, maths
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set document(title: "Excellent Notes, Books, and Courses")
 #title()

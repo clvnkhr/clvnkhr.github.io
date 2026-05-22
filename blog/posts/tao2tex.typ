@@ -1,8 +1,6 @@
 // date: 2023-06-23
 // tags: projects, python, latex, web-scraping, maths
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set document(title: "tao2tex")
 #title()

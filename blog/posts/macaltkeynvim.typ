@@ -1,8 +1,6 @@
 // date: 2023-01-06
 // tags: projects, neovim, coding
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set document(title: "macaltkey.nvim")
 #title()

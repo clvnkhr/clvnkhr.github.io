@@ -1,5 +1,4 @@
 // Global Typst template for math show rules
-// This file is imported by all blog posts to handle HTML export
 
 #let span_center(it) = html.span(
   style: "display: block; text-align: center; mx-auto",

@@ -1,5 +1,7 @@
 import { Effect } from "effect";
 import { Command } from "@effect/platform";
+import { FileSystem } from "@effect/platform/FileSystem";
+import { Path } from "@effect/platform/Path";
 import { PostMetadata } from '../types/post.js';
 import { extractColorsFromHtml } from '../utils/svg-colors.js';
 
@@ -63,22 +65,38 @@ export function parseMetadata(content: string): PostMetadata {
   return metadata as PostMetadata;
 }
 
-export const compileTypst = (typstFile: string) =>
-  Command.string(
-    Command.make("typst", "compile", "--format", "html", "--features", "html", "--root", "..", "--font-path", "fonts/LeteSansMath", typstFile, "-"),
-  ).pipe(
-    Effect.andThen((html) => {
-      const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
-      if (!bodyMatch) {
-        return Effect.fail(new TypstCompileFailed(typstFile, "Could not find body tag in Typst output"));
-      }
-      const htmlContent = bodyMatch[1].trim();
-      const svgColors = extractColorsFromHtml(htmlContent);
-      return Effect.succeed({ html: htmlContent, svgColors });
-    }),
-    Effect.catchAll((e) =>
-      e instanceof TypstCompileFailed
-        ? Effect.fail(e)
-        : Effect.fail(new TypstCompileFailed(typstFile, String(e))),
-    ),
-  );
+export const compileTypst = (typstFile: string, content: string) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const path = yield* Path;
+
+    const dir = path.dirname(typstFile);
+    const basename = path.basename(typstFile);
+    const tmpFile = path.join(dir, `.tmp_${basename}`);
+
+    const preamble = yield* fs.readFileString("blog/templates/html-fmt-preamble.typ");
+    yield* fs.writeFileString(tmpFile, preamble + "\n\n" + content);
+
+    const compile = Command.string(
+      Command.make("typst", "compile", "--format", "html", "--features", "html", "--root", "..", "--font-path", "fonts/LeteSansMath", tmpFile, "-"),
+    ).pipe(
+      Effect.andThen((html) => {
+        const bodyMatch = html.match(/<body>([\s\S]*?)<\/body>/);
+        if (!bodyMatch) {
+          return Effect.fail(new TypstCompileFailed(typstFile, "Could not find body tag in Typst output"));
+        }
+        const htmlContent = bodyMatch[1].trim();
+        const svgColors = extractColorsFromHtml(htmlContent);
+        return Effect.succeed({ html: htmlContent, svgColors });
+      }),
+      Effect.catchAll((e) =>
+        e instanceof TypstCompileFailed
+          ? Effect.fail(e)
+          : Effect.fail(new TypstCompileFailed(typstFile, String(e))),
+      ),
+    );
+
+    return yield* compile.pipe(
+      Effect.ensuring(fs.remove(tmpFile).pipe(Effect.ignore)),
+    );
+  });

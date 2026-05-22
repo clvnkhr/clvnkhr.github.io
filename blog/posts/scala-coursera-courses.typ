@@ -2,8 +2,6 @@
 // tags: coding, maths
 // hidden: true
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set document(title: "Scala Coursera Courses")
 #title()

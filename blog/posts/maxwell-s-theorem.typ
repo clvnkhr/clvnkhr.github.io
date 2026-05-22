@@ -1,8 +1,6 @@
 // date: 2023-07-13
 // tags: maths
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set quote(block: true)
 #show quote: set text(weight: 100)

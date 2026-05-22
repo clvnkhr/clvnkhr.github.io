@@ -25,11 +25,6 @@ export class MissingFontsDirectory {
   constructor(readonly path: string) { }
 }
 
-export class InvalidPostTemplate {
-  readonly _tag = "InvalidPostTemplate";
-  constructor(readonly entry: string, readonly missing: string) { }
-}
-
 export class CommandFailed {
   readonly _tag = "CommandFailed";
   constructor(readonly name: string, readonly exitCode: number) { }
@@ -97,28 +92,7 @@ const checkTypstVersion = Effect.gen(function* () {
   }
 });
 
-const validatePostTemplate = (
-  entry: string,
-  content: string,
-  metadata: ReturnType<typeof parseMetadata>,
-) => {
-  if (metadata.draft || metadata.hidden) return Effect.void;
 
-  const hasImport =
-    /^\s*#import "\.\.\/templates\/math\.typ": html_fmt\s*$/m.test(content);
-  const hasShow = /^\s*#show: html_fmt\s*$/m.test(content);
-
-  if (hasImport && hasShow) return Effect.void;
-
-  const missing = [
-    !hasImport ? '#import "../templates/math.typ": html_fmt' : null,
-    !hasShow ? "#show: html_fmt" : null,
-  ]
-    .filter(Boolean)
-    .join(" and ");
-
-  return Effect.fail(new InvalidPostTemplate(entry, missing));
-};
 
 const loadPost = (postsDir: string, entry: string) =>
   Effect.gen(function* () {
@@ -129,9 +103,7 @@ const loadPost = (postsDir: string, entry: string) =>
     const content = yield* fs.readFileString(typstPath);
     const metadata = parseMetadata(content);
 
-    yield* validatePostTemplate(entry, content, metadata);
-
-    const typstResult = yield* compileTypst(typstPath);
+    const typstResult = yield* compileTypst(typstPath, content);
     const title = extractTitleFromHtml(typstResult.html);
     if (!title) return null;
 
@@ -154,7 +126,7 @@ const discoverPosts = Effect.gen(function* () {
   const fs = yield* FileSystem;
   const postsDir = "blog/posts";
   const entries = yield* fs.readDirectory(postsDir);
-  const typFiles = entries.filter((e) => e.endsWith(".typ"));
+  const typFiles = entries.filter((e) => e.endsWith(".typ") && !e.startsWith("."));
 
   const maybePosts = yield* Effect.forEach(
     typFiles,

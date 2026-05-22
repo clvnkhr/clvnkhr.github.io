@@ -10,9 +10,6 @@
 
 #title("Notes on Lewin Ch4: Spectral Theorem and Functional Calculus")
 
-#import "../templates/math.typ": html_fmt
-// #show: html_fmt
-
 #import "@preview/quick-maths:0.2.1": shorthands
 
 #show: shorthands.with(
@@ -99,4 +96,4 @@ $
   $
     f in C^0_b (RR,RR) mapsto phi_v (f) := bangle(v, f(A)v) in RR
   $
-  is a continuous linear form. If in addition $f>=0$ we can write $f(A) = sqrt(f)(A)^2$ which shows that $phi_v$ is a positive linear form.
+  is a continuous linear form. If in addition $f>=0$ we can write $f(A) = sqrt(f)(A)^2$ which shows that $phi_v$ is a positive linear form on $C^0_b$, so by .

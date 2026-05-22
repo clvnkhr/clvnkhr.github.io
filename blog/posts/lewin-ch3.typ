@@ -10,8 +10,6 @@
 
 #title("Notes on Lewin Ch3: Self-adjointness Criteria: Rellich, Kato and Friedrichs")
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #import "@preview/quick-maths:0.2.1": shorthands
 

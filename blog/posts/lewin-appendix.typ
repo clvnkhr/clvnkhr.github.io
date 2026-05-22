@@ -2,8 +2,6 @@
 // tags: maths, notes, quantum-mechanics, sobolev-spaces, functional-analysis, rough
 // hidden: false
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set document(title: "Notes on Lewin Appendix")
 #title()

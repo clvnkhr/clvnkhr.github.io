@@ -6,6 +6,7 @@ minimumReleaseAgeExcludes = ["@types/bun", "bun-types", "msgpackr"]
 
 [test]
 preload = ["./test/setup.ts"]
+pathIgnorePatterns = ["lib/**", "node_modules/**"]
 
 [serve.static]
 plugins = []

@@ -1,8 +1,6 @@
 // date: 2026-01-02
 // tags: typst, test, ai-assisted
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #import "@preview/lilaq:0.5.0" as lq
 

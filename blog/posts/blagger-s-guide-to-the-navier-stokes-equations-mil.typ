@@ -2,8 +2,6 @@
 // tags: maths
 // hidden: true
 
-#import "../templates/math.typ": html_fmt
-#show: html_fmt
 
 #set document(title: "Blagger's guide to the Navier-Stokes Equations Millenium Problem")
 #title()
