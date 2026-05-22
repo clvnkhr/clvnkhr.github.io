@@ -92,15 +92,37 @@ $
     + if $f|_(sigma(A)) == 0$ then $f(A) = 0$.
     + if $|f_n (x)| <= C$ and $f_n -> f$ pointwise on $RR$, then $f_n (A)v -> f(A)v$ for all $v in fH$.
   ]
-- (Spectral measure) Let $v$ be a unit vector of $fH$. By the functional calculus, the map
+- (Spectral measure) Let $v$ be a unit vector of $H$. By the functional calculus, the map
   $
-    f in C^0_b (RR,RR) mapsto phi_v (f) := bangle(v, f(A)v) in RR
+    f in C^0_b (RR,RR) mapsto phi_v(f) := bangle(v, f(A)v) in RR
   $
-  is a continuous linear form. If in addition $f>=0$ we can write $f(A) = sqrt(f)(A)^2$ which shows that $phi_v$ is a positive linear form on $C^0_b$, so by Riesz--Markov, there is a unique Borel probability measure $mu_(A,v)$ on $RR$ such that
+  is a continuous linear form. If in addition $f >= 0$ we can write
+  $
+    f(A) = sqrt(f)(A)^2,
+  $
+  which shows that $phi_v$ is a positive linear form on $C^0_b$. Hence by Riesz--Markov, there is a unique Borel probability measure $mu_(A,v)$ on $RR$ such that
   $
     bangle(v, f(A)v) = integral_RR f(s) dd mu_(A,v)(s).
   $
-  With $mu, B=sigma(A) times NN, a(s,n)=s$ from the Spectral Theorem we can write
+
+  With $(B,mu) = (sigma(A) times NN, mu)$ and $a(s,n)=s$ from the Spectral Theorem, if $U : H -> L^2(B,mu)$ is the corresponding unitary, we can write
   $
-    
+    bangle(v, f(A)v)
+    = bangle(U v, f(a) U v)_(L^2(B,mu))
+    = integral_B f(a) abs(U v)^2 dd mu
+    = integral_(sigma(A) times NN) f(s) abs(U v(s, n))^2 dd mu(s, n).
   $
+  Therefore $mu_(A,v)$ is the pushforward measure#footnote[The book writes
+    $dd mu_(A,v)(s) = sum_(n in NN) |U v(s,n)|^2 dd mu(s, n)$
+    but this is a little fast and loose with notation; the sum is a partial integration of $dd mu(s, n)$ that comes from the pushforward. The Proper Way is to define the slice measures $mu_n (E) = mu(E times {n})$, then we can write $dd mu_(A,v)(s) = sum_(n in NN) |U v(s,n)|^2 dd mu_n (s)$.]
+  $
+    mu_(A,v) = a_*(abs(U v)^2 mu),
+  $
+  i.e. for every Borel set $E subset RR$,
+  $
+    mu_(A,v)(E) = integral_(a^(-1)(E)) abs(U v(x))^2 dd mu(x)
+    = integral_(E times NN) abs(U v(s, n))^2 dd mu(s, n).
+  $
+  In words - $mu_(A,v)$ is the cyllindrical projection on $sigma(A)$ of the probability measure $|U v(s,n)|^2 dd mu(s, n)$ on $sigma(A) times NN$. We then have $v in D(A)$ iff $mu_(A,v)$ has a moment of order two, and in this case $integral_RR s^2 dd mu_(A,v) = norm(A v)^2$. We also have $integral_RR s dd mu_(A,v)(s) = bangle(v, A v)$.
+
+- *Corollary 4.10:Functional Calculus for locally bounded Borel functions* Let $(A, D(A))$ be self-adjoint and let $f: RR -> CC$ be a ocally bounded Borel function. Then $f(A)$ defined above is independent of the isomorphism $U$ used to represent $A$ as a multiplication operator.

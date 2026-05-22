@@ -11,7 +11,14 @@ export function TagsIndex({ allTags, tagPosts }: TagsIndexProps) {
   return (
     <Layout title={`Tags - ${site.title}`}>
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-8 text-ctp-mauve">All Tags</h1>
+        <h1 className="text-4xl font-bold mb-2 text-ctp-mauve">All Tags</h1>
+        <p className="text-ctp-subtext0 mb-8">
+          See the{' '}
+          <a href="/blog/2026/02/11/tags/" className="text-ctp-mauve hover:underline">
+            Blog Tags
+          </a>{' '}
+          post for elaboration on each tag.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {allTags.map(tag => (
             <a
