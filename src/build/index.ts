@@ -3,7 +3,7 @@ import { Command } from "@effect/platform";
 import { FileSystem } from "@effect/platform/FileSystem";
 import { BunContext } from "@effect/platform-bun";
 import { Path } from "@effect/platform/Path";
-import { compileTypst, parseMetadata } from "./posts";
+import { compileTypst, parseMetadata, processTypstOutput } from "./posts";
 import {
   renderHomePage,
   renderBlogIndex,
@@ -103,7 +103,8 @@ const loadPost = (postsDir: string, entry: string) =>
     const content = yield* fs.readFileString(typstPath);
     const metadata = parseMetadata(content);
 
-    const typstResult = yield* compileTypst(typstPath, content);
+    const rawHtml = yield* compileTypst(typstPath, content);
+    const typstResult = yield* processTypstOutput(typstPath, rawHtml);
     const title = extractTitleFromHtml(typstResult.html);
     if (!title) return null;
 
@@ -279,13 +280,17 @@ const buildBlog = (options: { watch: boolean }) =>
     yield* ensureFontsExist;
     yield* checkTypstVersion;
 
+    // 1. Compile all posts: typst → HTML (body + SVG colors)
     const posts: Post[] = yield* discoverPosts;
 
+    // Aggregate per-post SVG colors for dark-mode inversion CSS
     const allColors = new Set(posts.flatMap((post) => post.svgColors ?? []));
     const allTags = new Set(posts.flatMap((post) => post.tags ?? []));
 
+    // 2. Set up output directory and static assets
     yield* setupDist;
 
+    // Can run in parallel — no dependency between these
     yield* Effect.all([
       step("🎨 Generating SVG color CSS...", generateSvgCss(allColors)),
       step("📦 Copying assets...", copyAssets),
@@ -293,8 +298,10 @@ const buildBlog = (options: { watch: boolean }) =>
       step("🔍 Generating 404 page...", generateNotFoundPage),
     ], { concurrency: "unbounded" });
 
+    // Tailwind must finish before pages use its CSS
     yield* step("🎨 Building Tailwind CSS...", buildTailwind);
 
+    // 3. Generate pages — all depend on Tailwind CSS being ready
     yield* Effect.all([
       step("🏠 Generating homepage...", generateHomepage(posts)),
       step("📋 Generating blog index...", generateBlogIndex(posts)),

@@ -5,7 +5,7 @@ import { CommandExecutor, TypeId, ExitCode } from "@effect/platform/CommandExecu
 import { SystemError } from "@effect/platform/Error";
 import { BunContext } from "@effect/platform-bun";
 import { buildBlog } from '../src/build/index.js';
-import { compileTypst, parseMetadata } from '../src/build/posts.js';
+import { compileTypst, parseMetadata, processTypstOutput } from '../src/build/posts.js';
 
 // ── Mock Factories ──
 
@@ -209,11 +209,31 @@ describe('MissingFontsDirectory', () => {
   });
 });
 
-// ── Compile Typst Tests ──
+// ── Typst Compilation and Post-Processing ──
 
 describe('compileTypst', () => {
-  it('should return html and svgColors from mocked typst output', async () => {
-    const result = await compileTypst('blog/posts/test-post.typ', '= Test\n\nContent.').pipe(
+  it('should return raw HTML from mocked typst output', async () => {
+    const rawHtml = await compileTypst('blog/posts/test-post.typ', '= Test\n\nContent.').pipe(
+      silence,
+      testRuntime.runPromise,
+    );
+
+    expect(typeof rawHtml).toBe('string');
+    expect(rawHtml).toContain('<html>');
+  });
+
+  it('should clean up temp files after compilation', async () => {
+    const rawHtml = await compileTypst('blog/posts/test-post.typ', '= Test\n\nContent.').pipe(
+      silence,
+      testRuntime.runPromise,
+    );
+    expect(rawHtml).toBeTruthy();
+  });
+});
+
+describe('processTypstOutput', () => {
+  it('should return html and svgColors from typst output', async () => {
+    const result = await processTypstOutput('blog/posts/test-post.typ', MOCK_TYPST_HTML).pipe(
       silence,
       testRuntime.runPromise,
     );
@@ -225,21 +245,13 @@ describe('compileTypst', () => {
   });
 
   it('should extract body content from typst HTML output', async () => {
-    const result = await compileTypst('blog/posts/test-post.typ', '= Test\n\nContent.').pipe(
+    const result = await processTypstOutput('blog/posts/test-post.typ', MOCK_TYPST_HTML).pipe(
       silence,
       testRuntime.runPromise,
     );
 
     expect(result.html).toContain('Test Post');
     expect(result.html).toContain('Hello world.');
-  });
-
-  it('should clean up temp files after compilation', async () => {
-    const compiled = await compileTypst('blog/posts/test-post.typ', '= Test\n\nContent.').pipe(
-      silence,
-      testRuntime.runPromise,
-    );
-    expect(compiled.html).toBeTruthy();
   });
 });
 
