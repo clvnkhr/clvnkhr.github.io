@@ -1,14 +1,17 @@
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 
 interface LayoutProps {
   children: React.ReactNode;
   title?: string;
   darkMode?: boolean;
   showBackToTop?: boolean;
+  site?: SiteConfig;
 }
 
-export function Layout({ children, title, darkMode = true, showBackToTop = true }: LayoutProps) {
+export function Layout({ children, title, darkMode = true, showBackToTop = true, site = defaultSite }: LayoutProps) {
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
       <head>
@@ -28,11 +31,11 @@ export function Layout({ children, title, darkMode = true, showBackToTop = true 
         <script src="/assets/js/back-to-top.js" defer></script>
       </head>
       <body className="min-h-screen bg-ctp-base text-ctp-text antialiased">
-        <Header />
+        <Header site={site} />
         <main className="min-h-[calc(100vh-theme(spacing.64))]">
           {children}
         </main>
-        <Footer showBackToTop={showBackToTop} />
+        <Footer site={site} showBackToTop={showBackToTop} />
       </body>
     </html>
   );

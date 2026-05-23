@@ -1,12 +1,19 @@
-export const site = {
+import { Context, Layer } from "effect";
+
+export type SiteConfig = {
+  title: string;
+  description: string;
+  repository: string;
+  author: { name: string };
+  navigation: Array<{ label: string; href: string }>;
+};
+
+export const site: SiteConfig = {
   title: "Calvin Khor",
   description: "Personal blog about mathematics, programming, and technology",
-  url: "https://clvnkhr.github.io",
   repository: "https://github.com/clvnkhr/clvnkhr.github.io",
   author: {
     name: "Calvin Khor",
-    email: "",
-    github: "clvnkhr",
   },
   navigation: [
     { label: "Home", href: "/" },
@@ -16,3 +23,10 @@ export const site = {
     { label: "Tags", href: "/tags/" },
   ],
 };
+
+export class SiteConfigTag extends Context.Tag("SiteConfig")<
+  SiteConfigTag,
+  SiteConfig
+>() {
+  static readonly Live = Layer.succeed(SiteConfigTag, site);
+}

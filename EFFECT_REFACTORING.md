@@ -18,11 +18,13 @@ Opportunities to further use [Effect-TS](https://effect.website/) for improved t
 
 ### 2. Extract runtime creation for test isolation
 
-**File:** `src/build/index.ts:324`
+**File:** `src/build/index.ts:324` → `src/build/runtime.ts`
 
 **Problem:** `ManagedRuntime.make(BunContext.layer)` is a module-level singleton. Tests that need a custom runtime must create their own, but the singleton encourages coupling.
 
 **Fix:** Extract runtime creation into a separate module or factory function so entrypoint and tests each create their own isolated runtime.
+
+**Status:** ✅ Done — `src/build/runtime.ts` exports `makeRuntime()` factory. Entrypoint and integration tests each call the factory independently.
 
 ---
 
@@ -40,11 +42,13 @@ Opportunities to further use [Effect-TS](https://effect.website/) for improved t
 
 ### 4. Wrap configs in `Context.Tag` + `Layer`
 
-**Files:** `src/config/site.ts`, `src/config/projects.ts`
+**Files:** `src/config/site.ts`
 
 **Problem:** Configs are static singletons. Tests cannot inject mock configs without modifying module state.
 
 **Fix:** Wrap in `Context.Tag` + `Layer.succeed` so tests can `Layer.provide` mock configs.
+
+**Status:** ✅ Done — `SiteConfigTag` with `Live` layer; all components accept optional `site` prop; build pipeline reads via Effect context; 5 tests covering default config, mock injection, and component rendering.
 
 ---
 
@@ -55,6 +59,8 @@ Opportunities to further use [Effect-TS](https://effect.website/) for improved t
 **Problem:** React SSR failures (`renderToString` throws) are untyped. Callers in `index.ts` handle them via Effect, but the error is a generic `unknown`.
 
 **Fix:** Wrap each `renderToString` call in `Effect.try` with a typed `RenderError` class.
+
+**Status:** ✅ Done — `RenderError` class with `_tag` discriminant; `render()` helper wraps `renderToString` in `Effect.try`; all render functions return `Effect<string, RenderError>`; callers in `index.ts` use `yield*`.
 
 ---
 

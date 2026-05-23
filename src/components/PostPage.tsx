@@ -1,5 +1,6 @@
 import { Layout } from './Layout';
-import { site } from '../config/site';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 import type { Post } from '../types/post';
 import { getTagColorClass } from '../utils/tags';
 import { formatDate } from '../utils/date';
@@ -10,13 +11,14 @@ import { getRelatedPosts } from '../utils/post';
 interface PostPageProps {
   post: Post;
   allPosts: Post[];
+  site?: SiteConfig;
 }
 
-export function PostPage({ post, allPosts }: PostPageProps) {
+export function PostPage({ post, allPosts, site = defaultSite }: PostPageProps) {
   const relatedPosts = getRelatedPosts(post, allPosts, 3);
 
   return (
-    <Layout title={`${post.title} - ${site.title}`}>
+    <Layout title={`${post.title} - ${site.title}`} site={site}>
       <article className="max-w-4xl mx-auto px-4 py-8">
         <header className="mb-8 border-b border-ctp-surface1">
           <h1 className="text-4xl font-bold mb-4 text-ctp-mauve">

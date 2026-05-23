@@ -1,9 +1,14 @@
 import { Layout } from './Layout';
-import { site } from '../config/site';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 
-export function NotFoundPage() {
+interface NotFoundPageProps {
+  site?: SiteConfig;
+}
+
+export function NotFoundPage({ site = defaultSite }: NotFoundPageProps) {
   return (
-    <Layout title={`404 - ${site.title}`}>
+    <Layout title={`404 - ${site.title}`} site={site}>
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="text-center">
           <h1 className="text-6xl font-bold mb-4 text-ctp-mauve">404</h1>

@@ -1,5 +1,6 @@
 import { Layout } from './Layout';
-import { site } from '../config/site';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 import type { Post } from '../types/post';
 import { getTagColorClass } from '../utils/tags';
 import { formatDate } from '../utils/date';
@@ -9,12 +10,13 @@ import { UpdateDatesTooltip } from './UpdateDatesTooltip';
 interface TagPageProps {
   tagName: string;
   posts: Post[];
+  site?: SiteConfig;
 }
 
-export function TagPage({ tagName, posts }: TagPageProps) {
+export function TagPage({ tagName, posts, site = defaultSite }: TagPageProps) {
 
   return (
-    <Layout title={`Posts tagged "${tagName}" - ${site.title}`}>
+    <Layout title={`Posts tagged "${tagName}" - ${site.title}`} site={site}>
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-8">
           <span className={`px-4 py-2 text-lg ${getTagColorClass(tagName)}`}>

@@ -1,6 +1,11 @@
-import { site } from '../config/site';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 
-export function Header() {
+interface HeaderProps {
+  site?: SiteConfig;
+}
+
+export function Header({ site = defaultSite }: HeaderProps) {
   return (
     <header className="border-b border-ctp-surface1">
       <div className="max-w-4xl mx-auto px-4 py-4">

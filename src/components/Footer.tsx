@@ -1,10 +1,12 @@
-import { site } from '../config/site';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 
 interface FooterProps {
+  site?: SiteConfig;
   showBackToTop?: boolean;
 }
 
-export function Footer({ showBackToTop = true }: FooterProps) {
+export function Footer({ site = defaultSite, showBackToTop = true }: FooterProps) {
   return (
     <footer className="border-t border-ctp-surface1">
       <div className="max-w-4xl mx-auto px-4 py-8">

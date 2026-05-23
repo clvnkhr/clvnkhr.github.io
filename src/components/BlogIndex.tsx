@@ -1,15 +1,17 @@
 import { Layout } from './Layout';
-import { site } from '../config/site';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 import type { Post } from '../types/post';
 import { PostCard } from './PostCard';
 
 interface BlogIndexProps {
   posts: Post[];
+  site?: SiteConfig;
 }
 
-export function BlogIndex({ posts }: BlogIndexProps) {
+export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
   return (
-    <Layout title={`Blog - ${site.title}`}>
+    <Layout title={`Blog - ${site.title}`} site={site}>
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-8 text-ctp-mauve">Blog Posts</h1>
         <div className="space-y-8">

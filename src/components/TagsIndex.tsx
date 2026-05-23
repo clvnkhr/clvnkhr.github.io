@@ -1,15 +1,17 @@
 import { Layout } from './Layout';
-import { site } from '../config/site';
+import { site as defaultSite } from '../config/site';
+import type { SiteConfig } from '../config/site';
 import { getTagColorClass } from '../utils/tags';
 
 interface TagsIndexProps {
   allTags: string[];
   tagPosts: Record<string, number>;
+  site?: SiteConfig;
 }
 
-export function TagsIndex({ allTags, tagPosts }: TagsIndexProps) {
+export function TagsIndex({ allTags, tagPosts, site = defaultSite }: TagsIndexProps) {
   return (
-    <Layout title={`Tags - ${site.title}`}>
+    <Layout title={`Tags - ${site.title}`} site={site}>
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-2 text-ctp-mauve">All Tags</h1>
         <p className="text-ctp-subtext0 mb-8">

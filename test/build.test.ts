@@ -5,6 +5,7 @@ import type { Command } from "@effect/platform/Command";
 import { CommandExecutor, TypeId, ExitCode } from "@effect/platform/CommandExecutor";
 import { SystemError } from "@effect/platform/Error";
 import { BunContext } from "@effect/platform-bun";
+import { SiteConfigTag } from '../src/config/site';
 import { buildBlog } from '../src/build/index.js';
 import { compileTypst, parseMetadata, processTypstOutput } from '../src/build/posts.js';
 
@@ -134,6 +135,7 @@ const testRuntime = ManagedRuntime.make(
     BunContext.layer,
     Layer.succeed(FileSystem, mockFs),
     Layer.succeed(CommandExecutor, mockCmd),
+    SiteConfigTag.Live,
   ),
 );
 
@@ -193,6 +195,7 @@ describe('MissingFontsDirectory', () => {
         BunContext.layer,
         Layer.succeed(FileSystem, makeBrokenFs()),
         Layer.succeed(CommandExecutor, mockCmd),
+        SiteConfigTag.Live,
       ),
     );
   }

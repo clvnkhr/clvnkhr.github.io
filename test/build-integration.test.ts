@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeAll } from 'bun:test';
 import { stat } from 'fs/promises';
 import { join } from 'path';
-import { buildBlog, runtime } from '../src/build/index';
+import { buildBlog } from '../src/build/index';
+import { makeRuntime } from '../src/build/runtime';
+
+const runtime = makeRuntime();
 
 describe('Build Integration', () => {
   const distDir = 'dist';

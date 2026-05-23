@@ -1,7 +1,6 @@
-import { Effect, ManagedRuntime } from "effect";
+import { Effect } from "effect";
 import { Command } from "@effect/platform";
 import { FileSystem } from "@effect/platform/FileSystem";
-import { BunContext } from "@effect/platform-bun";
 import { Path } from "@effect/platform/Path";
 import { compileTypst, parseMetadata, processTypstOutput } from "./posts";
 import {
@@ -10,12 +9,13 @@ import {
   renderPostPage,
   renderTagPage,
   renderTagsIndex,
-  renderProjectsPage,
   renderNotFoundPage,
 } from "./pages";
 import { Post } from "../types/post";
 import { extractTitleFromHtml, stripFirstHeading } from "../utils/post";
 import { generateSvgColorCss } from "../utils/svg-colors";
+import { SiteConfigTag, type SiteConfig } from "../config/site";
+import { makeRuntime } from "./runtime";
 import packageJson from "../../package.json" with { type: "json" };
 
 // ── Domain Errors ──
@@ -158,7 +158,7 @@ const setupDist = Effect.gen(function* () {
   const fs = yield* FileSystem;
   yield* fs.remove("dist", { recursive: true, force: true });
   yield* fs.makeDirectory("dist/blog", { recursive: true });
-  yield* fs.makeDirectory("dist/projects", { recursive: true });
+
   yield* fs.makeDirectory("dist/assets/css", { recursive: true });
   yield* fs.makeDirectory("dist/assets/img", { recursive: true });
 
@@ -198,37 +198,34 @@ const generateSvgCss = (allColors: Set<string>) =>
     ),
   );
 
-const generateHomepage = (posts: Post[]) =>
-  FileSystem.pipe(
-    Effect.andThen((fs) =>
-      fs.writeFileString(
-        "dist/index.html",
-        renderHomePage(posts.length > 0 ? posts[0] : undefined),
-      ),
-    ),
-  );
+const generateHomepage = (siteCfg: SiteConfig, posts: Post[]) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const html = yield* renderHomePage(siteCfg, posts.length > 0 ? posts[0] : undefined);
+    yield* fs.writeFileString("dist/index.html", html);
+  });
 
-const generateBlogIndex = (posts: Post[]) =>
-  FileSystem.pipe(
-    Effect.andThen((fs) =>
-      fs.writeFileString("dist/blog/index.html", renderBlogIndex(posts)),
-    ),
-  );
+const generateBlogIndex = (siteCfg: SiteConfig, posts: Post[]) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const html = yield* renderBlogIndex(siteCfg, posts);
+    yield* fs.writeFileString("dist/blog/index.html", html);
+  });
 
-const generatePostPages = (posts: Post[]) =>
+const generatePostPages = (siteCfg: SiteConfig, posts: Post[]) =>
   Effect.forEach(
     posts,
     (post: Post) =>
       Effect.gen(function* () {
         const fs = yield* FileSystem;
-        const html = renderPostPage(post, posts);
+        const html = yield* renderPostPage(siteCfg, post, posts);
         const dir = `dist${post.path}`;
         yield* fs.makeDirectory(dir, { recursive: true });
         yield* fs.writeFileString(`${dir}index.html`, html);
       }),
   );
 
-const generateTagPages = (posts: Post[], allTags: Set<string>) =>
+const generateTagPages = (siteCfg: SiteConfig, posts: Post[], allTags: Set<string>) =>
   Effect.gen(function* () {
     const tagPosts = posts.reduce<Record<string, number>>((acc, post) => {
       for (const tag of post.tags ?? []) {
@@ -239,7 +236,8 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
 
     const fs = yield* FileSystem;
     yield* fs.makeDirectory("dist/tags", { recursive: true });
-    const tagsIndexHtml = renderTagsIndex(
+    const tagsIndexHtml = yield* renderTagsIndex(
+      siteCfg,
       Array.from(allTags).sort(),
       tagPosts,
     );
@@ -252,7 +250,7 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
           const tagPostsList = posts.filter((post: Post) =>
             post.tags?.includes(tag),
           );
-          const tagHtml = renderTagPage(tag, tagPostsList);
+          const tagHtml = yield* renderTagPage(siteCfg, tag, tagPostsList);
           yield* fs.makeDirectory(`dist/tags/${tag}`, { recursive: true });
           yield* fs.writeFileString(`dist/tags/${tag}/index.html`, tagHtml);
         }),
@@ -260,17 +258,12 @@ const generateTagPages = (posts: Post[], allTags: Set<string>) =>
     );
   });
 
-const generateProjectsPage = FileSystem.pipe(
-  Effect.andThen((fs) =>
-    fs.writeFileString("dist/projects/index.html", renderProjectsPage()),
-  ),
-);
-
-const generateNotFoundPage = FileSystem.pipe(
-  Effect.andThen((fs) =>
-    fs.writeFileString("dist/404.html", renderNotFoundPage()),
-  ),
-);
+const generateNotFoundPage = (siteCfg: SiteConfig) =>
+  Effect.gen(function* () {
+    const fs = yield* FileSystem;
+    const html = yield* renderNotFoundPage(siteCfg);
+    yield* fs.writeFileString("dist/404.html", html);
+  });
 
 // ── Main Build Program ──
 
@@ -287,6 +280,9 @@ const buildBlog = (options: { watch: boolean }) =>
     const allColors = new Set(posts.flatMap((post) => post.svgColors ?? []));
     const allTags = new Set(posts.flatMap((post) => post.tags ?? []));
 
+    // Read site config from Effect context
+    const siteCfg = yield* SiteConfigTag;
+
     // 2. Set up output directory and static assets
     yield* setupDist;
 
@@ -294,8 +290,7 @@ const buildBlog = (options: { watch: boolean }) =>
     yield* Effect.all([
       step("🎨 Generating SVG color CSS...", generateSvgCss(allColors)),
       step("📦 Copying assets...", copyAssets),
-      step("🚀 Generating projects page...", generateProjectsPage),
-      step("🔍 Generating 404 page...", generateNotFoundPage),
+      step("🔍 Generating 404 page...", generateNotFoundPage(siteCfg)),
     ], { concurrency: "unbounded" });
 
     // Tailwind must finish before pages use its CSS
@@ -303,15 +298,15 @@ const buildBlog = (options: { watch: boolean }) =>
 
     // 3. Generate pages — all depend on Tailwind CSS being ready
     yield* Effect.all([
-      step("🏠 Generating homepage...", generateHomepage(posts)),
-      step("📋 Generating blog index...", generateBlogIndex(posts)),
-      step("📄 Generating post pages...", generatePostPages(posts)),
-      step("🏷️  Generating tag pages...", generateTagPages(posts, allTags)),
+      step("🏠 Generating homepage...", generateHomepage(siteCfg, posts)),
+      step("📋 Generating blog index...", generateBlogIndex(siteCfg, posts)),
+      step("📄 Generating post pages...", generatePostPages(siteCfg, posts)),
+      step("🏷️  Generating tag pages...", generateTagPages(siteCfg, posts, allTags)),
     ], { concurrency: "unbounded" });
 
     yield* Effect.log("✅ Build complete!");
     yield* Effect.log(
-      `Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 projects page, 1 404 page`,
+      `Generated: ${posts.length} post pages, 1 blog index, 1 homepage, ${allTags.size} tag pages, 1 tags index, 1 404 page`,
     );
 
     if (!options.watch) {
@@ -321,7 +316,7 @@ const buildBlog = (options: { watch: boolean }) =>
     }
   });
 
-const runtime = ManagedRuntime.make(BunContext.layer);
+const runtime = makeRuntime();
 
 if (import.meta.main) {
   const watch = process.argv.includes("--watch");
