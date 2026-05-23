@@ -14,7 +14,7 @@ export class RenderError {
   constructor(
     readonly component: string,
     readonly message: string,
-  ) {}
+  ) { }
 }
 
 function render(component: string, fn: () => string): Effect.Effect<string, RenderError> {
