@@ -45,7 +45,7 @@
 #import "@preview/cmarker:0.1.8"
 #import "@preview/mitex:0.2.6": mitex
 
-What follows is an AI generated (https://notegpt.io) summary of Rupert's recent talk https://www.youtube.com/watch?v=PfGeLjjTC8o&t=388s&pp=ugUEEgJlbtIHCQkGCwGHKiGM7w%3D%3D. A chinese translation follows.
+What follows is an AI generated (#link("https://notegpt.io")[notegpt.io, found by google]) summary of Rupert's #link("https://www.youtube.com/watch?v=PfGeLjjTC8o&t=388s&pp=ugUEEgJlbtIHCQkGCwGHKiGM7w%3D%3D")[recent talk] at the Erwin Schrödinger International Institute for Mathematics and Physics (ESI). A chinese translation follows.
 
 Presumably, when I get round to watching with full attention I will leave some clarifying remarks here...
 
