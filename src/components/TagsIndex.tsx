@@ -25,6 +25,7 @@ export function TagsIndex({ allTags, tagPosts, site = defaultSite }: TagsIndexPr
           id="tag-search-input"
           type="text"
           placeholder="Search tags..."
+          autoFocus
           className="w-full px-4 py-2 mb-6 rounded-lg bg-ctp-surface0 border border-ctp-surface1 text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:border-ctp-mauve transition-colors"
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

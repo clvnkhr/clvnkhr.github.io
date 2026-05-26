@@ -30,6 +30,7 @@ export function Layout({ children, title, darkMode = true, showBackToTop = true,
         <link rel="stylesheet" href="/assets/css/main.css" />
         <script src="/assets/js/back-to-top.js" defer></script>
         <script src="/assets/js/tag-search.js" defer></script>
+        <script src="/assets/js/blog-search.js" defer></script>
       </head>
       <body className="min-h-screen bg-ctp-base text-ctp-text antialiased">
         <Header site={site} />
