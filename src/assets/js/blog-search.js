@@ -32,13 +32,14 @@ function matchScore(query, text) {
   return { matched: true, score };
 }
 
-function computePostScore(query, title, blurb, tags) {
+function computePostScore(query, title, blurb, tags, date = '') {
   const titleScore = matchScore(query, title);
   const tagsScore = matchScore(query, tags);
   const blurbScore = matchScore(query, blurb);
+  const dateScore = matchScore(query, date);
   return {
-    matched: titleScore.matched || tagsScore.matched || blurbScore.matched,
-    score: titleScore.score * 4 + tagsScore.score * 2 + blurbScore.score,
+    matched: titleScore.matched || tagsScore.matched || blurbScore.matched || dateScore.matched,
+    score: titleScore.score * 4 + tagsScore.score * 2 + blurbScore.score + dateScore.score,
   };
 }
 
@@ -72,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const title = card.getAttribute('data-search-title') || '';
       const blurb = card.getAttribute('data-search-blurb') || '';
       const tags = card.getAttribute('data-search-tags') || '';
-      return { card, ...computePostScore(query, title, blurb, tags) };
+      const date = card.getAttribute('data-search-date') || '';
+      return { card, ...computePostScore(query, title, blurb, tags, date) };
     });
 
     scored.sort((a, b) => {

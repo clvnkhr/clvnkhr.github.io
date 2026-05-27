@@ -4,6 +4,7 @@ import type { SiteConfig } from '../config/site';
 import type { Post } from '../types/post';
 import { PostCard } from './PostCard';
 import { getPostBlurb } from '../utils/post';
+import { formatDate } from '../utils/date';
 
 interface BlogIndexProps {
   posts: Post[];
@@ -28,6 +29,7 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
               key={post.slug}
               data-search-title={post.title}
               data-search-blurb={post.description || getPostBlurb(post.htmlContent)}
+              data-search-date={formatDate(post.date)}
               data-search-tags={(post.tags ?? []).join(' ')}
             >
               <PostCard post={post} />

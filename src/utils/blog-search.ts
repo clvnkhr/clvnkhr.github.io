@@ -41,12 +41,13 @@ export interface PostScore {
   score: number;
 }
 
-export function computePostScore(query: string, title: string, blurb: string, tags: string): PostScore {
+export function computePostScore(query: string, title: string, blurb: string, tags: string, date: string = ''): PostScore {
   const titleScore = matchScore(query, title);
   const tagsScore = matchScore(query, tags);
   const blurbScore = matchScore(query, blurb);
+  const dateScore = matchScore(query, date);
   return {
-    matched: titleScore.matched || tagsScore.matched || blurbScore.matched,
-    score: titleScore.score * 4 + tagsScore.score * 2 + blurbScore.score,
+    matched: titleScore.matched || tagsScore.matched || blurbScore.matched || dateScore.matched,
+    score: titleScore.score * 4 + tagsScore.score * 2 + blurbScore.score + dateScore.score,
   };
 }

@@ -30,6 +30,7 @@ export function TagPage({ tagName, posts, site = defaultSite }: TagPageProps) {
           id="blog-search-input"
           type="text"
           placeholder="Search posts..."
+          autoFocus
           className="w-full px-4 py-2 mb-8 rounded-lg bg-ctp-surface0 border border-ctp-surface1 text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:border-ctp-mauve transition-colors"
         />
         <div className="space-y-8" data-blog-list>
@@ -38,6 +39,7 @@ export function TagPage({ tagName, posts, site = defaultSite }: TagPageProps) {
               key={post.slug}
               data-search-title={post.title}
               data-search-blurb={post.description || getPostBlurb(post.htmlContent)}
+              data-search-date={formatDate(post.date)}
               data-search-tags={(post.tags ?? []).join(' ')}
             >
               <article className="border border-ctp-surface1 rounded-lg p-6 hover:border-ctp-mauve transition-colors">
