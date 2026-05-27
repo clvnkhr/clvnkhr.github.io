@@ -128,7 +128,12 @@ export const processTypstOutput = (typstFile: string, rawHtml: string) =>
     if (!bodyMatch) {
       return yield* Effect.fail(new TypstCompileFailed(typstFile, "Could not find body tag in Typst output"));
     }
-    const htmlContent = bodyMatch[1].trim();
+    let htmlContent = bodyMatch[1].trim();
+    // Replace #000000 on <use> elements with currentColor to work around
+    // mobile Safari not cascading CSS fill through <use> shadow DOM to <symbol> paths
+    htmlContent = htmlContent
+      .replace(/(<use[^>]*?)\sfill="#000000"/g, '$1 fill="currentColor"')
+      .replace(/(<use[^>]*?)\sstroke="#000000"/g, '$1 stroke="currentColor"');
     const svgColors = extractColorsFromHtml(htmlContent);
     return { html: htmlContent, svgColors };
   });
