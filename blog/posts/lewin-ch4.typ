@@ -1,6 +1,6 @@
 // date: 2026-05-19
 // tags: maths, functional-analysis, self-adjointness, notes, rough
-// hidden: true
+// hidden: false
 
 
 #set par(justify: true)
