@@ -78,6 +78,6 @@ The full source is at #link("https://github.com/clvnkhr/clvnkhr.github.io")[gith
 1. Fork the repo
 2. Write posts as `.typ` files in `blog/posts/` with Typst comment metadata
 3. Run `bun run build`
-4. Deploy to GitHub Pages via the included workflow
+4. Deploy to GitHub Pages via the included workflow (see #link("https://github.com/clvnkhr/clvnkhr.github.io/blob/master/GITHUB_PAGES.md")[GITHUB_PAGES.md] for details)
 
 The code is MIT. Pull requests are welcome — especially for new features or bug fixes.
