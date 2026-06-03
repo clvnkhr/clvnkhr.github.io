@@ -1,8 +1,9 @@
 // date: 2026-06-02
 // tags: maths, fluid-dynamics, notes, transcription, ai-assisted
+// hidden: true
 
 
-#set document(title: "Navier--Stokes Existence or Breakdown")
+#set document(title: [Navier--Stokes Existence or Breakdown])
 #title()
 <navierstokes-existence-or-breakdown>
 == Notes from a lecture by Javier Gómez-Serrano
@@ -19,9 +20,9 @@ Institute around the year 2000.
 The problem asks, roughly:
 
 given smooth initial data for the 3D incompressible Navier--Stokes
-  equations,
-  - do smooth solutions exist for all time?
-  - or can singularities form in finite time?
+equations,
+- do smooth solutions exist for all time?
+- or can singularities form in finite time?
 
 The talk emphasizes that, although the Clay problem remains open, the
 field has seen substantial activity and major conceptual progress in
@@ -40,9 +41,9 @@ smaller ones.
 He wrote:
 
 #quote(block: true)[
-Observe the motion of the surface of the water, which resembles that of
-hair. The water has eddying motions, one part of which is due to the
-principal current and the other to the random and reverse motion.
+  Observe the motion of the surface of the water, which resembles that of
+  hair. The water has eddying motions, one part of which is due to the
+  principal current and the other to the random and reverse motion.
 ]
 
 So, already around 1500, there was a qualitative awareness of the
@@ -60,7 +61,7 @@ A few milestones:
 - #strong[Euler] (Leonhard Euler, 1707--1783) wrote the incompressible Euler equations (~1757), describing
   ideal fluids without viscosity.
 - #strong[Prandtl] (Ludwig Prandtl, 1875--1953) explained the paradox through #emph[boundary layer
-  theory] (1904): even very small viscosity can produce substantial drag near
+    theory] (1904): even very small viscosity can produce substantial drag near
   boundaries.
 
 Thus the mathematical theory of fluid mechanics emerged from a
@@ -113,6 +114,26 @@ $ nabla dot u = 0 $
 means the fluid is incompressible: parcels preserve volume. This
 prevents simple compression-type blowup mechanisms that might occur in
 compressible flow.
+
+=== 3.4. The pressure equation
+<the-pressure-equation>
+Taking the divergence of the Navier--Stokes equation and using
+$nabla dot u = 0$ gives the Poisson equation for the pressure:
+
+$ - Delta p = nabla dot ((u dot nabla) u) = sum_(i,j=1)^3 partial_i partial_j (u_i u_j) . $
+
+Thus $p$ is determined globally by $u$ at each instant. Solving the
+Poisson equation with the fundamental solution $G(x) = 1/(4 pi |x|)$
+of $-Delta$ in $RR^3$ gives the singular integral representation
+
+$
+  p(x,t) = frac(1, 4 pi) integral (frac(3 (x_i - y_i)(x_j - y_j), abs(x - y)^5) - frac(delta_(i j), abs(x - y)^3)) u_i (y,t) u_j (y,t) d y .
+$
+
+(Summation over $i,j = 1,2,3$ is implied.) This nonlocal coupling
+between $u$ and $p$ is a key source of mathematical difficulty: the
+pressure instantaneously transmits information across the entire
+domain.
 
 
 
@@ -177,7 +198,9 @@ $ partial_t u + (u dot nabla) u + nabla p = nu Delta u quad nabla dot u = 0 . $
 Then $u$ is a weak solution if for every smooth compactly supported
 divergence-free test field $phi$,
 
-$ integral_0^oo integral ( u dot partial_t phi + (u ⊗ u) : nabla phi + nu nabla u : nabla phi ) d x d t + integral u_0(x) dot phi(x, 0) d x = 0 . $
+$
+  integral_0^oo integral ( u dot partial_t phi + (u ⊗ u) : nabla phi + nu nabla u : nabla phi ) d x d t + integral u_0 (x) dot phi(x, 0) d x = 0 .
+$
 
 This is obtained by multiplying the PDE by $phi$ and integrating by parts.
 
@@ -200,9 +223,9 @@ through viscosity.
 <lerayhopf-theorem>
 Leray (1934) proved the foundational existence result for 3D
 incompressible Navier--Stokes: for any divergence-free initial data
-$u_0 in L^2(RR^3)$, there exists at least one global weak solution
+$u_0 in L^2 (RR^3)$, there exists at least one global weak solution
 
-$ u in L_t^oo L_x^2 & L_t^2 dot(H)_x^1 $
+$ u in L_t^oo L_x^2 inter L_t^2 dot(H)_x^1 $
 
 satisfying the energy inequality for all $t$. Moreover, the solution is
 smooth except possibly on a small exceptional set; in particular, the
@@ -228,10 +251,10 @@ In two spatial dimensions, the situation is much better.
 === 7.1. Ladyzhenskaya's theorem
 <ladyzhenskayas-theorem>
 Ladyzhenskaya (1958, 1969) proved global well-posedness for 2D
-incompressible Navier--Stokes: for any divergence-free $u_0 in L^2(RR^2)$,
+incompressible Navier--Stokes: for any divergence-free $u_0 in L^2 (RR^2)$,
 there exists a unique global solution
 
-$ u in C([0,oo); L^2) & L_("loc")^2((0,oo); H^1) $
+$ u in C([0,oo); L^2) inter L_("loc")^2 ((0,oo); H^1) $
 
 that is smooth for all $t > 0$ and depends continuously on the initial
 data.#footnote[O. A. Ladyzhenskaya, "Solution 'in the large' of the nonstationary boundary value problem for the Navier-Stokes system in two space variables," *Comm. Pure Appl. Math.* 12, 427--433 (1959). #link("https://doi.org/10.1002/cpa.3160120303")[DOI] #link("https://zbmath.org/0103.19502")[Zbl]; also *The Mathematical Theory of Viscous Incompressible Flow*, 2nd ed., Gordon & Breach (1969).]
@@ -266,7 +289,9 @@ Even if singularities exist, can we say how large the singular set is?
 A #strong[suitable weak solution] is a weak solution that additionally
 satisfies the #strong[local energy inequality]
 
-$ partial_t ( frac(|u|^2, 2) ) + div( ( frac(|u|^2, 2) + p ) u ) - nu Delta ( frac(|u|^2, 2) ) + nu |nabla u|^2 <= 0 $
+$
+  partial_t ( frac(abs(u)^2, 2) ) + div(( frac(abs(u)^2, 2) + p ) u) - nu Delta ( frac(abs(u)^2, 2) ) + nu abs(nabla u)^2 <= 0
+$
 
 in the sense of distributions. This local form of energy dissipation is
 a stronger condition than the global energy inequality and is essential
@@ -285,7 +310,7 @@ one-dimensional parabolic Hausdorff measure of the singular set is
 zero.#footnote[L. Caffarelli, R. Kohn, and L. Nirenberg, "Partial regularity of suitable weak solutions of the Navier-Stokes equations," *Comm. Pure Appl. Math.* 35, 771--831 (1982). #link("https://doi.org/10.1002/cpa.3160350604")[DOI] #link("https://zbmath.org/0509.35067")[Zbl]]
 
 Concretely, this implies that the singular set $S$ satisfies
-$P^1(S) = 0$, meaning its one-dimensional parabolic Hausdorff measure
+$P^1 (S) = 0$, meaning its one-dimensional parabolic Hausdorff measure
 vanishes. In particular, $S$ cannot contain any curve of positive length
 in spacetime, so possible singularities are extremely sparse.
 
@@ -301,35 +326,66 @@ A central derived quantity is the #strong[vorticity]
 
 $ omega = nabla times u . $
 
-- In 2D, $omega$ is effectively a scalar.
-- In 3D, $omega$ is a vector field.
+Taking the curl of the Navier--Stokes equations eliminates the pressure
+and yields the vorticity equation. Using the vector identity
 
-Writing the equations in terms of vorticity removes the pressure from
-the formulation.
+$ (u dot nabla) u = frac(1, 2) nabla abs(u)^2 - u times omega , $
 
-=== 9.1. The 2D vorticity equation
-<the-2d-vorticity-equation>
-In 2D Navier--Stokes,
+the curl of the nonlinear term becomes $-nabla times (u times omega)$,
+and the pressure term $nabla p$ vanishes since $nabla times (nabla p) = 0$.
 
-$ partial_t omega + u dot nabla omega = nu Delta omega . $
-
-Thus vorticity is simply transported and diffused.
-
-This is a major reason why 2D is tractable.
-
-=== 9.2. The 3D vorticity equation
-<the-3d-vorticity-equation>
-In 3D Navier--Stokes,
+The result is:
 
 $ partial_t omega + u dot nabla omega = omega dot nabla u + nu Delta omega . $
 
-The extra term
+The term $omega dot nabla u$ is the #strong[vortex stretching term].
+It represents the amplification of vorticity by the velocity gradient
+along the direction of the vortex lines.
 
-$ omega dot nabla u $
+=== 9.1. The Biot--Savart law
+<the-biotsavart-law>
+Given the vorticity $omega$, the velocity can be recovered via the
+Biot--Savart law:
 
-is the #strong[vortex stretching term]. This term can amplify vorticity
-and is one of the main mechanisms suspected in any possible singularity
-formation.
+$ u(x,t) = frac(1, 4 pi) integral frac((x - y) times omega(y, t), abs(x - y)^3) d y . $
+
+This expresses $u$ as a singular integral of $omega$. In particular,
+$nabla u$ is a singular integral operator applied to $omega$, so the
+vortex stretching term has the formal structure
+
+$ omega dot nabla u approx T(omega) dot omega , $
+
+where $T$ is a Calderón--Zygmund operator. This quadratic,
+nonlocal interaction is the core of the difficulty: the velocity
+gradient that stretches the vorticity is itself determined by the
+vorticity through a singular integral.
+
+=== 9.2. The 2D vorticity equation
+<the-2d-vorticity-equation>
+In 2D, the vorticity $omega = partial_1 u_2 - partial_2 u_1$ is a scalar,
+and the vortex stretching term vanishes identically because $omega$ is
+orthogonal to the plane of the flow. The equation reduces to
+
+$ partial_t omega + u dot nabla omega = nu Delta omega . $
+
+Thus vorticity is simply transported and diffused---a passive scalar
+advected by the velocity field. This is a major reason why 2D is
+tractable.
+
+=== 9.3. The 3D vorticity equation
+<the-3d-vorticity-equation>
+In 3D, the vortex stretching term $omega dot nabla u$ is active and
+can amplify vorticity. If one writes $alpha = omega / abs(omega)$ for the
+vorticity direction and $abs(omega)$ for its magnitude, then
+
+$
+  (partial_t + u dot nabla - nu Delta) abs(omega) = (alpha dot nabla) u dot alpha abs(omega) + nu abs(nabla alpha)^2 abs(omega) .
+$
+
+The first term on the right represents stretching: the rate-of-strain
+matrix $nabla u$ (symmetrized) acts on the direction field, producing
+growth proportional to $abs(omega)$ itself. This is one of the main
+mechanisms suspected in any possible singularity formation.
 
 So:
 
@@ -340,12 +396,33 @@ So:
 
 == 10. Why energy estimates are not enough
 <why-energy-estimates-are-not-enough>
-The kinetic energy is the most basic conserved or dissipated quantity.
-But for 3D Navier--Stokes, energy is #strong[supercritical] with respect
-to the natural scaling of the equations.
+The kinetic energy $frac(1, 2) norm(u)_(L^2)^2$ is the most basic
+dissipated quantity. However, energy is #strong[supercritical] with
+respect to the natural scaling of the equations.
 
-That means energy estimates alone do not control the norms relevant to
-singularity formation.
+To see this, observe that if $u(x,t)$ solves Navier--Stokes with
+viscosity $nu$, then the rescaled field
+
+$ u_lambda (x,t) = lambda u(lambda x, lambda^2 t) $
+
+also solves the same equations (with the same $nu$). Under this
+scaling, the $L^2$ norm transforms as
+
+$
+  norm(u_lambda (dot, t))_(L^2) = lambda^(1 - 3/2) norm(u(dot, lambda^2 t))_(L^2) = lambda^(-1/2) norm(u(dot, lambda^2 t))_(L^2) .
+$
+
+Thus the $L^2$ norm decays as $lambda -> oo$ (zooming in), meaning
+energy scale is weaker than the critical scaling. Norms that are
+#strong[critical] (invariant under the scaling) include
+$dot(H)^(1/2)$, $L^3$, and $"BMO"^(-1)$.
+
+Because the energy norm is supercritical, energy estimates alone do not
+control the norms relevant to singularity formation. To illustrate,
+the energy inequality provides a bound on $nabla u$ in $L^2_t L^2_x$,
+but the nonlinear term $(u dot nabla) u$ requires control of $u$ in
+$L^4$ or $nabla u$ in $L^2$ in three dimensions---estimates that do
+not follow from energy bounds alone.
 
 Hence any proof of global regularity must use something beyond soft
 energy arguments. One needs a deeper structural understanding of the
@@ -366,6 +443,32 @@ Before modern developments, one broadly knew:
 - 2D Navier--Stokes is globally well-posed.
 - 3D global smoothness remained open.
 
+The local well-posedness theory (Fujita--Kato, 1964) guarantees
+existence and uniqueness of smooth solutions on a short time interval
+$[0,T)$ for sufficiently regular initial data. In particular, the
+space $dot(H)^(1/2) (RR^3)$ is critical for Navier--Stokes: for
+$u_0 in dot(H)^(1/2)$, there exists $T = T(norm(u_0)_(dot(H)^(1/2))) > 0$
+and a unique mild solution
+
+$ u in C([0,T); dot(H)^(1/2)) inter L^2 ((0,T); dot(H)^(3/2)) $
+
+given by the Duhamel formula
+
+$ u(t) = e^(nu t Delta) u_0 - integral_0^t e^(nu (t - s) Delta) PP (u(s) dot nabla) u(s) d s , $
+
+where $PP$ is the Leray projection onto divergence-free fields.
+The solution is smooth for $t in (0,T)$. For more regular data
+$u_0 in H^s$ with $s > 1/2$, the solution belongs to
+$C([0,T); H^s) inter L^2 ((0,T); H^(s+1))$.
+
+The maximal time of existence $T_max$ is characterized by the blowup
+criterion: if $T_max < oo$, then
+
+$ integral_0^(T_max) norm(nabla u(dot,t))_(L^oo) d t = oo $
+
+(or equivalently, the BKM criterion
+$integral_0^(T_max) norm(omega)_(L^oo) d t = oo$).
+
 The prevailing community intuition for a long time leaned toward global
 regularity, though without proof.
 
@@ -379,7 +482,8 @@ smooth.
 
 === 12.1. Prodi--Serrin--Ladyzhenskaya criteria
 <prodiserrinladyzhenskaya-criteria>
-If a Leray--Hopf weak solution lies in a mixed space
+A Leray--Hopf weak solution is smooth if it additionally belongs to a
+critical mixed-norm space. Specifically, if
 
 $ u in L_t^p L_x^q $
 
@@ -387,9 +491,21 @@ with
 
 $ 2 / p + 3 / q <= 1 quad q > 3 $
 
-then the solution is smooth.
+then the solution is smooth on $(0,T]$. The condition $2/p + 3/q = 1$
+defines the critical line; the strict inequality $q > 3$ excludes the
+endpoint.
 
-The endpoint case (q=3) was much harder and was handled later.
+The proof for $q < 6$ uses the Gagliardo--Nirenberg inequality
+
+$ norm(u)_(L^q) <= C norm(u)_(L^2)^(1 - theta) norm(nabla u)_(L^2)^theta , $
+
+where $theta = 3(1/2 - 1/q)$. Combined with the Prodi--Serrin
+condition $2/p + 3/q = 1$, one obtains enough control of the nonlinear
+term $|(u dot nabla) u|$ to close the estimates via Gronwall's
+inequality.
+
+The endpoint case $q = 3$ (i.e., $p = oo$) is critical and was
+substantially harder.
 
 === 12.2. Escauriaza--Seregin--Šverák
 <escauriazasereginšverák>
@@ -410,7 +526,9 @@ must violate them in a specific quantitative way.
 For Euler, and in related forms for Navier--Stokes, a basic blowup
 criterion says that if a smooth solution blows up at time $T$, then
 
-$ integral_0^T norm(omega(dot,t))_(L^oo) d t = oo . $#footnote[J. T. Beale, T. Kato, and A. Majda, "Remarks on the breakdown of smooth solutions for the 3-D Euler equations," *Comm. Math. Phys.* 94, 61--66 (1984). #link("https://doi.org/10.1007/BF01212349")[DOI] #link("https://zbmath.org/0573.76029")[Zbl]]
+$
+  integral_0^T norm(omega(dot, t))_(L^oo) d t = oo .
+$#footnote[J. T. Beale, T. Kato, and A. Majda, "Remarks on the breakdown of smooth solutions for the 3-D Euler equations," *Comm. Math. Phys.* 94, 61--66 (1984). #link("https://doi.org/10.1007/BF01212349")[DOI] #link("https://zbmath.org/0573.76029")[Zbl]]
 
 So finite-time blowup requires vorticity to become sufficiently large.
 
@@ -418,7 +536,7 @@ So finite-time blowup requires vorticity to become sufficiently large.
 <constantinfefferman-criterion>
 Constantin and Fefferman (1993) refined this by showing that not only
 magnitude but also the geometry of vorticity matters.#footnote[P. Constantin and C. Fefferman, "Direction of vorticity and the problem of global regularity for the Navier-Stokes equations," *Indiana Univ. Math. J.* 42, 775--789 (1993). #link("https://doi.org/10.1512/iumj.1993.42.42034")[DOI] #link("https://zbmath.org/0837.35113")[Zbl]] Define the
-vorticity direction $xi = omega / |omega|$ wherever $omega != 0$. If
+vorticity direction $xi = omega / abs(omega)$ wherever $omega != 0$. If
 
 $ integral_0^T norm(nabla xi (dot, t))_(L^oo)^2 d t < oo $
 
@@ -440,25 +558,54 @@ still prove well-posedness.
 Koch and Tataru (2001) proved global well-posedness for small initial
 data in the critical space $"BMO"^(-1)$: there exists $epsilon > 0$ such
 that for any divergence-free $u_0$ with $norm(u_0)_("BMO"^(-1)) < epsilon$,
-there exists a unique global solution
+there exists a unique global mild solution
 
-$ u in L_t^oo "BMO"^(-1) & L_t^2 C^(0, 1 / 2) $
+$ u in L_t^oo "BMO"^(-1) inter L_t^2 C^(0, 1 / 2) $
 
-that is smooth for $t > 0$.#footnote[H. Koch and D. Tataru, "Well-posedness for the Navier-Stokes equations," *Adv. Math.* 157, 22--35 (2001). #link("https://doi.org/10.1006/aima.2000.1937")[DOI] #link("https://zbmath.org/0972.35084")[Zbl]]
+given by the fixed point of the integral equation
 
-This space is essentially optimal: it is invariant under the natural
-scaling of the equations.
+$ u(t) = e^(nu t Delta) u_0 - B(u,u)(t) , $
+
+where $B(u,v)(t) = integral_0^t e^(nu (t-s) Delta) PP (u(s) dot nabla) v(s) d s$
+
+and $PP$ is the Leray projection. The solution satisfies
+$t^(1/2) norm(u(dot, t))_(L^oo) <= C norm(u_0)_("BMO"^(-1))$ and is
+smooth for $t > 0$.#footnote[H. Koch and D. Tataru, "Well-posedness for
+  the Navier-Stokes equations," *Adv. Math.* 157, 22--35 (2001).
+  #link("https://doi.org/10.1006/aima.2000.1937")[DOI]
+  #link("https://zbmath.org/0972.35084")[Zbl]]
+
+The space $"BMO"^(-1)$ is the dual of the Hardy space $H^1$ and is
+essentially optimal: it is invariant under the natural scaling of the
+equations, and no larger scaling-critical space can be well-posed by
+the Bourgain--Pavlović result below.
 
 === 13.2. Bourgain--Pavlović
 <bourgainpavlović>
 Bourgain and Pavlović (2008) showed that the border
-case $dot(B)_oo^(-1, oo)$ (a slightly larger space than $"BMO"^(-1)$) is
-ill-posed: there exist smooth initial data that are arbitrarily small in
-$dot(B)_oo^(-1, oo)$ but produce solutions arbitrarily large in the same
-norm after arbitrarily short time---a phenomenon known as
-#strong[norm inflation].#footnote[J. Bourgain and N. Pavlović, "Ill-posedness of the Navier-Stokes equations in a critical space in 3D," *J. Funct. Anal.* 255, 2233--2247 (2008). #link("https://doi.org/10.1016/j.jfa.2008.07.008")[DOI] #link("https://arxiv.org/abs/0807.0882")[arXiv] #link("https://zbmath.org/1161.35037")[Zbl]]
+case $dot(B)_oo^(-1, oo)$ (a slightly larger Besov space than
+$"BMO"^(-1)$) is ill-posed: for any $delta, epsilon > 0$, there exists
+smooth initial data $u_0$ with
+$norm(u_0)_(dot(B)_oo^(-1, oo)) < delta$ but the corresponding solution
+$u$ satisfies $norm(u(epsilon))_(dot(B)_oo^(-1, oo)) > 1/delta$,
+i.e., arbitrarily small initial data produce arbitrarily large
+solutions in arbitrarily short time. This #strong[norm inflation]
+implies that the solution map is discontinuous at the origin in
+$dot(B)_oo^(-1, oo)$.#footnote[J. Bourgain and N. Pavlović,
+  "Ill-posedness of the Navier-Stokes equations in a critical space in
+  3D," *J. Funct. Anal.* 255, 2233--2247 (2008).
+  #link("https://doi.org/10.1016/j.jfa.2008.07.008")[DOI]
+  #link("https://arxiv.org/abs/0807.0882")[arXiv]
+  #link("https://zbmath.org/1161.35037")[Zbl]]
 
-Thus $"BMO"^(-1)$ is very close to the threshold for a good theory.
+The construction uses initial data concentrated at a very high
+frequency $N$: the solution of the truncated system is computed
+explicitly, and the quadratic interaction transfers energy to even
+higher frequencies $N^2$, producing the norm inflation before the
+viscous term can act.
+
+Thus $"BMO"^(-1)$ is essentially the largest space for which a
+well-posedness theory exists.
 
 === 13.3. Germain--Pavlović--Staffilani
 <germainpavlovićstaffilani>
@@ -466,12 +613,22 @@ Germain, Pavlović, and Staffilani (2007) showed that the Koch--Tataru
 solution enjoys higher regularity: it is real analytic in space for
 every $t > 0$, with uniform decay estimates
 
-$ norm(partial^alpha u(dot, t))_(L^oo) <= C_alpha t^(-(|alpha| + 1) / 2) $
+$ norm(partial^alpha u(dot, t))_(L^oo) <= C_alpha t^(-(abs(alpha) + 1) / 2) $
 
-for any multi-index $alpha$.#footnote[P. Germain, N. Pavlović, and G. Staffilani, "Regularity of solutions to the Navier-Stokes equations evolving from small data in $"BMO"^(-1)$," *Int. Math. Res. Not.* 2007, rnm087 (2007). #link("https://doi.org/10.1093/imrn/rnm087")[DOI] #link("https://arxiv.org/abs/math/0609781")[arXiv] #link("https://zbmath.org/1148.35063")[Zbl]]
+for any multi-index $alpha$.#footnote[P. Germain, N. Pavlović, and G.
+  Staffilani, "Regularity of solutions to the Navier-Stokes equations
+  evolving from small data in $"BMO"^(-1)$," *Int. Math. Res. Not.* 2007,
+  rnm087 (2007). #link("https://doi.org/10.1093/imrn/rnm087")[DOI]
+  #link("https://arxiv.org/abs/math/0609781")[arXiv]
+  #link("https://zbmath.org/1148.35063")[Zbl]]
 
-This implies, in particular, that solutions starting from small
-$"BMO"^(-1)$ data become classical instantaneously.
+The proof uses the mild formulation and shows that the solution can be
+expressed as a convergent power series in $u_0$ using the heat
+semigroup, with uniform estimates on each term. This implies, in
+particular, that solutions starting from small $"BMO"^(-1)$ data become
+classical (in fact, analytic) instantaneously. As an application, they
+also proved that any self-similar solution in $"BMO"^(-1)$ is smooth,
+complementing the Nečas--Růžička--Šverák nonexistence result.
 
 So the picture is:
 
@@ -487,12 +644,23 @@ numerically for singularity candidates.
 
 === 14.1. Kerr's anti-parallel vortex tubes
 <kerrs-anti-parallel-vortex-tubes>
-In 1993, Kerr numerically studied anti-parallel vortex tubes and found
-evidence suggestive of finite-time blowup.
+In 1993, Kerr numerically studied two anti-parallel vortex tubes with
+perturbed axes and observed rapid growth of maximum vorticity,
+consistent with a finite-time singularity. The Beale--Kato--Majda
+integral appeared to diverge, suggesting blowup.#footnote[R. M. Kerr,
+  "Evidence for a singularity of the three-dimensional, incompressible
+  Euler equations," *Phys. Fluids A* 5, 1725--1746 (1993).
+  #link("https://doi.org/10.1063/1.858849")[DOI]]
 
-Later, Hou and Li revisited the same scenario with much higher
-resolution and found no blowup: the apparent singular behavior was a
-numerical artifact of insufficient resolution.
+Later, Hou and Li revisited the same configuration with an adaptive
+mesh refinement method using much higher resolution and found no
+evidence of blowup. The apparent singular growth in Kerr's simulation
+was an artifact of underresolution near the vortex core: the vorticity
+growth saturated at later times and followed an algebraic, rather than
+singular, scaling.#footnote[T. Y. Hou and R. Li, "Dynamic depletion of
+  vortex stretching and non-blowup of the 3-D incompressible Euler
+  equations," *J. Nonlinear Sci.* 16, 639--664 (2006).
+  #link("https://doi.org/10.1007/s00332-006-0802-9")[DOI]]
 
 This illustrates a central challenge:
 
@@ -501,9 +669,12 @@ This illustrates a central challenge:
 
 === 14.2. Other candidate scenarios
 <other-candidate-scenarios>
-More complicated constructions, such as folded sheets and multiscale
-structures, have also been proposed as possible blowup mechanisms. But
-the equations repeatedly resist definitive numerical confirmation.
+More complicated constructions, such as folded vortex sheets,
+interacting vortex rings, and multiscale structures, have also been
+proposed as possible blowup mechanisms. For axisymmetric Euler with
+swirl, numerical studies by Grauer and Sideris, as well as by Cichocki,
+showed transient growth but no conclusive singularity. The equations
+repeatedly resist definitive numerical confirmation.
 
 === 14.3. Core numerical difficulties
 <core-numerical-difficulties>
@@ -521,16 +692,22 @@ Numerically detecting blowup is intrinsically hard because:
 == 15. Computer-assisted proofs
 <computer-assisted-proofs>
 A more rigorous numerical paradigm is the #strong[computer-assisted
-proof].
+  proof].
 
 === 15.1. General strategy
 <general-strategy>
 The idea is:
 
-+ Compute a highly accurate approximate solution.
-+ Show, by a fixed-point or perturbative argument, that a true solution
-  exists near it.
-+ Track all constants and errors rigorously using interval arithmetic.
++ Compute a highly accurate approximate solution $bar(u)$.
++ Formulate the PDE as a zero-finding problem $F(u) = 0$ for a
+  nonlinear operator $F$ on a Banach space.
++ Apply the #strong[Newton--Kantorovich theorem]: if $F$ is
+  Fréchet-differentiable, $F(bar(u))$ is small, and $F'(bar(u))$ is
+  invertible with controlled norm, then a true solution $u^*$ exists
+  near $bar(u)$.
++ Use #strong[interval arithmetic] to enclose all floating-point
+  computations in rigorous bounds, so that the error bounds on
+  $F(bar(u))$ and $F'(bar(u))^(-1)$ are mathematically guaranteed.
 
 Thus one upgrades a numerical candidate into a theorem.
 
@@ -551,18 +728,26 @@ beyond standard energy methods.
 
 === 16.1. Logarithmically supercritical models
 <logarithmically-supercritical-models>
-Tao considered modified Navier--Stokes equations where the Laplacian
-$nu Delta$ is replaced by a dissipation operator $D$ that is slightly
-stronger than $nu Delta$. Specifically, he proved global regularity for
-dissipation of the form $|nabla|^(15/8)$ (which is more regularizing
-than $Delta$), and even for $|nabla|^(5/4 + epsilon)$ with a suitable
-logarithmic correction. The key threshold is that if the dissipation
-scales like $|nabla|^(s)$ with $s > 1$ (this is the
-#strong[hyperdissipative] regime), the problem becomes subcritical and
-global regularity can be proved for sufficiently large $s$.
+For the hyperdissipative Navier--Stokes equations, the Laplacian
+$nu Delta$ is replaced by $nu (-Delta)^alpha$ with $alpha > 1$. The
+critical threshold is $alpha = 5/4$ in three dimensions: for
+$alpha > 5/4$ (subcritical) one can prove global regularity, while
+standard Navier--Stokes corresponds to $alpha = 1$ (supercritical), for
+which the problem remains open.#footnote[T. Tao, "Global regularity for
+  a logarithmically supercritical hyperdissipative Navier--Stokes
+  equation," *Anal. PDE* 2, 361--366 (2009).
+  #link("https://doi.org/10.2140/apde.2009.2.361")[DOI]
+  #link("https://arxiv.org/abs/0906.3070")[arXiv]]
 
-This shows that just a bit more damping changes the problem
-dramatically.
+Tao improved this by proving global regularity even for the borderline
+case $alpha = 5/4$, provided the dissipation is strengthened by a
+logarithmic factor: he considered a Fourier multiplier $D$ with symbol
+$m(xi) = |xi|^(5/4) / log(2 + |xi|^2)^(1/4)$, for which the dissipation
+is just marginally stronger than the critical case, yet global
+regularity holds.
+
+This shows that the problem is delicately balanced: a small increase in
+dissipation at the critical scaling changes the answer dramatically.
 
 === 16.2. Averaged Navier--Stokes and blowup models
 <averaged-navierstokes-and-blowup-models>
@@ -594,19 +779,19 @@ more generally, Besov regularity $B_(3, oo)^alpha$):
 
 - if $alpha > 1/3$, energy is conserved;
 - if $alpha < 1/3$, anomalous dissipation may occur,
-  i.e., the time derivative $d / d t integral (1/2) |u|^2 d x$ may be nonzero.
+  i.e., the time derivative $d / d t integral (1/2) abs(u)^2 d x$ may be nonzero.
 
 The conservation part was proved by Constantin, E, and Titi: if
-$u in L^3((0,T); B_(3, oo)^alpha)$ with $alpha > 1/3$, then the kinetic
-energy $frac(1,2) norm(u(t))_(L^2)^2$ is constant in time.#footnote[P.
-Constantin, W. E, and E. S. Titi, "Onsager's conjecture on the energy
-conservation for solutions of Euler's equation," *Comm. Math. Phys.* 165,
-207--209 (1994). #link("https://doi.org/10.1007/BF02099744")[DOI]]
+$u in L^3 ((0,T); B_(3, oo)^alpha)$ with $alpha > 1/3$, then the kinetic
+energy $frac(1, 2) norm(u(t))_(L^2)^2$ is constant in time.#footnote[P.
+  Constantin, W. E, and E. S. Titi, "Onsager's conjecture on the energy
+  conservation for solutions of Euler's equation," *Comm. Math. Phys.* 165,
+  207--209 (1994). #link("https://doi.org/10.1007/BF02099744")[DOI]]
 
 === 17.2. Convex integration
 <convex-integration>
 The flexibility part was developed through the method of #strong[convex
-integration], introduced into fluid dynamics by De Lellis and
+  integration], introduced into fluid dynamics by De Lellis and
 Székelyhidi, drawing on ideas of Nash and Gromov.
 
 A sequence of works improved the regularity threshold, culminating in
@@ -635,20 +820,27 @@ Navier--Stokes can be nonunique.
 <buckmastervicol>
 Buckmaster and Vicol (2019) proved nonuniqueness for weak solutions of
 3D Navier--Stokes: there exist at least two distinct global weak
-solutions $u, v in L_t^oo L_x^2 & L_t^2 dot(H)^1$ with the same
+solutions $u, v in L_t^oo L_x^2 inter L_t^2 dot(H)^1$ with the same
 finite-energy initial data $u_0 in L^2$. Moreover, these solutions can
 be chosen to be Hölder continuous with exponent $alpha < 1/3$ and to
 satisfy the energy equality (not just the inequality).#footnote[T.
-Buckmaster and V. Vicol, "Nonuniqueness of weak solutions to the
-Navier-Stokes equation," *Ann. of Math.* 189, 101--144 (2019).
-#link("https://doi.org/10.4007/annals.2019.189.1.3")[DOI]
-#link("https://arxiv.org/abs/1709.10033")[arXiv]
-#link("https://zbmath.org/07003146")[Zbl]]
+  Buckmaster and V. Vicol, "Nonuniqueness of weak solutions to the
+  Navier-Stokes equation," *Ann. of Math.* 189, 101--144 (2019).
+  #link("https://doi.org/10.4007/annals.2019.189.1.3")[DOI]
+  #link("https://arxiv.org/abs/1709.10033")[arXiv]
+  #link("https://zbmath.org/07003146")[Zbl]]
 
 The construction uses convex integration with #strong[intermittent
-Beltrami flows]---a refinement of the Mikado flows used for Euler that
+  Beltrami flows]---a refinement of the Mikado flows used for Euler that
 incorporates a third scale parameter to control the nonlinear term at
-the level of the Navier--Stokes equations.
+the level of the Navier--Stokes equations. The intermittent Beltrami
+flows are spatially periodic, divergence-free, almost Beltrami
+($nabla times v approx lambda v$), and have disjoint supports in
+frequency space. By superimposing many such flows at different scales,
+one cancels the time derivative and diffusion errors while preserving
+the nonlinear structure. The convex integration scheme yields solutions
+$u$ that are $C^(1/3 - epsilon)$ in space and time, reflecting the
+Onsager critical exponent $1/3$.
 
 However, these solutions are too rough to be Leray--Hopf weak solutions
 (they do not satisfy the energy inequality). So this does not directly
@@ -666,11 +858,11 @@ manifold, branching off from the self-similar background solution. The
 verification of these spectral conditions is in principle approachable
 by numerical simulation, since they involve only smooth
 functions.#footnote[H. Jia and V. Šverák, "Are the incompressible 3D
-Navier-Stokes equations locally ill-posed in the natural energy space?"
-*J. Funct. Anal.* 268, 3730--3766 (2015).
-#link("https://doi.org/10.1016/j.jfa.2015.01.008")[DOI]
-#link("https://arxiv.org/abs/1306.2136")[arXiv]
-#link("https://zbmath.org/1321.81011")[Zbl]]
+  Navier-Stokes equations locally ill-posed in the natural energy space?"
+  *J. Funct. Anal.* 268, 3730--3766 (2015).
+  #link("https://doi.org/10.1016/j.jfa.2015.01.008")[DOI]
+  #link("https://arxiv.org/abs/1306.2136")[arXiv]
+  #link("https://zbmath.org/1321.81011")[Zbl]]
 
 === 18.3. Albritton--Brue--Colombo
 <albrittonbruecolombo>
@@ -682,11 +874,11 @@ force $f$, that coincide at $t = 0$ but differ at later times. The
 construction uses a self-similar, compactly supported vortex ring as the
 background solution and demonstrates that it is unstable under the
 Navier--Stokes dynamics in similarity variables.#footnote[D. Albritton,
-E. Brué, and M. Colombo, "Non-uniqueness of Leray solutions of the
-forced Navier-Stokes equations," *Ann. of Math.* 196, 415--455 (2022).
-#link("https://doi.org/10.4007/annals.2022.196.1.3")[DOI]
-#link("https://arxiv.org/abs/2112.03116")[arXiv]
-#link("https://zbmath.org/07583008")[Zbl]]
+  E. Brué, and M. Colombo, "Non-uniqueness of Leray solutions of the
+  forced Navier-Stokes equations," *Ann. of Math.* 196, 415--455 (2022).
+  #link("https://doi.org/10.4007/annals.2022.196.1.3")[DOI]
+  #link("https://arxiv.org/abs/2112.03116")[arXiv]
+  #link("https://zbmath.org/07583008")[Zbl]]
 
 So with forcing, nonuniqueness at the Leray--Hopf level is known. The
 solutions live precisely on the borderline of the known well-posedness
@@ -704,9 +896,9 @@ perturbation approximated by a finite-rank operator. The result
 establishes the existence of a second solution---indeed, infinitely many
 distinct Leray--Hopf solutions---for the same smooth, compactly
 supported initial data with zero external force.#footnote[T. Hou, Y.
-Wang, and C. Yang, "Nonuniqueness of Leray-Hopf solutions to the
-unforced incompressible 3D Navier-Stokes equation," arXiv:2509.25116
-(2025). #link("https://arxiv.org/abs/2509.25116")[arXiv]]
+  Wang, and C. Yang, "Nonuniqueness of Leray-Hopf solutions to the
+  unforced incompressible 3D Navier-Stokes equation," arXiv:2509.25116
+  (2025). #link("https://arxiv.org/abs/2509.25116")[arXiv]]
 
 If fully confirmed, this would represent a major breakthrough:
 nonuniqueness at the Leray--Hopf level without external forcing.
@@ -721,26 +913,39 @@ domain.
 === 19.1. Luo--Hou numerical scenario
 <luohou-numerical-scenario>
 In 2014, Luo and Hou numerically studied axisymmetric 3D Euler in a
-cylinder and observed strong vorticity growth near the boundary,
-suggesting a finite-time singularity.#footnote[G. Luo and T. Y. Hou, "Potentially singular solutions of the 3D axisymmetric Euler equations," *PNAS* 111, 12968--12973 (2014). #link("https://doi.org/10.1073/pnas.1405238111")[DOI] #link("https://arxiv.org/abs/1310.0497")[arXiv] #link("https://zbmath.org/1431.35115")[Zbl]]
+cylinder with no-flow boundary on the solid wall and periodic boundary
+along the axial direction. Using a hybrid 6th-order Galerkin and
+6th-order finite difference method on dynamically adaptive meshes, they
+observed a $(3 times 10^8)$-fold increase in the maximum vorticity and
+predicted a singularity time $t_s approx 0.0035056$. The numerical data
+were checked against the Beale--Kato--Majda, Constantin--Fefferman, and
+Deng--Hou--Yu blowup criteria.#footnote[G. Luo and T. Y. Hou,
+  "Potentially singular solutions of the 3D axisymmetric Euler equations,"
+  *PNAS* 111, 12968--12973 (2014).
+  #link("https://doi.org/10.1073/pnas.1405238111")[DOI]
+  #link("https://arxiv.org/abs/1310.0497")[arXiv]
+  #link("https://zbmath.org/1431.35115")[Zbl]]
 
-The geometry of the boundary appeared to play an essential role.
+A local analysis near the singularity suggested a self-similar blowup in
+the meridian plane. The geometry of the boundary appeared to play an
+essential role by creating a strong shear layer that drives the
+vorticity amplification.
 
 === 19.2. Chen--Hou theorem
 <chenhou-theorem>
 In a series of papers beginning in 2023, Chen and Hou proved finite-time
 blowup for the 3D incompressible Euler equations in a cylindrical
-domain with no-slip boundary. Specifically, there exists smooth,
+domain with no-penetration boundary. Specifically, there exists smooth,
 finite-energy initial data $(u_0, p_0)$ such that the corresponding
 solution of the 3D axisymmetric Euler equations develops a singularity
 in finite time. The velocity field remains $C^(1, alpha)$ and has finite
 energy up to the singularity time.#footnote[J. Chen and T. Y. Hou,
-"Finite time blowup of 2D Boussinesq and 3D Euler equations with
-$C^(1,alpha)$ velocity and boundary," *Ann. PDE* 9, 14 (2023).
-#link("https://arxiv.org/abs/1910.00173")[arXiv]
-#link("https://zbmath.org/1485.35071")[Zbl]; see also J. Chen and T. Y.
-Hou, *PNAS* 122, e2500940122 (2025).
-#link("https://doi.org/10.1073/pnas.2500940122")[DOI]]
+  "Finite time blowup of 2D Boussinesq and 3D Euler equations with
+  $C^(1,alpha)$ velocity and boundary," *Ann. PDE* 9, 14 (2023).
+  #link("https://arxiv.org/abs/1910.00173")[arXiv]
+  #link("https://zbmath.org/1485.35071")[Zbl]; see also J. Chen and T. Y.
+  Hou, *PNAS* 122, e2500940122 (2025).
+  #link("https://doi.org/10.1073/pnas.2500940122")[DOI]]
 
 The proof is computer-assisted and follows the dynamic rescaling
 framework developed by Elgindi. The key steps are: (1) construct an
@@ -767,15 +972,24 @@ regularity question.
 <other-blowup-scenarios-and-dimension-as-a-parameter>
 The lecture also mentioned numerical studies by Hou suggesting possible
 blowup scenarios for Navier--Stokes, including tornado-type structures
-with large vorticity amplification.
+with large vorticity amplification near a solid boundary.
 
-Another interesting idea is to treat the spatial dimension as a
-parameter in a generalized model. Numerically, one may find self-similar
-singularities in a noninteger dimension, such as (3.188). This suggests
-that 3D may lie near a threshold, and that one missing cancellation
-might separate regularity from blowup.
+Another interesting idea is to treat the spatial dimension $d$ as a
+continuous parameter by defining a family of PDEs that interpolate
+between 2D (globally regular) and 3D (open). This is achieved by
+replacing the Biot--Savart kernel $|x - y|^(-(d-1))$ with an analytic
+continuation in $d$. Numerically, one finds self-similar singularities
+for dimensions $d$ above a critical threshold $d_c approx 3.188$, while
+the equations remain regular for $d < d_c$. This suggests that 3D
+Navier--Stokes lies just below the critical dimension, and that one
+missing cancellation---such as a subtle depletion of the nonlinear
+term---might separate global regularity from blowup.#footnote[T. Y. Hou,
+  "Nearly self-similar blowup of generalized axisymmetric Navier-Stokes
+  equations," arXiv:2405.10916 (2024).
+  #link("https://arxiv.org/abs/2405.10916")[arXiv]]
 
-This is suggestive, not definitive.
+This is suggestive, not definitive, but it offers a parametric
+explanation for why the 3D problem is so delicately balanced.
 
 
 
@@ -804,9 +1018,20 @@ The speaker described joint work using neural-network-based methods to
 discover self-similar blowup profiles for equations related to fluid
 dynamics, such as:
 
-- axisymmetric 3D Euler models,
-- the CCF equation,
-- incompressible porous media equations.
+- #strong[axisymmetric 3D Euler models:] the
+  De Gregorio model and related 1D models that capture the vortex
+  stretching mechanism;
+- the #strong[CCF equation] (Constantin--Cordoba--Fontelos), a toy model
+  for the 3D Euler equations that retains the nonlocal quadratic
+  structure but is simpler to analyze;
+- #strong[incompressible porous media (IPM) equations,] which model
+  fluid flow through porous media and share many analytical features
+  with the 2D surface quasi-geostrophic (SQG) equation.
+
+For each equation, the neural network discovers candidate self-similar
+profiles by minimizing the PDE residual in the rescaled variables. The
+candidate can then be refined and, in some cases, rigorously verified
+using a Newton--Kantorovich argument.
 
 These methods are good at discovering candidate singularity profiles,
 but they do not by themselves prove anything about Navier--Stokes.
@@ -819,12 +1044,14 @@ A major conceptual motif is the search for self-similar blowup.
 
 === 22.1. Self-similar ansatz
 <self-similar-ansatz>
-Suppose blowup occurs at time $T$. One seeks solutions of the form
+Suppose blowup occurs at time $T$. The simplest ansatz is a
+self-similar solution of the form
 
-$ u(x,t) = frac(1, (T - t)^beta) U ( frac(x - x_0, (T - t)^gamma) ) $
+$ u(x,t) = frac(1, (T - t)^beta) U ( frac(x - x_0, (T - t)^gamma) ) , $
 
-or in a more general time-dependent rescaled form. For the
-Navier--Stokes equations, scaling invariance forces the relation
+or in a more general time-dependent rescaled form where the exponents
+are allowed to vary. For the Navier--Stokes equations, dimensional
+analysis (balancing $partial_t u$ with $nu Delta u$) forces
 
 $ 2 beta + 1 = gamma . $
 
@@ -834,28 +1061,50 @@ Here:
 - $gamma$ is the spatial concentration exponent,
 - $U$ is the profile. The energy-critical case corresponds to
   $beta = 1/2$, $gamma = 1$ (the Leray self-similar scaling), for
-  which $U$ is expected to belong to $L^3$.
+  which $U$ is expected to belong to $L^3(RR^3)$.
 
-Under suitable rescaling variables
+Under the change of variables
 
-$ xi = frac(x - x_0, (T - t)^gamma) quad tau = - log(T - t) $
+$ xi = frac(x - x_0, (T - t)^gamma) quad tau = - log(T - t) , $
 
-a self-similar singularity corresponds to convergence to a stationary
-profile in $(xi, tau)$-coordinates.
+the Navier--Stokes equations transform into
+
+$
+  partial_tau U - gamma xi dot nabla_xi U + beta U + (U dot nabla_xi) U = - nabla_xi P + nu e^(-(2 beta + 1 - gamma) tau) Delta_xi U ,
+$
+
+where $U = U(xi, tau)$ and $P$ is the rescaled pressure. For the
+critical scaling $2 beta + 1 = gamma$, the viscous term simplifies to
+$nu Delta_xi U$, independent of $tau$, and the equation becomes
+autonomous in the similarity variables:
+
+$ partial_tau U - gamma xi dot nabla_xi U + beta U + (U dot nabla_xi) U = - nabla_xi P + nu Delta_xi U . $
+
+A self-similar singularity corresponds to convergence to a stationary
+($partial_tau = 0$) solution of this rescaled system as
+$tau -> oo$ (i.e., $t -> T^-$). The problem thus reduces to finding
+a nontrivial steady state $U_oo (xi)$ of the rescaled equations and
+proving that it is dynamically stable in an appropriate sense.
 
 This is attractive because the complicated singular behavior in physical
-variables becomes a fixed-point problem in rescaled variables.
+variables becomes a fixed-point problem in the rescaled variables.
 
 === 22.2. Program for proving blowup
 <program-for-proving-blowup>
 A possible route to a theorem is:
 
-+ Find an approximate self-similar profile numerically.
-+ Linearize around it.
-+ Prove good spectral or stability properties.
-+ Upgrade this to nonlinear control.
-+ Use a computer-assisted argument to make every estimate rigorous.
-+ Translate back to physical variables and conclude blowup.
++ Find an approximate self-similar profile $U_("app")$ numerically.
++ Linearize the rescaled equations around $U_("app")$:
+  $ partial_tau V = L V + N(V) $,
+  where $L$ is the linearized operator and $N$ contains higher-order
+  corrections.
++ Prove that $L$ has a single unstable eigenvalue (corresponding to the
+  instability of the profile) while the rest of the spectrum is stable,
+  so the dynamics are governed by a one-dimensional unstable manifold.
++ Upgrade this to nonlinear control via a fixed-point argument,
+  estimating the nonlinear terms in suitable weighted spaces.
++ Use interval arithmetic to make every constant rigorous.
++ Translate back to physical variables and conclude finite-time blowup.
 
 === 22.3. Restrictions on self-similarity
 <restrictions-on-self-similarity>
@@ -872,10 +1121,10 @@ $ u(x, t) = frac(1, (T - t)^(1 / 2)) U ( frac(x, (T - t)^(1 / 2)) ) $
 with $U in L^3(RR^3)$ (the natural energy space for the profile).
 More precisely, if $U$ is divergence-free and $U in L^3(RR^3)$, then the
 only solution of this self-similar form is $U equiv 0$.#footnote[J.
-Nečas, M. Růžička, and V. Šverák, "On Leray's self-similar solutions of
-the Navier-Stokes equations," *Acta Math.* 176, 283--294 (1996).
-#link("https://doi.org/10.1007/BF02551584")[DOI]
-#link("https://zbmath.org/0884.35115")[Zbl]]
+  Nečas, M. Růžička, and V. Šverák, "On Leray's self-similar solutions of
+  the Navier-Stokes equations," *Acta Math.* 176, 283--294 (1996).
+  #link("https://doi.org/10.1007/BF02551584")[DOI]
+  #link("https://zbmath.org/0884.35115")[Zbl]]
 
 This rules out the most naive self-similar blowup scenario for
 Navier--Stokes.
@@ -885,17 +1134,13 @@ to understand Euler-type singularity formation and then show viscosity
 is lower order near the singularity.
 
 Recent work of Constantin, Ignatova, and Vicol also places restrictions
-on possible self-similar exponents for Euler. The lecture stated,
-roughly, that one must have
-
-$ gamma >= 2 / 5 $
-
-in general, and in the axisymmetric case
-
-$ gamma >= 1 / 2 . $
-
-These constraints matter because they interact with the Navier--Stokes
-scaling.
+on possible self-similar exponents for Euler. For finite-energy data,
+the similarity exponent must satisfy $gamma >= 2/5$ in general, and
+$gamma >= 1/2$ for axisymmetric flows.#footnote[P. Constantin,
+  M. Ignatova, and V. Vicol, "On putative self-similarity for
+  incompressible 3D Euler," arXiv:2602.17570 (2026).
+  #link("https://arxiv.org/abs/2602.17570")[arXiv]] These constraints
+matter because they interact with the Navier--Stokes scaling.
 
 
 
@@ -907,16 +1152,16 @@ Another direction is to lower the regularity of the initial data.
 <elgindis-theorem>
 Elgindi (2021) proved finite-time blowup for 3D Euler in the whole
 space $RR^3$ (without boundaries). Starting from initial data
-$u_0 in C^(1, alpha)(RR^3)$ (Hölder continuous gradient) that is
+$u_0 in C^(1, alpha) (RR^3)$ (Hölder continuous gradient) that is
 axisymmetric and has no swirl, the corresponding solution develops a
 singularity at a finite time $T < oo$. The vorticity blows up like
 $omega(t) approx (T - t)^(-1)$ as $t -> T^-$, and the velocity
 gradient blows up like $nabla u approx (T - t)^(-1)$.#footnote[T. M.
-Elgindi, "Finite-time singularity formation for $C^(1,alpha)$ solutions
-to the incompressible Euler equations on $RR^3$," *Ann. of Math.* 194,
-647--727 (2021). #link("https://doi.org/10.4007/annals.2021.194.3.2")[DOI]
-#link("https://arxiv.org/abs/1904.04795")[arXiv]
-#link("https://zbmath.org/07441733")[Zbl]]
+  Elgindi, "Finite-time singularity formation for $C^(1,alpha)$ solutions
+  to the incompressible Euler equations on $RR^3$," *Ann. of Math.* 194,
+  647--727 (2021). #link("https://doi.org/10.4007/annals.2021.194.3.2")[DOI]
+  #link("https://arxiv.org/abs/1904.04795")[arXiv]
+  #link("https://zbmath.org/07441733")[Zbl]]
 
 The proof uses a dynamic rescaling formulation: the solution is written
 in self-similar variables, and the problem is reduced to proving
@@ -929,16 +1174,29 @@ initial velocity is $C^(1, alpha)$ but not $C^2$).
 
 === 23.2. Stability and related works
 <stability-and-related-works>
-This was further developed by Elgindi, Ghoul, and Masmoudi, who studied
-stability of the profile.
+Elgindi, Ghoul, and Masmoudi (2021) later proved that the
+blowup is #strong[stable] under small perturbations within the class of
+axisymmetric no-swirl data. They constructed a neighborhood of the
+Elgindi initial data in the $C^(1, alpha)$ topology such that every
+datum in this neighborhood also blows up in finite time, with the same
+self-similar rates. The proof combines a refined spectral analysis of
+the linearized operator in similarity variables with a nonlinear
+perturbation argument using weighted norms.#footnote[T. M. Elgindi,
+  T.-E. Ghoul, and N. Masmoudi, "On the stability of self-similar
+  blow-up for $C^(1,alpha)$ solutions to the incompressible Euler
+  equations on $RR^3$," *Camb. J. Math.* 9, 1035--1075 (2021).
+  #link("https://doi.org/10.4310/CJM.2021.v9.n4.a4")[DOI]
+  #link("https://arxiv.org/abs/1910.14071")[arXiv]]
 
-Other related works used multiscale constructions and analogous
-mechanisms.
+Other related works by Huang, Chen, Hou, and collaborators used
+multiscale constructions and analogous mechanisms to prove blowup for
+related models, including the 2D Boussinesq equations and the
+axisymmetric Euler equations with a boundary (see §19.2).
 
 An important open question remains:
 
 Can one upgrade these rough-data blowup constructions to smooth-data
-blowup?
+($C^oo$) blowup for the 3D Euler equations in the whole space?
 
 
 
@@ -997,9 +1255,9 @@ plausible:
 The central question remains:
 
 #quote(block: true)[
-Do there exist smooth initial data for 3D incompressible Navier--Stokes
-that produce a finite-time singularity, or are smooth solutions always
-global?
+  Do there exist smooth initial data for 3D incompressible Navier--Stokes
+  that produce a finite-time singularity, or are smooth solutions always
+  global?
 ]
 
 After more than 200 years of study, this remains unknown.
@@ -1055,4 +1313,4 @@ then $u$ is smooth.
 <bealekatomajda-criterion-1>
 If a smooth solution blows up at time $T$, then
 
-$ integral_0^T norm(omega(dot,t))_(L^oo) d t = oo . $
+$ integral_0^T norm(omega(dot, t))_(L^oo) d t = oo . $
