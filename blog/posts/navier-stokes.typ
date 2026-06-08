@@ -1,6 +1,6 @@
 // date: 2026-06-02
 // tags: maths, fluid-dynamics, notes, transcription, ai-assisted
-// hidden: true
+// hidden: false
 
 
 #set document(title: [Navier--Stokes Existence or Breakdown])
@@ -8,12 +8,12 @@
 <navierstokes-existence-or-breakdown>
 == Notes from a lecture by Javier Gómez-Serrano
 <notes-from-a-lecture-by-javier-gómez-serrano>
-(These notes started as an AI-cleaned transcript of the talk.)
+(These notes started as an AI-cleaned transcript of #link("https://www.youtube.com/watch?v=3j1VW9REm7s&pp=ygUNZ29tZXogc2VycmFubw%3D%3D")[this talk]. I have yet to properly go through these so I would take them with a titanic grain of salt.)
 
 
 == 1. Introduction
 <introduction>
-This lecture concerns the Navier--Stokes existence or breakdown problem,
+This lecture concerns the #link("https://en.wikipedia.org/wiki/Navier%E2%80%93Stokes_existence_and_smoothness")[Navier--Stokes existence or breakdown] problem,
 one of the seven Millennium Prize Problems posed by the Clay Mathematics
 Institute around the year 2000.
 
@@ -58,8 +58,8 @@ A few milestones:
 - #strong[d'Alembert] (Jean le Rond d'Alembert, 1717--1783) considered drag and argued that an inviscid fluid
   should produce zero drag, in contradiction with physical observations (1752).
   This is the famous #emph[d'Alembert paradox].
-- #strong[Euler] (Leonhard Euler, 1707--1783) wrote the incompressible Euler equations (~1757), describing
-  ideal fluids without viscosity.
+- #strong[Euler] (Leonhard Euler, 1707--1783) wrote the #link("https://en.wikipedia.org/wiki/Euler_equations_(fluid_dynamics)")[incompressible Euler equations] (~1757), describing
+  ideal fluids without #link("https://en.wikipedia.org/wiki/Viscosity")[viscosity].
 - #strong[Prandtl] (Ludwig Prandtl, 1875--1953) explained the paradox through #emph[boundary layer
     theory] (1904): even very small viscosity can produce substantial drag near
   boundaries.
@@ -117,14 +117,14 @@ compressible flow.
 
 === 3.4. The pressure equation
 <the-pressure-equation>
-Taking the divergence of the Navier--Stokes equation and using
-$nabla dot u = 0$ gives the Poisson equation for the pressure:
+Taking the #link("https://en.wikipedia.org/wiki/Divergence")[divergence] of the Navier--Stokes equation and using
+$nabla dot u = 0$ gives the #link("https://en.wikipedia.org/wiki/Poisson_equation")[Poisson equation] for the pressure:
 
 $ - Delta p = nabla dot ((u dot nabla) u) = sum_(i,j=1)^3 partial_i partial_j (u_i u_j) . $
 
 Thus $p$ is determined globally by $u$ at each instant. Solving the
-Poisson equation with the fundamental solution $G(x) = 1/(4 pi |x|)$
-of $-Delta$ in $RR^3$ gives the singular integral representation
+Poisson equation with the #link("https://en.wikipedia.org/wiki/Fundamental_solution")[fundamental solution] $G(x) = 1/(4 pi abs(x))$
+of $-Delta$ in $RR^3$ gives the #link("https://en.wikipedia.org/wiki/Singular_integral")[singular integral] representation
 
 $
   p(x,t) = frac(1, 4 pi) integral (frac(3 (x_i - y_i)(x_j - y_j), abs(x - y)^5) - frac(delta_(i j), abs(x - y)^3)) u_i (y,t) u_j (y,t) d y .
@@ -187,7 +187,7 @@ To discuss global existence, one introduces weaker notions of solution.
 
 === 6.1. Definition of weak solution
 <definition-of-weak-solution>
-A #strong[weak solution] is a function $u$ that satisfies the
+A #link("https://en.wikipedia.org/wiki/Weak_solution")[#strong[weak solution]] is a function $u$ that satisfies the
 Navier--Stokes equations only after testing against smooth
 divergence-free test functions.
 
@@ -229,8 +229,8 @@ $ u in L_t^oo L_x^2 inter L_t^2 dot(H)_x^1 $
 
 satisfying the energy inequality for all $t$. Moreover, the solution is
 smooth except possibly on a small exceptional set; in particular, the
-set of singular times has zero $1/2$-dimensional Hausdorff
-measure.#footnote[J. Leray, "Sur le mouvement d'un liquide visqueux emplissant l'espace," *Acta Math.* 63, 193--248 (1934). #link("https://doi.org/10.1007/BF02547354")[DOI] #link("https://zbmath.org/60.0726.05")[Zbl]] Hopf (1951) later extended this to bounded
+set of singular times has zero $1/2$-dimensional #link("https://en.wikipedia.org/wiki/Hausdorff_measure")[Hausdorff
+measure].#footnote[J. Leray, "Sur le mouvement d'un liquide visqueux emplissant l'espace," *Acta Math.* 63, 193--248 (1934). #link("https://doi.org/10.1007/BF02547354")[DOI] #link("https://zbmath.org/60.0726.05")[Zbl]] Hopf (1951) later extended this to bounded
 domains with no-slip boundary conditions.#footnote[E. Hopf, "Über die Anfangswertaufgabe für die hydrodynamischen Grundgleichungen," *Math. Nachr.* 4, 213--231 (1951). #link("https://doi.org/10.1002/mana.3210040121")[DOI] #link("https://zbmath.org/0042.10604")[Zbl]]
 
 Thus:
@@ -260,7 +260,7 @@ that is smooth for all $t > 0$ and depends continuously on the initial
 data.#footnote[O. A. Ladyzhenskaya, "Solution 'in the large' of the nonstationary boundary value problem for the Navier-Stokes system in two space variables," *Comm. Pure Appl. Math.* 12, 427--433 (1959). #link("https://doi.org/10.1002/cpa.3160120303")[DOI] #link("https://zbmath.org/0103.19502")[Zbl]; also *The Mathematical Theory of Viscous Incompressible Flow*, 2nd ed., Gordon & Breach (1969).]
 
 The key point is that certain inequalities, now often called
-Ladyzhenskaya inequalities, provide a stronger control in two dimensions
+#link("https://en.wikipedia.org/wiki/Ladyzhenskaya%27s_inequality")[Ladyzhenskaya inequalities], provide a stronger control in two dimensions
 than in three. In 2D, the inequality
 
 $ norm(u)_(L^4) <= C norm(u)_(L^2)^(1 / 2) norm(nabla u)_(L^2)^(1 / 2) $
@@ -290,7 +290,7 @@ A #strong[suitable weak solution] is a weak solution that additionally
 satisfies the #strong[local energy inequality]
 
 $
-  partial_t ( frac(abs(u)^2, 2) ) + div(( frac(abs(u)^2, 2) + p ) u) - nu Delta ( frac(abs(u)^2, 2) ) + nu abs(nabla u)^2 <= 0
+  partial_t ( frac(abs(u)^2, 2) ) + op("div")(( frac(abs(u)^2, 2) + p ) u) - nu Delta ( frac(abs(u)^2, 2) ) + nu abs(nabla u)^2 <= 0
 $
 
 in the sense of distributions. This local form of energy dissipation is
@@ -322,7 +322,7 @@ constrained.
 
 == 9. Vorticity formulation
 <vorticity-formulation>
-A central derived quantity is the #strong[vorticity]
+A central derived quantity is the #link("https://en.wikipedia.org/wiki/Vorticity")[#strong[vorticity]]
 
 $ omega = nabla times u . $
 
@@ -332,17 +332,28 @@ and yields the vorticity equation. Using the vector identity
 $ (u dot nabla) u = frac(1, 2) nabla abs(u)^2 - u times omega , $
 
 the curl of the nonlinear term becomes $-nabla times (u times omega)$,
-and the pressure term $nabla p$ vanishes since $nabla times (nabla p) = 0$.
+and the pressure term vanishes since $nabla times (nabla p) = 0$. Using
+the vector identity
 
-The result is:
+$
+  nabla times (u times omega) = (omega dot nabla) u - (u dot nabla) omega + u (nabla dot omega) - omega (nabla dot u) ,
+$
 
-$ partial_t omega + u dot nabla omega = omega dot nabla u + nu Delta omega . $
+and noting that $nabla dot u = 0$ (incompressibility) and
+$nabla dot omega = nabla dot (nabla times u) = 0$ (divergence of a
+curl), this simplifies to
+
+$ - nabla times (u times omega) = (u dot nabla) omega - (omega dot nabla) u . $
+
+The vorticity equation therefore becomes
+
+$ partial_t omega + (u dot nabla) omega = (omega dot nabla) u + nu Delta omega . $
 
 The term $omega dot nabla u$ is the #strong[vortex stretching term].
 It represents the amplification of vorticity by the velocity gradient
 along the direction of the vortex lines.
 
-=== 9.1. The Biot--Savart law
+=== 9.1. The #link("https://en.wikipedia.org/wiki/Biot%E2%80%93Savart_law")[Biot--Savart law]
 <the-biotsavart-law>
 Given the vorticity $omega$, the velocity can be recovered via the
 Biot--Savart law:
@@ -362,13 +373,26 @@ vorticity through a singular integral.
 
 === 9.2. The 2D vorticity equation
 <the-2d-vorticity-equation>
-In 2D, the vorticity $omega = partial_1 u_2 - partial_2 u_1$ is a scalar,
-and the vortex stretching term vanishes identically because $omega$ is
-orthogonal to the plane of the flow. The equation reduces to
+In 2D, the velocity $u = (u_1 (x_1, x_2, t), u_2 (x_1, x_2, t), 0)$
+has no component or variation in the $x_3$ direction. The vorticity
+
+$ omega = nabla times u = (0, 0, partial_1 u_2 - partial_2 u_1) $
+
+is a vector pointing purely out of the plane, and applying the same
+derivation as in 3D gives the same equation
+
+$ partial_t omega + (u dot nabla) omega = (omega dot nabla) u + nu Delta omega . $
+
+However, the vortex stretching term simplifies dramatically: since
+$u$ is independent of $x_3$ and $omega$ has only the $x_3$ component,
+
+$ (omega dot nabla) u = omega_3 partial_3 u = 0 . $
+
+Thus the stretching term vanishes identically, and the equation reduces to
 
 $ partial_t omega + u dot nabla omega = nu Delta omega . $
 
-Thus vorticity is simply transported and diffused---a passive scalar
+So in 2D, vorticity is simply transported and diffused---a passive scalar
 advected by the velocity field. This is a major reason why 2D is
 tractable.
 
@@ -448,15 +472,15 @@ existence and uniqueness of smooth solutions on a short time interval
 $[0,T)$ for sufficiently regular initial data. In particular, the
 space $dot(H)^(1/2) (RR^3)$ is critical for Navier--Stokes: for
 $u_0 in dot(H)^(1/2)$, there exists $T = T(norm(u_0)_(dot(H)^(1/2))) > 0$
-and a unique mild solution
+and a unique #link("https://en.wikipedia.org/wiki/Mild_solution")[mild solution]
 
 $ u in C([0,T); dot(H)^(1/2)) inter L^2 ((0,T); dot(H)^(3/2)) $
 
-given by the Duhamel formula
+given by the #link("https://en.wikipedia.org/wiki/Duhamel%27s_principle")[Duhamel formula]
 
 $ u(t) = e^(nu t Delta) u_0 - integral_0^t e^(nu (t - s) Delta) PP (u(s) dot nabla) u(s) d s , $
 
-where $PP$ is the Leray projection onto divergence-free fields.
+where $PP$ is the #link("https://en.wikipedia.org/wiki/Leray_projection")[Leray projection] onto divergence-free fields.
 The solution is smooth for $t in (0,T)$. For more regular data
 $u_0 in H^s$ with $s > 1/2$, the solution belongs to
 $C([0,T); H^s) inter L^2 ((0,T); H^(s+1))$.
@@ -495,13 +519,13 @@ then the solution is smooth on $(0,T]$. The condition $2/p + 3/q = 1$
 defines the critical line; the strict inequality $q > 3$ excludes the
 endpoint.
 
-The proof for $q < 6$ uses the Gagliardo--Nirenberg inequality
+The proof for $q < 6$ uses the #link("https://en.wikipedia.org/wiki/Gagliardo%E2%80%93Nirenberg_interpolation_inequality")[Gagliardo--Nirenberg inequality]
 
 $ norm(u)_(L^q) <= C norm(u)_(L^2)^(1 - theta) norm(nabla u)_(L^2)^theta , $
 
 where $theta = 3(1/2 - 1/q)$. Combined with the Prodi--Serrin
 condition $2/p + 3/q = 1$, one obtains enough control of the nonlinear
-term $|(u dot nabla) u|$ to close the estimates via Gronwall's
+term $abs((u dot nabla) u)$ to close the estimates via Gronwall's
 inequality.
 
 The endpoint case $q = 3$ (i.e., $p = oo$) is critical and was
@@ -583,7 +607,7 @@ the Bourgain--Pavlović result below.
 === 13.2. Bourgain--Pavlović
 <bourgainpavlović>
 Bourgain and Pavlović (2008) showed that the border
-case $dot(B)_oo^(-1, oo)$ (a slightly larger Besov space than
+case $dot(B)_oo^(-1, oo)$ (a slightly larger #link("https://en.wikipedia.org/wiki/Besov_space")[Besov space] than
 $"BMO"^(-1)$) is ill-posed: for any $delta, epsilon > 0$, there exists
 smooth initial data $u_0$ with
 $norm(u_0)_(dot(B)_oo^(-1, oo)) < delta$ but the corresponding solution
@@ -698,16 +722,16 @@ A more rigorous numerical paradigm is the #strong[computer-assisted
 <general-strategy>
 The idea is:
 
-+ Compute a highly accurate approximate solution $bar(u)$.
++ Compute a highly accurate approximate solution $overline(u)$.
 + Formulate the PDE as a zero-finding problem $F(u) = 0$ for a
   nonlinear operator $F$ on a Banach space.
 + Apply the #strong[Newton--Kantorovich theorem]: if $F$ is
-  Fréchet-differentiable, $F(bar(u))$ is small, and $F'(bar(u))$ is
+  Fréchet-differentiable, $F(overline(u))$ is small, and $F'(overline(u))$ is
   invertible with controlled norm, then a true solution $u^*$ exists
-  near $bar(u)$.
-+ Use #strong[interval arithmetic] to enclose all floating-point
+  near $overline(u)$.
++ Use #link("https://en.wikipedia.org/wiki/Interval_arithmetic")[#strong[interval arithmetic]] to enclose all floating-point
   computations in rigorous bounds, so that the error bounds on
-  $F(bar(u))$ and $F'(bar(u))^(-1)$ are mathematically guaranteed.
+  $F(overline(u))$ and $F'(overline(u))^(-1)$ are mathematically guaranteed.
 
 Thus one upgrades a numerical candidate into a theorem.
 
@@ -741,8 +765,8 @@ which the problem remains open.#footnote[T. Tao, "Global regularity for
 
 Tao improved this by proving global regularity even for the borderline
 case $alpha = 5/4$, provided the dissipation is strengthened by a
-logarithmic factor: he considered a Fourier multiplier $D$ with symbol
-$m(xi) = |xi|^(5/4) / log(2 + |xi|^2)^(1/4)$, for which the dissipation
+logarithmic factor: he considered a #link("https://en.wikipedia.org/wiki/Fourier_multiplier")[Fourier multiplier] $D$ with symbol
+$m(xi) = abs(xi)^(5/4) / log(2 + abs(xi)^2)^(1/4)$, for which the dissipation
 is just marginally stronger than the critical case, yet global
 regularity holds.
 
@@ -757,7 +781,7 @@ identity, Sobolev estimates, symmetries---yet admit finite-time blowup.
 In these models, the nonlinear term $(u dot nabla) u$ is replaced by an
 averaged or truncated version that retains the same energy estimates and
 scaling properties but removes certain cancellations present in the
-genuine nonlinearity. The blowup is constructed via a self-similar
+genuine nonlinearity. The blowup is constructed via a #link("https://en.wikipedia.org/wiki/Self-similarity")[self-similar]
 ansatz combined with an Ornstein--Uhlenbeck-type stochastic
 construction.
 
@@ -831,7 +855,7 @@ satisfy the energy equality (not just the inequality).#footnote[T.
   #link("https://zbmath.org/07003146")[Zbl]]
 
 The construction uses convex integration with #strong[intermittent
-  Beltrami flows]---a refinement of the Mikado flows used for Euler that
+  #link("https://en.wikipedia.org/wiki/Beltrami_vector_field")[Beltrami flows]]---a refinement of the Mikado flows used for Euler that
 incorporates a third scale parameter to control the nonlinear term at
 the level of the Navier--Stokes equations. The intermittent Beltrami
 flows are spatially periodic, divergence-free, almost Beltrami
@@ -977,7 +1001,7 @@ with large vorticity amplification near a solid boundary.
 Another interesting idea is to treat the spatial dimension $d$ as a
 continuous parameter by defining a family of PDEs that interpolate
 between 2D (globally regular) and 3D (open). This is achieved by
-replacing the Biot--Savart kernel $|x - y|^(-(d-1))$ with an analytic
+replacing the Biot--Savart kernel $abs(x - y)^(-(d-1))$ with an analytic
 continuation in $d$. Numerically, one finds self-similar singularities
 for dimensions $d$ above a critical threshold $d_c approx 3.188$, while
 the equations remain regular for $d < d_c$. This suggests that 3D
@@ -999,14 +1023,14 @@ The lecture then discussed neural-network-based discovery methods.
 
 === 21.1. Neural networks as nonlinear ansätze
 <neural-networks-as-nonlinear-ansätze>
-A neural network represents a function by composing affine maps with
+A #link("https://en.wikipedia.org/wiki/Neural_network_(machine_learning)")[neural network] represents a function by composing affine maps with
 nonlinear activation functions, for example ReLU. Because this is a highly
 nonlinear parametrization, such networks can approximate complicated
 structures with relatively few parameters.
 
 === 21.2. Physics-informed neural networks
 <physics-informed-neural-networks>
-In a physics-informed neural network (PINN), one minimizes a loss
+In a #link("https://en.wikipedia.org/wiki/Physics-informed_neural_networks")[physics-informed neural network] (PINN), one minimizes a loss
 function based on the PDE residual and possibly its derivatives or
 constraints.
 
@@ -1190,7 +1214,7 @@ perturbation argument using weighted norms.#footnote[T. M. Elgindi,
 
 Other related works by Huang, Chen, Hou, and collaborators used
 multiscale constructions and analogous mechanisms to prove blowup for
-related models, including the 2D Boussinesq equations and the
+related models, including the 2D #link("https://en.wikipedia.org/wiki/Boussinesq_approximation")[Boussinesq equations] and the
 axisymmetric Euler equations with a boundary (see §19.2).
 
 An important open question remains:
