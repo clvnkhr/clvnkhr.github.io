@@ -78,8 +78,8 @@ export function generateSvgColorCss(colors: string[]): string {
 
     const inverted = invertGrayscaleColor(color);
 
-    css += `  .typst-frame [fill="${color}"] { fill: ${inverted}; }\n`;
-    css += `  .typst-frame [stroke="${color}"] { stroke: ${inverted}; }\n`;
+    css += `  .prose svg [fill="${color}"] { fill: ${inverted}; }\n`;
+    css += `  .prose svg [stroke="${color}"] { stroke: ${inverted}; }\n`;
   }
 
   css += '}\n';

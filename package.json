@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "engines": {
-    "typst": "0.14.2"
+    "typst": "0.15.0"
   },
   "scripts": {
     "build": "bun run typecheck && bun run lint && bun run src/build/index.ts",

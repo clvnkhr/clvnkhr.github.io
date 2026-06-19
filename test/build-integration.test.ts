@@ -1,10 +1,12 @@
-import { describe, it, expect, beforeAll } from 'bun:test';
+import { describe, it, expect, beforeAll, setDefaultTimeout } from 'bun:test';
 import { stat } from 'fs/promises';
 import { join } from 'path';
 import { buildBlog } from '../src/build/index';
 import { makeRuntime } from '../src/build/runtime';
 
 const runtime = makeRuntime();
+
+setDefaultTimeout(30_000);
 
 describe('Build Integration', () => {
   const distDir = 'dist';
@@ -85,8 +87,8 @@ describe('Build Integration', () => {
   it('should include math rendering in post page', async () => {
     const postPath = join(distDir, 'blog', '2026', '01', '02', 'hello-typst', 'index.html');
     const content = await Bun.file(postPath).text();
-    expect(content).toContain('typst-frame');
-    expect(content).toContain('<svg');
+    expect(content).toContain('<math');
+    expect(content).toContain('display="block"');
   });
 
   it('should not include hidden posts in blog index', async () => {

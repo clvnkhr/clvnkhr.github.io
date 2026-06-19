@@ -98,6 +98,11 @@ export function parseMetadata(content: string): Effect.Effect<PostMetadata, Meta
   });
 }
 
+export const normalizeTypstMathForHtml = (content: string) =>
+  // Typst 0.15 drops `overline` during MathML export, while `macron`
+  // emits the same visual accent as a proper <mover>.
+  content.replace(/\boverline\(/g, "macron(");
+
 export const compileTypst = (typstFile: string, content: string) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem;
@@ -108,10 +113,10 @@ export const compileTypst = (typstFile: string, content: string) =>
     const tmpFile = path.join(dir, `.tmp_${basename}`);
 
     const preamble = yield* fs.readFileString("blog/typ-templates/html-fmt-preamble.typ");
-    yield* fs.writeFileString(tmpFile, preamble + "\n\n" + content);
+    yield* fs.writeFileString(tmpFile, preamble + "\n\n" + normalizeTypstMathForHtml(content));
 
     const rawHtml = yield* Command.string(
-      Command.make("typst", "compile", "--format", "html", "--features", "html", "--root", "..", "--font-path", "fonts/LeteSansMath", tmpFile, "-"),
+      Command.make("typst", "compile", "--format", "html", "--features", "html", "--root", "..", tmpFile, "-"),
     ).pipe(
       Effect.catchAll((e) =>
         Effect.fail(new TypstCompileFailed(typstFile, String(e))),
@@ -147,6 +152,88 @@ const normalizeTheoremFigures = (html: string) =>
     },
   );
 
+const matchingDelimiters: Record<string, string> = {
+  "(": ")",
+  "[": "]",
+  "{": "}",
+  "|": "|",
+  "‖": "‖",
+  "⟨": "⟩",
+  "⌊": "⌋",
+  "⌈": "⌉",
+};
+
+const tallMathMlPattern = /<m(?:frac|root|sqrt|table|under|underover)\b|[∫∑∏]/;
+
+const withStretchyFalse = (attrs: string) =>
+  /\bstretchy=/.test(attrs) ? attrs : ` stretchy="false"${attrs}`;
+
+const normalizeMathMlFenceContent = (content: string) => {
+  const match = content.match(
+    /^<mo\b([^>]*)>([()[\]{}|‖⟨⟩⌊⌋⌈⌉])<\/mo>([\s\S]*)<mo\b([^>]*)>([()[\]{}|‖⟨⟩⌊⌋⌈⌉])<\/mo>$/,
+  );
+
+  if (!match) {
+    return content;
+  }
+
+  const [, openAttrs, open, inner, closeAttrs, close] = match;
+  if (matchingDelimiters[open] !== close || tallMathMlPattern.test(inner)) {
+    return content;
+  }
+
+  return `<mo${withStretchyFalse(openAttrs)}>${open}</mo>${inner}<mo${withStretchyFalse(closeAttrs)}>${close}</mo>`;
+};
+
+const normalizeSimpleMathMlFences = (html: string) => {
+  const parseUntilMrowClose = (index: number): [string, number] => {
+    let result = "";
+    let cursor = index;
+
+    while (cursor < html.length) {
+      const nextMrow = html.indexOf("<mrow", cursor);
+      const nextClose = html.indexOf("</mrow>", cursor);
+
+      if (nextClose !== -1 && (nextMrow === -1 || nextClose < nextMrow)) {
+        result += html.slice(cursor, nextClose);
+        return [result, nextClose + "</mrow>".length];
+      }
+
+      if (nextMrow === -1) {
+        result += html.slice(cursor);
+        return [result, html.length];
+      }
+
+      result += html.slice(cursor, nextMrow);
+      const openEnd = html.indexOf(">", nextMrow);
+      if (openEnd === -1) {
+        result += html.slice(nextMrow);
+        return [result, html.length];
+      }
+
+      const openTag = html.slice(nextMrow, openEnd + 1);
+      const [inner, afterClose] = parseUntilMrowClose(openEnd + 1);
+      result += `${openTag}${normalizeMathMlFenceContent(inner)}</mrow>`;
+      cursor = afterClose;
+    }
+
+    return [result, cursor];
+  };
+
+  return parseUntilMrowClose(0)[0];
+};
+
+const normalizeMathMlDelimiters = (html: string) =>
+  normalizeSimpleMathMlFences(
+    html.replace(
+      /<mo\b(?![^>]*\bstretchy=)(?=[^>]*\b[lr]space=)([^>]*)>([()[\]{}|‖⟨⟩⌊⌋⌈⌉])<\/mo>/g,
+      '<mo stretchy="false"$1>$2</mo>',
+    ),
+  );
+
+const normalizeMathMlOverlineAccents = (html: string) =>
+  html.replace(/<mover accent="true">([\s\S]*?)<mo>̄<\/mo><\/mover>/g, '<mover accent="true">$1<mo>¯</mo></mover>');
+
 export const processTypstOutput = (typstFile: string, rawHtml: string) =>
   Effect.gen(function* () {
     const bodyMatch = rawHtml.match(/<body>([\s\S]*?)<\/body>/);
@@ -159,6 +246,8 @@ export const processTypstOutput = (typstFile: string, rawHtml: string) =>
     htmlContent = htmlContent
       .replace(/(<use[^>]*?)\sfill="#000000"/g, '$1 fill="currentColor"')
       .replace(/(<use[^>]*?)\sstroke="#000000"/g, '$1 stroke="currentColor"');
+    htmlContent = normalizeMathMlDelimiters(htmlContent);
+    htmlContent = normalizeMathMlOverlineAccents(htmlContent);
     htmlContent = normalizeTheoremFigures(htmlContent);
     const svgColors = extractColorsFromHtml(htmlContent);
     return { html: htmlContent, svgColors };

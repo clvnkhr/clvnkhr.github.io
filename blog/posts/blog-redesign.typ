@@ -7,12 +7,12 @@
 
 This blog used to be a Jekyll site. I feel a strong need to practice and improve my writing, so I decided to leverage my programming skills plus the recent high quality LLM models to redesign my blog from the ground up.
 
-We now have a custom static site generator built with Bun + TypeScript + Typst. The Typst part is a new feature that I am excited to use.Here's the blog post processing pipeline.
+We now have a custom static site generator built with Bun + TypeScript + Typst. The Typst part is a new feature that I am excited to use. Here's the blog post processing pipeline.
 
 == Tech Stack
 
 - Bun - Runtime, fast builds
-- Typst 0.14.2 - Typesetting with HTML export
+- Typst 0.15.0 - Typesetting with HTML export and MathML
 - TypeScript - Build scripts
 - React - Page rendering
 - Tailwind CSS v4 - Styling (Catppuccin theme)
@@ -20,9 +20,9 @@ We now have a custom static site generator built with Bun + TypeScript + Typst. 
 
 
 == Design choices
-Using Typst, math equations are formatted by wrapping them in ```typ html.frame``` blocks, which convert the inner content into SVGs. This allows for high quality rendering of mathematical content without relying on JavaScript libraries like MathJax or KaTeX.
+Using Typst 0.15, math equations are exported as MathML. This keeps equations selectable and accessible without relying on JavaScript libraries like MathJax or KaTeX.
 
-A side effect is that we can use arbitrary fonts as long as they are present during the Typst compilation step. For this blog, I am using #link("https://github.com/abccsss/LeteSansMath")[Lete Sans Math] which pairs very nicely with #link("https://www.brailleinstitute.org/freefont/")[Atkinson Hyperlegible] for body text. Unforunately this means that we can't copy the math out as text but maybe this will improve in the future.
+For this blog, I am using #link("https://github.com/abccsss/LeteSansMath")[Lete Sans Math] in CSS for MathML, which pairs very nicely with #link("https://www.brailleinstitute.org/freefont/")[Atkinson Hyperlegible] for body text.
 
 = Processing Pipeline
 
@@ -41,7 +41,7 @@ Posts are written in Typst (`.typ` files) with metadata in comments:
 Each `.typ` file compiles to HTML using Typst's HTML export:
 
 ```bash
-typst compile --format html --features html --root .. --font-path fonts/LeteSansMath ${typstFile} -
+typst compile --format html --features html --root .. ${typstFile} -
 ```
 
 == Post-Processing: HTML to Pages

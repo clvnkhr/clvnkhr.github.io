@@ -109,16 +109,16 @@ describe('SVG Color Utilities', () => {
     it('should generate CSS wrapped in dark mode media query', () => {
       const css = generateSvgColorCss(['#cccccc']);
       expect(css).toContain('@media (prefers-color-scheme: dark)');
-      expect(css).toContain('.typst-frame [fill="#cccccc"]');
+      expect(css).toContain('.prose svg [fill="#cccccc"]');
       expect(css).toContain('fill: #333333');
-      expect(css).toContain('.typst-frame [stroke="#cccccc"]');
+      expect(css).toContain('.prose svg [stroke="#cccccc"]');
       expect(css).toContain('stroke: #333333');
     });
 
     it('should skip #000000 (handled separately in main.css)', () => {
       const css = generateSvgColorCss(['#000000', '#cccccc']);
       expect(css).not.toContain('fill="#000000"');
-      expect(css).toContain('.typst-frame [fill="#cccccc"]');
+      expect(css).toContain('.prose svg [fill="#cccccc"]');
     });
 
     it('should skip non-grayscale colors', () => {

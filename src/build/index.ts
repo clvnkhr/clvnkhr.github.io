@@ -173,6 +173,7 @@ const copyAssets = Effect.gen(function* () {
     (entry) => fs.copy(`public/${entry}`, `dist/${entry}`, { overwrite: true }),
     { concurrency: "unbounded" },
   );
+  yield* fs.copy("fonts/LeteSansMath", "dist/fonts/LeteSansMath", { overwrite: true });
   yield* fs.copy("src/assets/js", "dist/assets/js", { overwrite: true });
 });
 
@@ -273,7 +274,7 @@ const buildBlog = (options: { watch: boolean }) =>
     yield* ensureFontsExist;
     yield* checkTypstVersion;
 
-    // 1. Compile all posts: typst → HTML (body + SVG colors)
+    // 1. Compile all posts: typst → HTML (body + remaining SVG colors)
     const posts: Post[] = yield* discoverPosts;
 
     // Aggregate per-post SVG colors for dark-mode inversion CSS

@@ -74,21 +74,22 @@ describe('Theme System', () => {
     expect(cssContent).toContain('--color-ctp-mauve');
   });
 
-  it('should have SVG color overrides for math', async () => {
+  it('should style MathML with the math font', async () => {
     const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
 
-    expect(cssContent).toContain('.typst-frame [fill="#000000"]');
-    expect(cssContent).toContain('fill: var(--color-ctp-text)');
-    expect(cssContent).toContain('.typst-frame [stroke="#000000"]');
-    expect(cssContent).toContain('stroke: var(--color-ctp-text)');
+    expect(cssContent).toContain('math');
+    expect(cssContent).toContain("font-family: 'Lete Sans Math', math");
+    expect(cssContent).toContain('.prose math[display="block"]');
+    expect(cssContent).toContain('display: block math');
+    expect(cssContent).toContain('white-space: nowrap');
   });
 
   it('should have SVG grayscale color overrides in dark mode', async () => {
     const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
 
     expect(cssContent).toContain('@media (prefers-color-scheme: dark)');
-    expect(cssContent).toContain('.typst-frame [fill="#ffffffcc"]');
-    expect(cssContent).toContain('.typst-frame [stroke="#cccccc"]');
+    expect(cssContent).toContain('.prose svg [fill="#ffffffcc"]');
+    expect(cssContent).toContain('.prose svg [stroke="#cccccc"]');
   });
 
   it('should center images in prose', async () => {

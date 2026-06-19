@@ -7,7 +7,7 @@ import { SystemError } from "@effect/platform/Error";
 import { BunContext } from "@effect/platform-bun";
 import { SiteConfigTag } from '../src/config/site';
 import { buildBlog } from '../src/build/index.js';
-import { compileTypst, parseMetadata, processTypstOutput } from '../src/build/posts.js';
+import { compileTypst, normalizeTypstMathForHtml, parseMetadata, processTypstOutput } from '../src/build/posts.js';
 
 // ── Mock Factories ──
 
@@ -109,7 +109,7 @@ function makeMockCommandExecutor(): CommandExecutor {
           return Effect.succeed(MOCK_TYPST_HTML);
         }
         if (cmd.args[0] === '--version') {
-          return Effect.succeed('typst 0.14.2');
+          return Effect.succeed('typst 0.15.0');
         }
       }
       if (cmd._tag === 'PipedCommand') {
@@ -164,7 +164,7 @@ describe('Build System Integration', () => {
 
     expect(logs.length).toBeGreaterThan(0);
     expect(logs.some(log => log.includes('Building blog'))).toBe(true);
-    expect(logs.some(log => log.includes('Typst version 0.14.2'))).toBe(true);
+    expect(logs.some(log => log.includes('Typst version 0.15.0'))).toBe(true);
   });
 });
 
@@ -225,6 +225,12 @@ describe('MissingFontsDirectory', () => {
 // ── Typst Compilation and Post-Processing ──
 
 describe('compileTypst', () => {
+  it('should rewrite overline to macron for Typst HTML MathML export', () => {
+    const content = '$overline(q_A)(v) = overline(phi_A)(v,h)$';
+
+    expect(normalizeTypstMathForHtml(content)).toBe('$macron(q_A)(v) = macron(phi_A)(v,h)$');
+  });
+
   it('should return raw HTML from mocked typst output', async () => {
     const rawHtml = await compileTypst('blog/posts/test-post.typ', '= Test\n\nContent.').pipe(
       silence,
@@ -288,6 +294,66 @@ describe('processTypstOutput', () => {
     expect(result.html).toContain('<div id="thm-test" class="typst-theorem">');
     expect(result.html).toContain('<span class="typst-theorem-label"><strong>Theorem 1.</strong></span>');
     expect(result.html).toContain('<figure>\n        <svg></svg>\n        <figcaption>Figure&nbsp;1: Precious data</figcaption>\n      </figure>');
+  });
+
+  it('should normalize Typst macron accents to a spacing overline glyph', async () => {
+    const rawHtml = `<html><body>
+      <math><mover accent="true"><msub><mi>q</mi><mi>A</mi></msub><mo>̄</mo></mover></math>
+    </body></html>`;
+
+    const result = await processTypstOutput('blog/posts/test-post.typ', rawHtml).pipe(
+      silence,
+      testRuntime.runPromise,
+    );
+
+    expect(result.html).toContain('<mover accent="true"><msub><mi>q</mi><mi>A</mi></msub><mo>¯</mo></mover>');
+    expect(result.html).not.toContain('<mo>̄</mo>');
+  });
+
+  it('should prevent browser-stretched MathML operator delimiters only', async () => {
+    const rawHtml = `<html><body>
+      <math>
+        <mrow><mo>(</mo><mi>x</mi><mo>)</mo></mrow>
+        <mrow><mo>{</mo><mi>x</mi><mo>}</mo></mrow>
+        <mrow><mo lspace="0em">(</mo><mi>x</mi><mo rspace="0em">)</mo></mrow>
+        <mrow><mo lspace="0em">[</mo><mi>x</mi><mo rspace="0em">]</mo></mrow>
+        <mrow><mo lspace="0em">{</mo><mi>x</mi><mo rspace="0em">}</mo></mrow>
+        <mrow><mo>|</mo><mrow><msub><mo>∫</mo><mi>R</mi></msub><mi>V</mi></mrow><mo>|</mo></mrow>
+        <mrow><mo>‖</mo><mi>f</mi><mo lspace="0em" rspace="0em">‖</mo></mrow>
+        <msup><mrow><mo>‖</mo><mi>v</mi><mo>‖</mo></mrow><mn>2</mn></msup>
+        <mrow><mo>|</mo><mi>b</mi><mrow><mo>(</mo><mi>v</mi><mo>)</mo></mrow><mo>|</mo></mrow>
+        <mrow><mo lspace="0em" rspace="0em">|</mo><mi>f</mi><msup><mo stretchy="false">|</mo><mn>2</mn></msup></mrow>
+        <mrow><mo>⟨</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo>⟩</mo></mrow>
+        <mrow><mo lspace="0em">⟨</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo rspace="0em">⟩</mo></mrow>
+        <mrow><mo lspace="0em">⌊</mo><mi>x</mi><mo rspace="0em">⌋</mo></mrow>
+        <mrow><mo lspace="0em">⌈</mo><mi>x</mi><mo rspace="0em">⌉</mo></mrow>
+        <msubsup><mrow><mo>‖</mo><mo lspace="0em" rspace="0em">⋅</mo><mo>‖</mo></mrow><mi>Q</mi><mn>2</mn></msubsup>
+        <msub><mo stretchy="false">|</mo><mi>D</mi></msub>
+      </math>
+    </body></html>`;
+
+    const result = await processTypstOutput('blog/posts/test-post.typ', rawHtml).pipe(
+      silence,
+      testRuntime.runPromise,
+    );
+
+    expect(result.html).toContain('<mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo>');
+    expect(result.html).toContain('<mo stretchy="false">{</mo><mi>x</mi><mo stretchy="false">}</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em">(</mo><mi>x</mi><mo stretchy="false" rspace="0em">)</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em">[</mo><mi>x</mi><mo stretchy="false" rspace="0em">]</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em">{</mo><mi>x</mi><mo stretchy="false" rspace="0em">}</mo>');
+    expect(result.html).toContain('<mo>|</mo><mrow><msub><mo>∫</mo><mi>R</mi></msub><mi>V</mi></mrow><mo>|</mo>');
+    expect(result.html).toContain('<mo stretchy="false">‖</mo><mi>f</mi>');
+    expect(result.html).toContain('<msup><mrow><mo stretchy="false">‖</mo><mi>v</mi><mo stretchy="false">‖</mo></mrow><mn>2</mn></msup>');
+    expect(result.html).toContain('<mo stretchy="false">|</mo><mi>b</mi><mrow><mo stretchy="false">(</mo><mi>v</mi><mo stretchy="false">)</mo></mrow><mo stretchy="false">|</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em" rspace="0em">‖</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em" rspace="0em">|</mo><mi>f</mi>');
+    expect(result.html).toContain('<mo stretchy="false">⟨</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false">⟩</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em">⟨</mo><mi>u</mi><mo>,</mo><mi>v</mi><mo stretchy="false" rspace="0em">⟩</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em">⌊</mo><mi>x</mi><mo stretchy="false" rspace="0em">⌋</mo>');
+    expect(result.html).toContain('<mo stretchy="false" lspace="0em">⌈</mo><mi>x</mi><mo stretchy="false" rspace="0em">⌉</mo>');
+    expect(result.html).toContain('<msubsup><mrow><mo stretchy="false">‖</mo><mo lspace="0em" rspace="0em">⋅</mo><mo stretchy="false">‖</mo></mrow><mi>Q</mi><mn>2</mn></msubsup>');
+    expect(result.html).toContain('<msub><mo stretchy="false">|</mo><mi>D</mi></msub>');
   });
 });
 
