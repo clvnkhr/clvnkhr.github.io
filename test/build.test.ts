@@ -7,7 +7,7 @@ import { SystemError } from "@effect/platform/Error";
 import { BunContext } from "@effect/platform-bun";
 import { SiteConfigTag } from '../src/config/site';
 import { buildBlog } from '../src/build/index.js';
-import { compileTypst, normalizeTypstMathForHtml, parseMetadata, processTypstOutput } from '../src/build/posts.js';
+import { compileTypst, parseMetadata, prepareTypstSourceForHtml, processTypstOutput } from '../src/build/posts.js';
 
 // ── Mock Factories ──
 
@@ -125,9 +125,7 @@ function makeMockCommandExecutor(): CommandExecutor {
 
 // ── Shared Mock Runtime ──
 
-const mockFs = makeMockFileSystem({
-  "blog/typ-templates/html-fmt-preamble.typ": '#import "../typ-templates/html-fmt.typ": html_fmt\n#show: html_fmt',
-});
+const mockFs = makeMockFileSystem({});
 const mockCmd = makeMockCommandExecutor();
 
 const testRuntime = ManagedRuntime.make(
@@ -225,10 +223,10 @@ describe('MissingFontsDirectory', () => {
 // ── Typst Compilation and Post-Processing ──
 
 describe('compileTypst', () => {
-  it('should rewrite overline to macron for Typst HTML MathML export', () => {
+  it('should inject an overline compatibility definition for Typst HTML MathML export', () => {
     const content = '$overline(q_A)(v) = overline(phi_A)(v,h)$';
 
-    expect(normalizeTypstMathForHtml(content)).toBe('$macron(q_A)(v) = macron(phi_A)(v,h)$');
+    expect(prepareTypstSourceForHtml(content)).toBe('#let overline = math.macron\n\n$overline(q_A)(v) = overline(phi_A)(v,h)$');
   });
 
   it('should return raw HTML from mocked typst output', async () => {
@@ -359,7 +357,7 @@ describe('processTypstOutput', () => {
 
 // ── Metadata Parser Tests (Effect-based, no mocking needed) ──
 
-describe('Metadata Parser without html_fmt', () => {
+describe('Metadata Parser without injected Typst preamble', () => {
   it('should parse metadata when no #import lines exist after comments', () => {
     const content = `// date: 2026-06-01
 // tags: test, metadata

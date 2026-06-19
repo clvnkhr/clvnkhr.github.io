@@ -98,10 +98,12 @@ export function parseMetadata(content: string): Effect.Effect<PostMetadata, Meta
   });
 }
 
-export const normalizeTypstMathForHtml = (content: string) =>
-  // Typst 0.15 drops `overline` during MathML export, while `macron`
+const typstHtmlCompatibilityPreamble = `#let overline = math.macron`;
+
+export const prepareTypstSourceForHtml = (content: string) =>
+  // Typst 0.15 drops `overline` during MathML export, while `math.macron`
   // emits the same visual accent as a proper <mover>.
-  content.replace(/\boverline\(/g, "macron(");
+  `${typstHtmlCompatibilityPreamble}\n\n${content}`;
 
 export const compileTypst = (typstFile: string, content: string) =>
   Effect.gen(function* () {
@@ -112,8 +114,7 @@ export const compileTypst = (typstFile: string, content: string) =>
     const basename = path.basename(typstFile);
     const tmpFile = path.join(dir, `.tmp_${basename}`);
 
-    const preamble = yield* fs.readFileString("blog/typ-templates/html-fmt-preamble.typ");
-    yield* fs.writeFileString(tmpFile, preamble + "\n\n" + normalizeTypstMathForHtml(content));
+    yield* fs.writeFileString(tmpFile, prepareTypstSourceForHtml(content));
 
     const rawHtml = yield* Command.string(
       Command.make("typst", "compile", "--format", "html", "--features", "html", "--root", "..", tmpFile, "-"),

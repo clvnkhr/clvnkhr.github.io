@@ -5,7 +5,9 @@
 #set document(title: "Typst 0.15 Migration Summary")
 #title()
 
-Typst 0.15 changed the most important part of this blog's rendering pipeline: HTML export now emits native MathML for equations. Before this migration, I was using a show rule that wrapped each equation in `html.frame`, which made Typst render math as inline SVG. That worked visually, but it also meant math was basically an image: harder to copy, less semantic, and tied to Typst's SVG output details.
+(this document was 100% AI agent generated with supervision)
+
+The #link("https://typst.app/blog/2026/typst-0.15/")[Typst 0.15 release] changed the most important part of this blog's rendering pipeline: HTML export now emits native MathML for equations. Before this migration, I was using a show rule that wrapped each equation in `html.frame`, which made Typst render math as inline SVG. That worked visually, but it also meant math was basically an image: harder to copy, less semantic, and tied to Typst's SVG output details.
 
 The goal of the migration was to stop doing that. The blog should compile Typst directly to HTML, let Typst emit MathML, keep Lete Sans Math as the math font, and preserve the small amount of SVG handling still needed for diagrams and images.
 
@@ -23,13 +25,7 @@ The old HTML formatting template had a show rule like this:
 )
 ```
 
-That is now gone. The `html_fmt` rule is intentionally boring:
-
-```typst
-#let html_fmt(it) = {
-  it
-}
-```
+That is now gone entirely. There is no `html_fmt` template and no injected show rule in the build path anymore.
 
 The compile command also became simpler. We no longer pass the math font to Typst during compilation:
 
@@ -47,6 +43,8 @@ math {
 ```
 
 This is the right ownership boundary: Typst produces semantic MathML, while the site stylesheet decides how MathML should look in the browser.
+
+I also deleted the old one-off `migrate-posts.ts` helper while doing this cleanup. It was a historical Jekyll-to-Typst migration script, and it still generated stale `html_fmt` boilerplate. Keeping it around would have made the new pipeline look more complicated than it is.
 
 = SVG fallout
 
@@ -124,7 +122,13 @@ This is deliberately not a general MathML renderer. It is just a cleanup step fo
 
 == Overlines
 
-Typst 0.15's MathML export currently drops `overline(...)`. The workaround is to rewrite `overline(` to `macron(` before compiling the temporary Typst file used by the build. That gets Typst to emit an actual `<mover>`.
+Typst 0.15's MathML export currently drops `overline(...)`. The workaround is to inject a small compatibility definition before compiling the temporary Typst file used by the build:
+
+```typst
+#let overline = math.macron
+```
+
+This shadows `overline` for the HTML build without rewriting the post body. The source can keep saying `overline(...)`, while Typst emits the same `<mover>` shape that `macron(...)` would have produced.
 
 There was one more browser detail: Typst emitted the accent as a combining macron:
 
@@ -153,7 +157,7 @@ The tests changed from expecting SVG-backed equations to expecting MathML:
 - the Typst version check now expects `0.15.0`
 - integration tests check for `<math` and `display="block"`
 - theme tests check the MathML font and `display: block math`
-- post-processing tests cover the `overline` rewrite, overline accent normalization, and delimiter stretch rules
+- post-processing tests cover the injected `overline` compatibility definition, overline accent normalization, and delimiter stretch rules
 - SVG color tests now expect `.prose svg` selectors instead of `.typst-frame`
 
 The real build also needed a slightly longer integration-test timeout. Typst 0.15 plus full post generation can take more than the previous default in CI-like runs, so the integration test file now sets a 30 second timeout.
