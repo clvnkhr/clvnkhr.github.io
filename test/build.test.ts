@@ -266,6 +266,29 @@ describe('processTypstOutput', () => {
     expect(result.html).toContain('Test Post');
     expect(result.html).toContain('Hello world.');
   });
+
+  it('should normalize theorem figures without changing normal figures', async () => {
+    const rawHtml = `<html><body>
+      <figure id="thm-test">
+        <div>
+          <p><span style="display: inline-block"><figcaption><strong>Theorem 1.</strong></figcaption></span> A result.</p>
+        </div>
+      </figure>
+      <figure>
+        <svg></svg>
+        <figcaption>Figure&nbsp;1: Precious data</figcaption>
+      </figure>
+    </body></html>`;
+
+    const result = await processTypstOutput('blog/posts/test-post.typ', rawHtml).pipe(
+      silence,
+      testRuntime.runPromise,
+    );
+
+    expect(result.html).toContain('<div id="thm-test" class="typst-theorem">');
+    expect(result.html).toContain('<span class="typst-theorem-label"><strong>Theorem 1.</strong></span>');
+    expect(result.html).toContain('<figure>\n        <svg></svg>\n        <figcaption>Figure&nbsp;1: Precious data</figcaption>\n      </figure>');
+  });
 });
 
 // ── Metadata Parser Tests (Effect-based, no mocking needed) ──

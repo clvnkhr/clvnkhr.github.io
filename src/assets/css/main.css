@@ -53,6 +53,16 @@ body {
   text-align: center;
 }
 
+.prose .typst-theorem {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose .typst-theorem-label {
+  display: inline;
+  text-align: inherit;
+}
+
 .prose a {
   color: var(--color-ctp-mauve) !important;
   font-weight: normal !important;
@@ -81,6 +91,19 @@ body {
 
 .prose code {
   color: inherit !important;
+}
+
+.blog-tag-filter {
+  cursor: pointer;
+}
+
+.blog-tag-filter:has(.blog-tag-filter-input:not(:checked)) {
+  color: var(--color-ctp-subtext0);
+  opacity: 0.65;
+}
+
+.blog-tag-filter-input {
+  accent-color: var(--color-ctp-mauve);
 }
 
 .tag-pink {

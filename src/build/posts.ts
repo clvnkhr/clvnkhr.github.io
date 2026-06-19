@@ -122,6 +122,31 @@ export const compileTypst = (typstFile: string, content: string) =>
     return rawHtml;
   });
 
+const theoremFigureCaptionPattern =
+  /<figcaption>\s*<strong>\s*(Example|Theorem|Remark|Definition|Corollary|Lemma|Proof)\b[\s\S]*?<\/strong>\s*<\/figcaption>/;
+
+const normalizeTheoremFigures = (html: string) =>
+  html.replace(
+    /<figure([^>]*)>\s*<div>\s*([\s\S]*?)\s*<\/div>\s*<\/figure>/g,
+    (match: string, attrs: string, inner: string) => {
+      if (!theoremFigureCaptionPattern.test(inner)) {
+        return match;
+      }
+
+      const divAttrs = attrs.trim();
+      const attrText = divAttrs ? ` ${divAttrs}` : "";
+      const normalizedInner = inner
+        .replace(/<figcaption>/g, '<span class="typst-theorem-label">')
+        .replace(/<\/figcaption>/g, "</span>");
+
+      return `<div${attrText} class="typst-theorem">
+      <div>
+        ${normalizedInner.trim()}
+      </div>
+    </div>`;
+    },
+  );
+
 export const processTypstOutput = (typstFile: string, rawHtml: string) =>
   Effect.gen(function* () {
     const bodyMatch = rawHtml.match(/<body>([\s\S]*?)<\/body>/);
@@ -134,6 +159,7 @@ export const processTypstOutput = (typstFile: string, rawHtml: string) =>
     htmlContent = htmlContent
       .replace(/(<use[^>]*?)\sfill="#000000"/g, '$1 fill="currentColor"')
       .replace(/(<use[^>]*?)\sstroke="#000000"/g, '$1 stroke="currentColor"');
+    htmlContent = normalizeTheoremFigures(htmlContent);
     const svgColors = extractColorsFromHtml(htmlContent);
     return { html: htmlContent, svgColors };
   });

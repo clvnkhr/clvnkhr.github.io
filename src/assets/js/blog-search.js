@@ -50,23 +50,86 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.querySelector('[data-blog-list]');
   if (!container) return;
 
-  let originalOrder = null;
+  const storageKey = 'blog.hiddenTags';
+  const tagToggles = Array.from(document.querySelectorAll('[data-blog-tag-toggle]'));
+  const resetButton = document.querySelector('[data-blog-tag-reset]');
+  const hideAllButton = document.querySelector('[data-blog-tag-hide-all]');
+  const originalOrder = Array.from(container.querySelectorAll('[data-search-title]'));
+  let hiddenTags = loadHiddenTags();
 
-  searchInput.addEventListener('input', () => {
+  tagToggles.forEach(toggle => {
+    toggle.checked = !hiddenTags.has(toggle.value);
+    toggle.addEventListener('change', () => {
+      if (toggle.checked) {
+        hiddenTags.delete(toggle.value);
+      } else {
+        hiddenTags.add(toggle.value);
+      }
+      saveHiddenTags(hiddenTags);
+      applyFilters();
+    });
+  });
+
+  resetButton?.addEventListener('click', () => {
+    hiddenTags = new Set();
+    tagToggles.forEach(toggle => {
+      toggle.checked = true;
+    });
+    saveHiddenTags(hiddenTags);
+    applyFilters();
+  });
+
+  hideAllButton?.addEventListener('click', () => {
+    hiddenTags = new Set(tagToggles.map(toggle => toggle.value));
+    tagToggles.forEach(toggle => {
+      toggle.checked = false;
+    });
+    saveHiddenTags(hiddenTags);
+    applyFilters();
+  });
+
+  searchInput.addEventListener('input', applyFilters);
+
+  applyFilters();
+
+  function loadHiddenTags() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      return new Set(Array.isArray(parsed) ? parsed.filter(tag => typeof tag === 'string') : []);
+    } catch {
+      return new Set();
+    }
+  }
+
+  function saveHiddenTags(tags) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(Array.from(tags).sort()));
+    } catch {
+      // Ignore storage failures so filtering still works for the current page.
+    }
+  }
+
+  function isTagVisible(card) {
+    const tags = (card.getAttribute('data-filter-tags') || '')
+      .split(/\s+/)
+      .filter(Boolean);
+    return tags.every(tag => !hiddenTags.has(tag));
+  }
+
+  function restoreOriginalOrder() {
+    originalOrder.forEach(card => container.appendChild(card));
+  }
+
+  function applyFilters() {
     const query = searchInput.value;
     const cards = container.querySelectorAll('[data-search-title]');
 
     if (query === '') {
-      cards.forEach(c => c.classList.remove('hidden'));
-      if (originalOrder) {
-        originalOrder.forEach(c => container.appendChild(c));
-        originalOrder = null;
-      }
+      restoreOriginalOrder();
+      cards.forEach(card => {
+        card.classList.toggle('hidden', !isTagVisible(card));
+      });
       return;
-    }
-
-    if (!originalOrder) {
-      originalOrder = Array.from(cards);
     }
 
     const scored = Array.from(cards).map(card => {
@@ -83,8 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     scored.forEach(({ card, matched }) => {
-      card.classList.toggle('hidden', !matched);
+      card.classList.toggle('hidden', !matched || !isTagVisible(card));
       container.appendChild(card);
     });
-  });
+  }
 });
