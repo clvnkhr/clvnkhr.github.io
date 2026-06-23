@@ -3,7 +3,7 @@ export function getPostBlurb(htmlContent: string, wordCount: number = 25): strin
   const mathBlocks: string[] = [];
   const withoutMath = htmlContent.replace(/<math[\s\S]*?<\/math>/gi, (match) => {
     mathBlocks.push(match);
-    return `__MATHBLOCK_${mathBlocks.length - 1}__`;
+    return `__POST_BLURB_MATH_BLOCK_${mathBlocks.length - 1}__`;
   });
 
   const plainText = withoutMath.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -12,7 +12,7 @@ export function getPostBlurb(htmlContent: string, wordCount: number = 25): strin
   const truncatedWords = words.slice(0, wordCount);
   const truncated = truncatedWords.join(' ');
 
-  const result = truncated.replace(/__MATHBLOCK_(\d+)__/g, (_, index) => mathBlocks[Number(index)] ?? '');
+  const result = truncated.replace(/__POST_BLURB_MATH_BLOCK_(\d+)__/g, (_, index) => mathBlocks[Number(index)] ?? '');
 
   return words.length > wordCount ? `${result}...` : result;
 }

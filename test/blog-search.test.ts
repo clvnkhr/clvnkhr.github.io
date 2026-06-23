@@ -113,6 +113,19 @@ describe('computePostScore', () => {
     expect(result.matched).toBe(true);
   });
 
+  it('matches on date alone', () => {
+    const result = computePostScore(
+      'June 23',
+      'Advanced Python',
+      'Deep dive into decorators',
+      'python',
+      'June 23, 2026',
+    );
+
+    expect(result.matched).toBe(true);
+    expect(result.score).toBeGreaterThan(0);
+  });
+
   it('does not match when nothing matches', () => {
     const result = computePostScore('zzzzzzz', 'Advanced Python', 'Deep dive into decorators', 'python');
     expect(result.matched).toBe(false);
@@ -135,6 +148,14 @@ describe('computePostScore', () => {
     const titleOnly = computePostScore('python', 'Python Advanced', 'a b c', 'java');
     const allFields = computePostScore('python', 'Python Advanced', 'python tutorial', 'python');
     expect(allFields.score).toBeGreaterThan(titleOnly.score);
+  });
+
+  it('combines date matches with other fields', () => {
+    const withoutDate = computePostScore('2026', 'Typst Notes', 'A migration note', 'blog');
+    const withDate = computePostScore('2026', 'Typst Notes', 'A migration note', 'blog', 'June 23, 2026');
+
+    expect(withDate.matched).toBe(true);
+    expect(withDate.score).toBeGreaterThan(withoutDate.score);
   });
 
   it('handles empty strings gracefully', () => {

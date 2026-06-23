@@ -44,6 +44,14 @@ describe('Post Utils', () => {
       expect(result).toContain('Introduction');
     });
 
+    it('should not treat sentinel-like prose as a MathML placeholder', () => {
+      const html = '<p>Literal __MATHBLOCK_0__ prose stays visible</p><math><mi>x</mi></math>';
+      const result = getPostBlurb(html, 10);
+
+      expect(result).toContain('Literal __MATHBLOCK_0__ prose stays visible');
+      expect(result).toContain('<math><mi>x</mi></math>');
+    });
+
     it('should default to 25 words', () => {
       const words = Array.from({ length: 30 }, (_, i) => `word${i}`).join(' ');
       const html = `<p>${words}</p>`;

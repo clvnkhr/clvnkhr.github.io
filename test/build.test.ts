@@ -271,6 +271,23 @@ describe('processTypstOutput', () => {
     expect(result.html).toContain('Hello world.');
   });
 
+  it('should normalize black SVG use fills and strokes for Mobile Safari', async () => {
+    const rawHtml = `<html><body>
+      <svg>
+        <use href="#glyph" fill="#000000" stroke="#000000"></use>
+        <path fill="#000000" stroke="#000000"></path>
+      </svg>
+    </body></html>`;
+
+    const result = await processTypstOutput('blog/posts/test-post.typ', rawHtml).pipe(
+      silence,
+      testRuntime.runPromise,
+    );
+
+    expect(result.html).toContain('<use href="#glyph" fill="currentColor" stroke="currentColor"></use>');
+    expect(result.html).toContain('<path fill="#000000" stroke="#000000"></path>');
+  });
+
   it('should normalize theorem figures without changing normal figures', async () => {
     const rawHtml = `<html><body>
       <figure id="thm-test">
