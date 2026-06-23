@@ -1,10 +1,20 @@
 export function getPostBlurb(htmlContent: string, wordCount: number = 25): string {
-  const plainText = htmlContent.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  // Preserve MathML blocks while stripping other tags
+  const mathBlocks: string[] = [];
+  const withoutMath = htmlContent.replace(/<math[\s\S]*?<\/math>/gi, (match) => {
+    mathBlocks.push(match);
+    return `\x00MATHBLOCK${mathBlocks.length - 1}\x00`;
+  });
 
-  const words = plainText.split(' ').slice(0, wordCount);
-  const blurb = words.join(' ');
+  const plainText = withoutMath.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 
-  return plainText.split(' ').length > wordCount ? `${blurb}...` : blurb;
+  const words = plainText.split(' ');
+  const truncatedWords = words.slice(0, wordCount);
+  const truncated = truncatedWords.join(' ');
+
+  const result = truncated.replace(/\x00MATHBLOCK(\d+)\x00/g, (_, index) => mathBlocks[Number(index)] ?? '');
+
+  return words.length > wordCount ? `${result}...` : result;
 }
 
 export function extractTitleFromTypst(content: string): string | null {

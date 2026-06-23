@@ -35,13 +35,13 @@ export function TagPage({ tagName, posts, site = defaultSite }: TagPageProps) {
         />
         <div className="space-y-8" data-blog-list>
           {posts.map((post) => (
-            <div
-              key={post.slug}
-              data-search-title={post.title}
-              data-search-blurb={post.description || getPostBlurb(post.htmlContent)}
-              data-search-date={formatDate(post.date)}
-              data-search-tags={(post.tags ?? []).join(' ')}
-            >
+                <div
+                  key={post.slug}
+                  data-search-title={post.title}
+                  data-search-blurb={post.description || getPostBlurb(post.htmlContent).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()}
+                  data-search-date={formatDate(post.date)}
+                  data-search-tags={(post.tags ?? []).join(' ')}
+                >
               <article className="border border-ctp-surface1 rounded-lg p-6 hover:border-ctp-mauve transition-colors">
                 <div className="flex items-center gap-4 mb-3">
                   <time className="text-ctp-subtext0 text-sm">
@@ -59,9 +59,12 @@ export function TagPage({ tagName, posts, site = defaultSite }: TagPageProps) {
                   </a>
                 </h2>
                 {(post.description || post.htmlContent) && (
-                  <p className="text-ctp-subtext0 mb-4">
-                    {post.description || getPostBlurb(post.htmlContent)}
-                  </p>
+                  <p
+                    className="text-ctp-subtext0 mb-4"
+                    {...(post.description
+                      ? { children: post.description }
+                      : { dangerouslySetInnerHTML: { __html: getPostBlurb(post.htmlContent) } })}
+                  />
                 )}
                 {post.tags && post.tags.length > 0 && (
                   <div className="flex flex-wrap gap-2">

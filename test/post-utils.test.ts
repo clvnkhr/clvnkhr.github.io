@@ -31,6 +31,19 @@ describe('Post Utils', () => {
       expect(getPostBlurb('<p>   </p>')).toBe('');
     });
 
+    it('should preserve MathML tags in blurb', () => {
+      const html = '<p>Some text</p><math><mrow><mi>x</mi><mo>&lt;</mo><mn>1</mn></mrow></math><p>more text here for the blurb</p>';
+      const result = getPostBlurb(html, 10);
+      expect(result).toBe('Some text <math><mrow><mi>x</mi><mo>&lt;</mo><mn>1</mn></mrow></math> more text here for the blurb');
+    });
+
+    it('should handle blurb that starts with MathML', () => {
+      const html = '<math><mrow><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mrow></math><p>Introduction to relativity</p>';
+      const result = getPostBlurb(html, 10);
+      expect(result).toContain('<math><mrow><mi>E</mi><mo>=</mo><mi>m</mi><msup><mi>c</mi><mn>2</mn></msup></mrow></math>');
+      expect(result).toContain('Introduction');
+    });
+
     it('should default to 25 words', () => {
       const words = Array.from({ length: 30 }, (_, i) => `word${i}`).join(' ');
       const html = `<p>${words}</p>`;

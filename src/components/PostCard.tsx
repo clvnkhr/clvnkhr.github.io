@@ -27,9 +27,12 @@ export function PostCard({ post }: PostCardProps) {
         </a>
       </h2>
       {(post.description || post.htmlContent) && (
-        <p className="text-ctp-subtext0 mb-4">
-          {post.description || getPostBlurb(post.htmlContent)}
-        </p>
+        <p
+          className="text-ctp-subtext0 mb-4"
+          {...(post.description
+            ? { children: post.description }
+            : { dangerouslySetInnerHTML: { __html: getPostBlurb(post.htmlContent) } })}
+        />
       )}
       {post.tags && post.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">

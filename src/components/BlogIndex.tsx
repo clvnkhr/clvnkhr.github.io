@@ -82,7 +82,7 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
               <div
                 key={post.slug}
                 data-search-title={post.title}
-                data-search-blurb={post.description || getPostBlurb(post.htmlContent)}
+                data-search-blurb={post.description || getPostBlurb(post.htmlContent).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()}
                 data-search-date={formatDate(post.date)}
                 data-search-tags={(post.tags ?? []).join(' ')}
                 data-filter-tags={(post.tags ?? []).join(' ')}
