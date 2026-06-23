@@ -44,6 +44,8 @@ Net effect: Typst now owns HTML math output; site CSS and post-processing handle
 
 `69612ba4e` recentered the blog index after the tag-filter sidebar landed: spare column on the left, content in the middle, tag controls on the right at large viewport sizes.
 
+A follow-up fixed the sidebar sizing: the blog index now uses flexible `1fr` margin columns around the `56rem` content column at `xl` and above. The sidebar takes the remaining right margin; below that breakpoint it falls back to the stacked mobile layout.
+
 == Blurbs after MathML
 
 `263c02d8e` fixed MathML blurbs. `getPostBlurb` was stripping all tags, so blurbs containing equations lost their markup. It now preserves `<math>...</math>` blocks while stripping other HTML. `PostCard` and `TagPage` render generated blurbs as HTML when they come from post content.
@@ -52,7 +54,7 @@ The same commit keeps `data-search-blurb` plain-text by stripping tags after gen
 
 == Tests
 
-This post prompted another small infra pass: more tests for the changes above. Coverage now includes date-aware search scoring, rendered blog-index tag-filter attributes, tag-page search metadata, Mobile Safari SVG `<use>` normalization, and MathML blurb placeholder handling.
+This post prompted another small infra pass: more tests for the changes above. Coverage now includes date-aware search scoring, rendered blog-index tag-filter attributes, tag-page search metadata, the flexible blog-index sidebar grid, Mobile Safari SVG `<use>` normalization, and MathML blurb placeholder handling.
 
 == The pattern
 

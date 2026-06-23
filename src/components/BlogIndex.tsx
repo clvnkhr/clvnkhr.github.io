@@ -19,28 +19,28 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
 
   return (
     <Layout title={`Blog - ${site.title}`} site={site}>
-      <div className="px-4 py-8 lg:grid lg:grid-cols-[minmax(0,14rem)_minmax(0,56rem)_minmax(0,14rem)] lg:justify-center lg:items-start lg:gap-8">
-        <div className="lg:col-start-2">
+      <div className="px-4 py-8 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,56rem)_minmax(0,1fr)] xl:items-start xl:gap-8">
+        <div className="xl:col-start-2">
           <h1 className="text-4xl font-bold mb-8 text-ctp-mauve">Blog Posts</h1>
           <input
             id="blog-search-input"
             type="text"
             placeholder="Search posts..."
             autoFocus
-            className="w-full px-4 py-2 mb-6 lg:mb-8 rounded-lg bg-ctp-surface0 border border-ctp-surface1 text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:border-ctp-mauve transition-colors"
+            className="w-full px-4 py-2 mb-6 xl:mb-8 rounded-lg bg-ctp-surface0 border border-ctp-surface1 text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:border-ctp-mauve transition-colors"
           />
         </div>
         {allTags.length > 0 && (
           <aside
-            className="mb-8 lg:col-start-3 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-8 lg:mb-0"
+            className="mb-8 xl:col-start-3 xl:row-start-1 xl:row-span-2 xl:sticky xl:top-8 xl:mb-0"
             aria-labelledby="blog-tag-filters-heading"
             data-blog-tag-filters
           >
-            <div className="flex items-center justify-between gap-4 mb-3 lg:block">
+            <div className="flex items-center justify-between gap-4 mb-3 xl:block">
               <h2 id="blog-tag-filters-heading" className="text-sm font-semibold text-ctp-subtext0">
                 Visible tags
               </h2>
-              <div className="flex gap-3 lg:mt-2">
+              <div className="flex gap-3 xl:mt-2">
                 <button
                   type="button"
                   className="text-sm text-ctp-mauve hover:underline"
@@ -57,7 +57,7 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
                 </button>
               </div>
             </div>
-            <div className="flex h-36 flex-wrap gap-2 overflow-y-auto pr-1 lg:h-auto lg:flex-col lg:items-start lg:overflow-visible lg:pr-0">
+            <div className="flex h-36 flex-wrap gap-2 overflow-y-auto pr-1 xl:h-auto xl:flex-col xl:items-start xl:overflow-visible xl:pr-0">
               {allTags.map((tag) => (
                 <label
                   key={tag}
@@ -76,7 +76,7 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
             </div>
           </aside>
         )}
-        <main className="lg:col-start-2">
+        <main className="xl:col-start-2">
           <div className="space-y-8" data-blog-list>
             {posts.map((post) => (
               <div

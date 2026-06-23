@@ -33,6 +33,8 @@ describe('Page rendering', () => {
 
     const html = Effect.runSync(renderBlogIndex(site, posts));
 
+    expect(html).toContain('xl:grid-cols-[minmax(0,1fr)_minmax(0,56rem)_minmax(0,1fr)]');
+    expect(html).not.toContain('grid-cols-[minmax(0,14rem)_minmax(0,56rem)_minmax(0,14rem)]');
     expect(html).toContain('data-blog-tag-filters');
     expect(html).toContain('data-blog-tag-reset');
     expect(html).toContain('data-blog-tag-hide-all');
