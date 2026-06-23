@@ -50,6 +50,10 @@ Net effect: Typst now owns HTML math output; site CSS and post-processing handle
 
 The same commit keeps `data-search-blurb` plain-text by stripping tags after generating the display blurb. Cards display MathML; search indexes text.
 
+== Tests
+
+This post prompted another small infra pass: more tests for the changes above. Coverage now includes date-aware search scoring, rendered blog-index tag-filter attributes, tag-page search metadata, Mobile Safari SVG `<use>` normalization, and MathML blurb placeholder handling.
+
 == The pattern
 
 - let Typst 0.15 produce semantic MathML instead of forcing equations through SVG
