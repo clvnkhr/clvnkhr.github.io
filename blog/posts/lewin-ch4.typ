@@ -338,5 +338,10 @@ $
   $
   Continuing in this way gives the desired decomposition of $fH$ into a direct sum of invariant subspaces.
 
-  We now have that $(A-z)^(-1)$ on each invariant subspace $cal(X)_(v_n)$ is unitarily equivalent to multiplication by $(s-z)^(-1)$ on $L^2 (RR, dd mu_(A, v_n))$. We can combine them into a single isomorphism to $L^2 (B, dd mu)$ with $B = RR times NN$ and $mu(V times {n}) = 2^(-n) mu_(A, v_n) (V)$, and define $a(s, n) = s$. It follows as before that $A$ is unitarily equivalent to multiplication by $s$. This completes the proof of @thm-spectral. TODO $mu_(A,v)$
-  vanishes outside of $sigma(A)$]
+  We now have that $(A-z)^(-1)$ on each invariant subspace $cal(X)_(v_n)$ is unitarily equivalent to multiplication by $(s-z)^(-1)$ on $L^2 (RR, dd mu_(A, v_n))$. We can combine them into a single isomorphism to $L^2 (B, dd mu)$ with $B = RR times NN$ and $mu(V times {n}) = 2^(-n) mu_(A, v_n) (V)$, and define $a(s, n) = s$. It follows as before that $A$ is unitarily equivalent to multiplication by $s$. This completes the proof of @thm-spectral, apart from the special form claimed that we can take in fact $B = sigma(A) times NN$. This is covered in the next lemma:
+
+  #lemma[Support of the spectral measure][
+    Let $v$ be a unit vector of $H$. Then the support of the scalar spectral measure $mu_(A, v)$ is contained in $sigma(A)$.
+  ]
+
+]
