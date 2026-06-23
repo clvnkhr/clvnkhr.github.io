@@ -19,8 +19,8 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
 
   return (
     <Layout title={`Blog - ${site.title}`} site={site}>
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:grid lg:grid-cols-[minmax(0,56rem)_14rem] lg:items-start lg:gap-8">
-        <div className="lg:col-start-1">
+      <div className="px-4 py-8 lg:grid lg:grid-cols-[minmax(0,14rem)_minmax(0,56rem)_minmax(0,14rem)] lg:justify-center lg:items-start lg:gap-8">
+        <div className="lg:col-start-2">
           <h1 className="text-4xl font-bold mb-8 text-ctp-mauve">Blog Posts</h1>
           <input
             id="blog-search-input"
@@ -32,7 +32,7 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
         </div>
         {allTags.length > 0 && (
           <aside
-            className="mb-8 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-8 lg:mb-0"
+            className="mb-8 lg:col-start-3 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-8 lg:mb-0"
             aria-labelledby="blog-tag-filters-heading"
             data-blog-tag-filters
           >
@@ -76,7 +76,7 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
             </div>
           </aside>
         )}
-        <main className="lg:col-start-1">
+        <main className="lg:col-start-2">
           <div className="space-y-8" data-blog-list>
             {posts.map((post) => (
               <div
