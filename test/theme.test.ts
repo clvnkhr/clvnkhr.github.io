@@ -84,6 +84,15 @@ describe('Theme System', () => {
     expect(cssContent).toContain('white-space: nowrap');
   });
 
+  it('should improve prose line wrapping', async () => {
+    const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
+
+    expect(cssContent).toContain('text-wrap: pretty');
+    expect(cssContent).toContain('hyphens: auto');
+    expect(cssContent).toContain('text-wrap: balance');
+    expect(cssContent).toContain('hyphens: none');
+  });
+
   it('should have SVG grayscale color overrides in dark mode', async () => {
     const cssContent = await fs.readFile(join(distDir, 'assets/css/main.css'), 'utf-8');
 
