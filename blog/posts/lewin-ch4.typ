@@ -78,7 +78,7 @@ $
   So $M_a - lambda$ cannot be invertible.
 
 #theorem[Theorem 4.4: Spectral Theorem][
-  Let $(A, D(A))$ be self-adjoint on $fH$. Then there exists $d >= 1$, a Borel set $B$, a locally finite measure $mu$ on $B$, a real-valued locally bounded function $a in L^oo_"loc" (B, dd mu)$, and an isomorphism $U : fH -> L^2 (B, dd mu)$ such that
+  Let $(A, D(A))$ be self-adjoint on $fH$. Then there exists $d >= 1$, a Borel set $B subset RR^d$, a locally finite measure $mu$ on $B$, a real-valued locally bounded function $a in L^oo_"loc" (B, dd mu)$, and an isomorphism $U : fH -> L^2 (B, dd mu)$ such that
   $
     U A U^(-1) = M_a, quad U D(A) = D(M_a).
   $
