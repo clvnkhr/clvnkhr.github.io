@@ -338,10 +338,76 @@ $
   $
   Continuing in this way gives the desired decomposition of $fH$ into a direct sum of invariant subspaces.
 
-  We now have that $(A-z)^(-1)$ on each invariant subspace $cal(X)_(v_n)$ is unitarily equivalent to multiplication by $(s-z)^(-1)$ on $L^2 (RR, dd mu_(A, v_n))$. We can combine them into a single isomorphism to $L^2 (B, dd mu)$ with $B = RR times NN$ and $mu(V times {n}) = 2^(-n) mu_(A, v_n) (V)$, and define $a(s, n) = s$. It follows as before that $A$ is unitarily equivalent to multiplication by $s$. This completes the proof of @thm-spectral, apart from the special form claimed that we can take in fact $B = sigma(A) times NN$. This is covered in the next lemma:
+  We now have that $(A-z)^(-1)$ on each invariant subspace $cal(X)_(v_n)$ is unitarily equivalent to multiplication by $(s-z)^(-1)$ on $L^2 (RR, dd mu_(A, v_n))$. We can combine them into a single isomorphism to $L^2 (B, dd mu)$ with $B = RR times NN$ and $mu(V times {n}) = 2^(-n) mu_(A, v_n) (V)$, and define $a(s, n) = s$. It follows as before that $A$ is unitarily equivalent to multiplication by $s$. This completes the proof of @thm-spectral, apart from the special form claimed that we can take in fact $B = sigma(A) times NN$. This is covered in the next lemma.
+]
+#lemma[Support of the spectral measure][
+  Let $v in H$ with $norm(v) = 1$. Then  $mu_(A, v)(RR \\ sigma(A)) = 0$.
+]
+#proof[
+  Suppose $RR \\ sigma(A) != emptyset$ and let $lambda_0 in RR \\ sigma(A)$. Then $(A-z)^(-1)$ is bounded on a small ball (in $CC$) around $lambda_0$. For concreteness we take
+  $
+    r = 1/(2 norm((A - lambda_0)^(-1))).
+  $
+  Then $norm((A - z)^(-1)) <= 2$ for $z in BB_(lambda_0, r)$.
 
-  #lemma[Support of the spectral measure][
-    Let $v$ be a unit vector of $H$. Then the support of the scalar spectral measure $mu_(A, v)$ is contained in $sigma(A)$.
+  Let $lambda in [lambda_0 - r/2, lambda_0 + r/2]$. Put $z_n = lambda + i/n$ for $n >= 2/r$ so that $z_n in BB_(lambda_0, r)$. Then
+  $
+    4 >= norm((A - z_n)^(-1))^2 >= bangle(v, (A - z_n)^(-1) v) = integral_RR 1 / (abs(s - lambda)^2 + 1/n^2) dd mu_(A, v) (s).
+  $
+  Integrating over $lambda in [lambda_0 - r/2, lambda_0 + r/2]$ and using Tonelli's theorem gives
+  $
+    4 r &>= integral_(lambda_0 - r/2)^(lambda_0 + r/2) integral_RR 1 / (abs(s - lambda)^2 + 1/n^2) dd mu_(A, v) (s) dd lambda \
+    &= integral_RR integral_(lambda_0 - r/2)^(lambda_0 + r/2) 1 / (abs(s - lambda)^2 + 1/n^2) dd lambda dd mu_(A, v) (s) \
+    &>= integral_(lambda_0 - r/4)^(lambda_0 + r/4) integral_(s - r/4)^(s + r/4) 1 / (abs(s - lambda)^2 + 1/n^2) dd lambda dd mu_(A, v) (s) \
+    &= mu_(A, v)([lambda_0 - r/4, lambda_0 + r/4]) integral_(-r/4)^(r/4) 1 / (t^2 + 1/n^2) dd t \
+    &= 2 n arctan((r n)/4) mu_(A, v)([lambda_0 - r/4, lambda_0 + r/4]).
+  $
+  It follows from $n arctan((r n)/4) stretch(->)_(n->oo) oo$ that $mu_(A, v)([lambda_0 - r/4, lambda_0 + r/4])=0$. Since $lambda_0$ was arbitrary, we have $mu_(A, v)(RR \\ sigma(A)) = 0$ as claimed.
+]
+
+#proof[of @thm-borel-func-calc][
+  Given the spectral theorem we have already above the construction of the functional calculus for measurable functions satisfying the required properties, save uniqueness.
+
+  So consider a second functional calculus $f mapsto f(A)'$ satisfying the same properties. Then since they agree for $f(x) = (x-z)^(-1)$, they agree on the resolvent algebra $cal(A)$, and by continuity they agree on $C^0_lim$.
+
+  Now fix $v in fH$ and consider the two linear forms
+  $
+    ell(f) = bangle(v, f(A) v) = integral_(sigma(A)) f(s) dd mu_(A, v) (s),
+    quad
+    ell'(f) = bangle(v, f(A)' v)
+  $
+  $ell=ell'$ would imply $f(A)=f(A)'$ by polarization. Riesz--Markov gives us uniqueness of the corresponding Borel measure, but this is not the same as uniqueness of the functional (for instance if the measure was $delta_0$ the linear functional could a Banach limit given by some ultrafilter.). For this, we invoke
+
+  #theorem("Functional Monotone Class Theorem")[
+    Let $cal(A)$ be a unital algebra of bounded real-valued functions on X. Let $cal(H)$ be a vector space of bounded functions such that
+    $cal(A) subset.eq cal(H)$,
+    and suppose $cal(H)$ is closed under bounded monotone pointwise limits:
+    $ 0 <= f_n arrow.t f, quad sup_x f(x)< infty, quad f_n in cal(H) ==> f in cal(H). $
+
+    Then $cal(H)$ contains every bounded function measurable with respect to $sigma(cal(A))$.
   ]
+  With this theorem and (v) of @thm-borel-func-calc, we have that $ell=ell'$ on all bounded Borel functions, and hence $f(A)=f(A)'$ for all bounded Borel functions, as needed.
+]
 
+= Spectral Projections
+
+As always let $A$ be self-adjoint on $fH$. To each Borel $F subset RR$, the functional calculus gives us the associated spectral projection $bb(1)_F (A)$.
+
+#proposition[
+  We have the following properties:
+  + $bb(1)_F (A) = bb(1)_F (A)^* = bb(1)_F (A)^2$
+  + $bb(1)_emptyset (A) = 0, bb(1)_(RR) (A) = 1(A) = "Id"_fH$,
+  + If $F = union.big_(n >= 1) F_n$, then $bb(1)_F (A) = sum_(n >= 1) bb(1)_(F_n) (A)$,
+  + $bb(1)_(F_1 inter F_2) (A) = bb(1)_(F_1) (A) bb(1)_(F_2) (A)$,
+
+  In addition, using the specific representation of $A$ as a multiplication operator $M_a$ by $a(s,n) = s$ on $L^2 (sigma(A) times NN, dd mu)$, we have
+  $
+    bb(1)_F (A) = U^(-1) M_(bb(1)_(F)(a)) U = U^(-1) M_(bb(1)_(F times NN)) U,
+  $
+  so $ran bb(1)_F (A) = U^(-1)(L^2(F times NN, dd mu)$, and $op("rank")(bb(1)_F (A)) = dim L^2(F times NN, dd mu)$.
+]
+
+#lemma[
+  + $lambda in sigma(A)$ iff $bb(1)_(lambda - epsilon, lambda + epsilon) (A) != 0$ for all $epsilon > 0$.
+  + $lambda$ is an eigenvalue of $A$ iff $bb(1)_{lambda} (A) != 0$, in which case $bb(1)_{lambda} (A)$ is the orthogonal projection to the corresponding eigenspace $ker(A - lambda)$.
 ]
