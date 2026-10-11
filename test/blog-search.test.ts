@@ -45,7 +45,7 @@ describe('matchScore', () => {
 
   it('handles empty text', () => {
     expect(matchScore('a', '')).toEqual({ matched: false, score: 0 });
-    expect(matchScore('', '')).toMatchObject({ matched: true });
+    expect(matchScore('', '')).toEqual({ matched: true, score: 2 });
   });
 
   it('bonuses consecutive character matches', () => {
@@ -161,6 +161,7 @@ describe('computePostScore', () => {
   it('handles empty strings gracefully', () => {
     const result = computePostScore('', '', '', '');
     expect(result.matched).toBe(true);
+    expect(Number.isFinite(result.score)).toBe(true);
   });
 
   it('no match when query is absent from all fields', () => {

@@ -1,25 +1,27 @@
-function fuzzyMatch(query, text) {
-  const q = query.toLowerCase();
-  const t = text.toLowerCase();
-  let qi = 0;
-  for (let ti = 0; ti < t.length && qi < q.length; ti++) {
-    if (q[qi] === t[ti]) qi++;
-  }
-  return qi === q.length;
-}
+import { fuzzyMatch } from '../../utils/fuzzy-match';
 
 document.addEventListener('DOMContentLoaded', () => {
   const searchInput = document.getElementById('tag-search-input');
   if (!searchInput) return;
 
-  const tagCards = document.querySelectorAll('[data-tag-name]');
+  const tagCards = Array.from(document.querySelectorAll('[data-tag-name]'));
+  const status = document.querySelector('[data-tag-search-status]');
+  const emptyState = document.querySelector('[data-tag-search-empty]');
 
   searchInput.addEventListener('input', () => {
-    const query = searchInput.value;
-    tagCards.forEach(card => {
-      const tagName = card.getAttribute('data-tag-name');
-      const match = query === '' || fuzzyMatch(query, tagName);
-      card.classList.toggle('hidden', !match);
-    });
+    tagCards[0]?.parentElement.classList.add('is-filtering');
+    applyFilters();
   });
+  applyFilters();
+
+  function applyFilters() {
+    const query = searchInput.value.trim();
+    let visibleCount = 0;
+    tagCards.forEach(card => {
+      card.hidden = !fuzzyMatch(query, card.dataset.tagName || '');
+      if (!card.hidden) visibleCount++;
+    });
+    if (status) status.textContent = `${visibleCount} of ${tagCards.length} tags shown`;
+    if (emptyState) emptyState.hidden = visibleCount > 0;
+  }
 });

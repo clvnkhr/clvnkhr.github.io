@@ -1,4 +1,3 @@
-
 interface UpdateDatesTooltipProps {
   updated?: Date[];
   date?: Date;
@@ -6,34 +5,28 @@ interface UpdateDatesTooltipProps {
 }
 
 export function UpdateDatesTooltip({ updated, date, formatDate }: UpdateDatesTooltipProps) {
-  if (!updated || updated.length === 0) {
-    return null;
-  }
+  const history = Array.from(new Set(
+    (updated ?? []).map((update) => update.getTime()).filter((time) => time !== date?.getTime()),
+  )).sort((a, b) => a - b).map((time) => new Date(time));
 
-  const hasUpdates = date
-    ? updated.some((d: Date) => d !== date)
-    : true;
-
-  if (!hasUpdates) {
-    return null;
-  }
-
-  const mostRecentUpdate = updated[updated.length - 1];
+  if (history.length === 0) return null;
+  const mostRecentUpdate = history[history.length - 1];
 
   return (
-    <span className="group relative text-ctp-subtext0 text-sm cursor-help">
-      Updated {formatDate(mostRecentUpdate)}
-      <div className="absolute left-0 bottom-full mb-2 hidden group-hover:block w-max max-w-xs bg-ctp-surface0 border border-ctp-surface1 rounded-lg p-3 shadow-lg z-50">
+    <details className="update-dates relative text-ctp-subtext0 text-sm">
+      <summary className="cursor-pointer">
+        Updated <time dateTime={mostRecentUpdate.toISOString()}>{formatDate(mostRecentUpdate)}</time>
+      </summary>
+      <div className="absolute left-0 top-full mt-2 w-max max-w-xs bg-ctp-surface0 border border-ctp-surface1 rounded-lg p-3 shadow-lg z-50">
         <div className="text-xs text-ctp-subtext1 mb-2">Update History</div>
-        <div className="space-y-1">
-          {updated.map((updateDate: Date, index: number) => (
-            <div key={index} className="text-sm text-ctp-text">
-              {formatDate(updateDate)}
-            </div>
+        <ul className="space-y-1">
+          {history.map((updateDate) => (
+            <li key={updateDate.toISOString()} className="text-sm text-ctp-text">
+              <time dateTime={updateDate.toISOString()}>{formatDate(updateDate)}</time>
+            </li>
           ))}
-        </div>
-        <div className="absolute left-4 top-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-ctp-surface1"></div>
+        </ul>
       </div>
-    </span>
+    </details>
   );
 }

@@ -6,35 +6,26 @@ import type { SiteConfig } from '../config/site';
 interface LayoutProps {
   children: React.ReactNode;
   title?: string;
-  darkMode?: boolean;
   showBackToTop?: boolean;
   site?: SiteConfig;
 }
 
-export function Layout({ children, title, darkMode = true, showBackToTop = true, site = defaultSite }: LayoutProps) {
+export function Layout({ children, title, showBackToTop = true, site = defaultSite }: LayoutProps) {
   return (
-    <html lang="en" className={darkMode ? "dark" : ""}>
+    <html lang="en">
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {title && <title>{title}</title>}
-        <style dangerouslySetInnerHTML={{
-          __html: `
-            * { color-scheme: light; }
-            @media (prefers-color-scheme: dark) {
-              * { color-scheme: dark; }
-              body { background-color: #1e1e2e; color: #cdd6f4; }
-            }
-          `
-        }} />
         <link rel="stylesheet" href="/assets/css/main.css" />
         <script src="/assets/js/back-to-top.js" defer></script>
         <script src="/assets/js/tag-search.js" defer></script>
         <script src="/assets/js/blog-search.js" defer></script>
       </head>
       <body className="min-h-screen bg-ctp-base text-ctp-text antialiased">
+        <a href="#main-content" className="skip-link">Skip to content</a>
         <Header site={site} />
-        <main className="min-h-[calc(100vh-theme(spacing.64))]">
+        <main id="main-content" tabIndex={-1} className="page-content min-h-[calc(100vh-theme(spacing.64))]">
           {children}
         </main>
         <Footer site={site} showBackToTop={showBackToTop} />

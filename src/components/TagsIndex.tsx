@@ -1,7 +1,7 @@
 import { Layout } from './Layout';
 import { site as defaultSite } from '../config/site';
 import type { SiteConfig } from '../config/site';
-import { getTagColorClass } from '../utils/tags';
+import { getTagColorClass, getTagHref } from '../utils/tags';
 
 interface TagsIndexProps {
   allTags: string[];
@@ -23,18 +23,21 @@ export function TagsIndex({ allTags, tagPosts, site = defaultSite }: TagsIndexPr
         </p>
         <input
           id="tag-search-input"
-          type="text"
+          type="search"
+          aria-label="Search tags"
           placeholder="Search tags..."
-          autoFocus
           className="w-full px-4 py-2 mb-6 rounded-lg bg-ctp-surface0 border border-ctp-surface1 text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:border-ctp-mauve transition-colors"
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <p role="status" className="sr-only" data-tag-search-status>
+          {allTags.length} tag{allTags.length !== 1 ? 's' : ''} shown
+        </p>
+        <div className="stagger-list grid grid-cols-1 md:grid-cols-2 gap-4">
           {allTags.map(tag => (
             <a
               key={tag}
-              href={`/tags/${tag}/`}
+              href={getTagHref(tag)}
               data-tag-name={tag}
-              className="block p-4 rounded-lg bg-ctp-mantle hover:bg-ctp-surface1 transition-colors"
+              className="surface-card block p-4 rounded-lg border border-ctp-surface1 bg-ctp-mantle"
             >
               <div className={`text-xl font-semibold ${getTagColorClass(tag)}`}>
                 #{tag}
@@ -45,6 +48,9 @@ export function TagsIndex({ allTags, tagPosts, site = defaultSite }: TagsIndexPr
             </a>
           ))}
         </div>
+        <p hidden={allTags.length > 0} className="text-ctp-subtext0 text-center py-12" data-tag-search-empty>
+          No tags match your search.
+        </p>
         <div className="mt-8">
           <a href="/blog/" className="text-ctp-mauve hover:underline">
             ← Back to Blog

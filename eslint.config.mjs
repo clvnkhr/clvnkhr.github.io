@@ -5,7 +5,13 @@ import tsParser from "@typescript-eslint/parser"
 export default [
   js.configs.recommended,
   {
-    ignores: ["dist/", "node_modules/", "lib/", "src/assets/", "*.md"]
+    ignores: ["dist/", "node_modules/", "lib/", "*.md"]
+  },
+  {
+    files: ["src/assets/js/**/*.js"],
+    languageOptions: {
+      globals: { document: "readonly", window: "readonly", localStorage: "readonly" }
+    }
   },
   {
     files: ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts", "test/**/*.tsx"],

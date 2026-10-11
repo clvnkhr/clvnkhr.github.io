@@ -2,9 +2,7 @@ import { Layout } from './Layout';
 import { site as defaultSite } from '../config/site';
 import type { SiteConfig } from '../config/site';
 import type { Post } from '../types/post';
-import { PostCard } from './PostCard';
-import { getPostBlurb } from '../utils/post';
-import { formatDate } from '../utils/date';
+import { SearchablePostList } from './SearchablePostList';
 import { getTagColorClass } from '../utils/tags';
 
 interface BlogIndexProps {
@@ -24,9 +22,9 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
           <h1 className="text-4xl font-bold mb-8 text-ctp-mauve">Blog Posts</h1>
           <input
             id="blog-search-input"
-            type="text"
+            type="search"
+            aria-label="Search posts"
             placeholder="Search posts..."
-            autoFocus
             className="w-full px-4 py-2 mb-6 xl:mb-8 rounded-lg bg-ctp-surface0 border border-ctp-surface1 text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:border-ctp-mauve transition-colors"
           />
         </div>
@@ -76,23 +74,10 @@ export function BlogIndex({ posts, site = defaultSite }: BlogIndexProps) {
             </div>
           </aside>
         )}
-        <main className="xl:col-start-2">
-          <div className="space-y-8" data-blog-list>
-            {posts.map((post) => (
-              <div
-                key={post.slug}
-                data-search-title={post.title}
-                data-search-blurb={post.description || getPostBlurb(post.htmlContent).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()}
-                data-search-date={formatDate(post.date)}
-                data-search-tags={(post.tags ?? []).join(' ')}
-                data-filter-tags={(post.tags ?? []).join(' ')}
-              >
-                <PostCard post={post} />
-              </div>
-            ))}
-          </div>
-        </main>
+        <div className="xl:col-start-2">
+          <SearchablePostList posts={posts} />
+        </div>
       </div>
-      </Layout>
+    </Layout>
   );
 }

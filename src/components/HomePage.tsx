@@ -13,8 +13,8 @@ export function HomePage({ newestPost, site = defaultSite }: HomePageProps) {
   return (
     <Layout title={site.title} showBackToTop={false} site={site}>
       <div className="max-w-4xl mx-auto px-4 py-16">
-        <section className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-6 text-ctp-mauve">
+        <section className="home-intro text-center mb-16">
+          <h1 className="hero-title text-5xl font-bold mb-6 text-ctp-mauve">
             {site.title}
           </h1>
           <p className="text-xl text-ctp-subtext0 max-w-2xl mx-auto mb-6">
@@ -33,7 +33,7 @@ export function HomePage({ newestPost, site = defaultSite }: HomePageProps) {
 
         {newestPost && (
           <div className="max-w-4xl mx-auto px-4 mb-12">
-            <section className="">
+            <section>
               <h2 className="font-semibold text-ctp-mauve">
                 Newest Blog Post
               </h2>
@@ -42,10 +42,10 @@ export function HomePage({ newestPost, site = defaultSite }: HomePageProps) {
           </div>
         )}
 
-        <section className="grid gap-6 md:grid-cols-3 mt-12">
+        <section className="stagger-list grid gap-6 md:grid-cols-3 mt-12">
           <a
             href="/blog/2023/06/09/mathematics/"
-            className="border border-ctp-surface1 rounded-lg p-8 hover:border-ctp-mauve transition-colors group"
+            className="surface-card border border-ctp-surface1 rounded-lg p-8 group"
           >
             <h2 className="text-3xl font-bold mb-3 text-ctp-mauve group-hover:text-ctp-mauve/80">
               Mathematics
@@ -57,7 +57,7 @@ export function HomePage({ newestPost, site = defaultSite }: HomePageProps) {
 
           <a
             href="/blog/"
-            className="border border-ctp-surface1 rounded-lg p-8 hover:border-ctp-mauve transition-colors group"
+            className="surface-card border border-ctp-surface1 rounded-lg p-8 group"
           >
             <h2 className="text-3xl font-bold mb-3 text-ctp-mauve group-hover:text-ctp-mauve/80">
               Blog
@@ -69,7 +69,7 @@ export function HomePage({ newestPost, site = defaultSite }: HomePageProps) {
 
           <a
             href="/tags/projects/"
-            className="border border-ctp-surface1 rounded-lg p-8 hover:border-ctp-mauve transition-colors group"
+            className="surface-card border border-ctp-surface1 rounded-lg p-8 group"
           >
             <h2 className="text-3xl font-bold mb-3 text-ctp-mauve group-hover:text-ctp-mauve/80">
               Projects

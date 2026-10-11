@@ -7,19 +7,19 @@ interface HeaderProps {
 
 export function Header({ site = defaultSite }: HeaderProps) {
   return (
-    <header className="border-b border-ctp-surface1">
+    <header className="site-header border-b border-ctp-surface1">
       <div className="max-w-4xl mx-auto px-4 py-4">
-        <nav className="flex items-center justify-between">
-          <a href="/" className="text-xl font-bold text-ctp-mauve hover:text-ctp-mauve/80 transition-colors">
+        <nav aria-label="Main navigation" className="flex flex-wrap items-center justify-between gap-4">
+          <a href="/" aria-label={site.title} className="text-xl font-bold text-ctp-mauve hover:text-ctp-mauve/80 transition-colors">
             <span className="md:hidden">CK</span>
             <span className="hidden md:inline">{site.title}</span>
           </a>
-          <ul className="flex space-x-6">
+          <ul className="flex flex-wrap gap-x-4 gap-y-2 md:gap-x-6">
             {site.navigation.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
-                  className="text-ctp-subtext0 hover:text-ctp-text transition-colors"
+                  className="nav-link text-ctp-subtext0 hover:text-ctp-text transition-colors"
                 >
                   {item.label === "Mathematics" ? (
                     <>

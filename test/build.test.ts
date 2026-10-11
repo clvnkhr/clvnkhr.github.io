@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'bun:test';
-import { Effect, Layer, Logger, LogLevel, ManagedRuntime, Option, Stream } from "effect";
+import { Effect, Inspectable, Layer, Logger, LogLevel, ManagedRuntime, Option, Sink, Stream } from "effect";
 import { FileSystem, File } from "@effect/platform/FileSystem";
 import type { Command } from "@effect/platform/Command";
-import { CommandExecutor, TypeId, ExitCode } from "@effect/platform/CommandExecutor";
+import { CommandExecutor, TypeId, ExitCode, ProcessTypeId, ProcessId, type Process } from "@effect/platform/CommandExecutor";
 import { SystemError } from "@effect/platform/Error";
 import { BunContext } from "@effect/platform-bun";
 import { SiteConfigTag } from '../src/config/site';
@@ -98,10 +98,22 @@ function makeMockFileSystem(files: Record<string, string>): FileSystem {
 
 const MOCK_TYPST_HTML = '<html><head></head><body><h1>Test Post</h1><p>Hello world.</p></body></html>';
 
-function makeMockCommandExecutor(): CommandExecutor {
+function makeMockCommandExecutor(exitCode = 0, stderr = ''): CommandExecutor {
   return {
     [TypeId]: TypeId,
-    start: () => Effect.die('unexpected CommandExecutor.start call'),
+    start: () => Effect.succeed<Process>({
+      [ProcessTypeId]: ProcessTypeId,
+      pid: ProcessId(1),
+      exitCode: Effect.succeed(ExitCode(exitCode)),
+      isRunning: Effect.succeed(false),
+      kill: () => Effect.void,
+      stdout: Stream.make(new TextEncoder().encode(MOCK_TYPST_HTML)),
+      stderr: Stream.make(new TextEncoder().encode(stderr)),
+      stdin: Sink.drain,
+      toJSON: () => ({ pid: 1 }),
+      toString: () => 'MockProcess',
+      [Inspectable.NodeInspectSymbol]: () => ({ pid: 1 }),
+    }),
     exitCode: () => Effect.succeed(ExitCode(0)),
     string: (cmd: Command) => {
       if (cmd._tag === 'StandardCommand' && cmd.command === 'typst') {
@@ -245,6 +257,21 @@ describe('compileTypst', () => {
       testRuntime.runPromise,
     );
     expect(rawHtml).toBeTruthy();
+    expect(await testRuntime.runPromise(mockFs.exists('blog/posts/.tmp_test-post.typ'))).toBe(false);
+  });
+
+  it('rejects nonzero Typst exit codes even when stdout contains HTML, and cleans up', async () => {
+    const result = await compileTypst('blog/posts/failed-post.typ', '= Failed').pipe(
+      Effect.provideService(CommandExecutor, makeMockCommandExecutor(2, 'error: invalid Typst source')),
+      Effect.either,
+      testRuntime.runPromise,
+    );
+
+    expect(result).toMatchObject({
+      _tag: 'Left',
+      left: { _tag: 'TypstCompileFailed', message: 'Typst exited with code 2: error: invalid Typst source' },
+    });
+    expect(await testRuntime.runPromise(mockFs.exists('blog/posts/.tmp_failed-post.typ'))).toBe(false);
   });
 });
 

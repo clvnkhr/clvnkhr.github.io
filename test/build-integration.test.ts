@@ -94,11 +94,12 @@ describe('Build Integration', () => {
   it('should not include hidden posts in blog index', async () => {
     const blogPath = join(distDir, 'blog', 'index.html');
     const content = await Bun.file(blogPath).text();
-    expect(content).not.toContain("Blagger's guide to the Navier-Stokes Equations Millenium Problem");
+    expect(content).not.toContain('Interesting Typst Packages');
+    expect(content).not.toContain('Scala Coursera Courses');
   });
 
   it('should not create dist folder for hidden posts', async () => {
-    const hiddenPostDir = join(distDir, 'blog', '2024', '04', '24', 'blagger-s-guide-to-the-navier-stokes-equations-mil');
+    const hiddenPostDir = join(distDir, 'blog', '2026', '04', '30', 'typst-packages');
     try {
       await stat(hiddenPostDir);
       throw new Error('Hidden post directory should not exist');

@@ -2,7 +2,7 @@ import { Layout } from './Layout';
 import { site as defaultSite } from '../config/site';
 import type { SiteConfig } from '../config/site';
 import type { Post } from '../types/post';
-import { getTagColorClass } from '../utils/tags';
+import { getTagColorClass, getTagHref } from '../utils/tags';
 import { formatDate } from '../utils/date';
 import { UpdateDatesTooltip } from './UpdateDatesTooltip';
 import { RelatedPosts } from './RelatedPosts';
@@ -24,8 +24,8 @@ export function PostPage({ post, allPosts, site = defaultSite }: PostPageProps) 
           <h1 className="text-4xl font-bold mb-4 text-ctp-mauve">
             {post.title}
           </h1>
-          <div className="flex items-center gap-4 text-ctp-subtext0">
-            <time className="text-sm">
+          <div className="flex flex-wrap items-center gap-4 text-ctp-subtext0">
+            <time dateTime={post.date.toISOString()} className="text-sm">
               {formatDate(post.date)}
             </time>
             <UpdateDatesTooltip
@@ -39,8 +39,8 @@ export function PostPage({ post, allPosts, site = defaultSite }: PostPageProps) 
               {post.tags.map((tag: string) => (
                 <a
                   key={tag}
-                  href={`/tags/${tag}/`}
-                  className={`px-3 py-1 text-sm transition-colors ${getTagColorClass(tag)}`}
+                  href={getTagHref(tag)}
+                  className={`tag-link px-3 py-1 text-sm ${getTagColorClass(tag)}`}
                 >
                   {tag}
                 </a>

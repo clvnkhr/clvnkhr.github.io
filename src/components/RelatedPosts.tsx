@@ -22,7 +22,7 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
               href={post.path}
               className="flex items-baseline gap-3 group hover:opacity-80 transition-opacity"
             >
-              <time className="text-sm text-ctp-subtext0 shrink-0">
+              <time dateTime={post.date.toISOString()} className="text-sm text-ctp-subtext0 shrink-0">
                 {formatDate(post.date)}
               </time>
               <span className="group-hover:text-ctp-mauve transition-colors">

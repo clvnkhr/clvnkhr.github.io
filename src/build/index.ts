@@ -108,10 +108,8 @@ const loadPost = (postsDir: string, entry: string) =>
     const title = extractTitleFromHtml(typstResult.html);
     if (!title) return null;
 
-    const slug = entry.replace(".typ", "");
-    const year = metadata.date.getFullYear();
-    const month = String(metadata.date.getMonth() + 1).padStart(2, "0");
-    const day = String(metadata.date.getDate()).padStart(2, "0");
+    const slug = entry.slice(0, -".typ".length);
+    const [year, month, day] = metadata.date.toISOString().slice(0, 10).split("-");
 
     return {
       ...metadata,
@@ -120,14 +118,14 @@ const loadPost = (postsDir: string, entry: string) =>
       path: `/blog/${year}/${month}/${day}/${slug}/`,
       htmlContent: stripFirstHeading(typstResult.html),
       svgColors: typstResult.svgColors,
-    } as Post;
+    } satisfies Post;
   });
 
 const discoverPosts = Effect.gen(function* () {
   const fs = yield* FileSystem;
   const postsDir = "blog/posts";
   const entries = yield* fs.readDirectory(postsDir);
-  const typFiles = entries.filter((e) => e.endsWith(".typ") && !e.startsWith("."));
+  const typFiles = entries.filter((e) => e.endsWith(".typ") && !e.startsWith(".")).sort();
 
   const maybePosts = yield* Effect.forEach(
     typFiles,
@@ -137,10 +135,10 @@ const discoverPosts = Effect.gen(function* () {
           Effect.logError(`Error processing ${entry}: ${String(e)}`),
         ),
       ),
-    { concurrency: "unbounded" },
+    { concurrency: 4 },
   );
 
-  const posts = maybePosts.filter((p): p is Post => p !== null);
+  const posts = maybePosts.filter((p) => p !== null);
 
   const hiddenPosts = posts.filter((p) => p.hidden);
   if (hiddenPosts.length > 0) {
@@ -174,8 +172,18 @@ const copyAssets = Effect.gen(function* () {
     { concurrency: "unbounded" },
   );
   yield* fs.copy("fonts/LeteSansMath", "dist/fonts/LeteSansMath", { overwrite: true });
-  yield* fs.copy("src/assets/js", "dist/assets/js", { overwrite: true });
 });
+
+const buildBrowserScripts = runNamed(
+  "browser scripts",
+  Command.make(
+    "bun", "build", "--target", "browser", "--format", "iife",
+    "--outdir", "dist/assets/js",
+    "src/assets/js/back-to-top.js",
+    "src/assets/js/tag-search.js",
+    "src/assets/js/blog-search.js",
+  ),
+);
 
 const buildTailwind = runNamed(
   "tailwind",
@@ -228,12 +236,13 @@ const generatePostPages = (siteCfg: SiteConfig, posts: Post[]) =>
 
 const generateTagPages = (siteCfg: SiteConfig, posts: Post[], allTags: Set<string>) =>
   Effect.gen(function* () {
-    const tagPosts = posts.reduce<Record<string, number>>((acc, post) => {
+    const tagCounts = new Map<string, number>();
+    for (const post of posts) {
       for (const tag of post.tags ?? []) {
-        acc[tag] = (acc[tag] || 0) + 1;
+        tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
       }
-      return acc;
-    }, {});
+    }
+    const tagPosts = Object.fromEntries(tagCounts);
 
     const fs = yield* FileSystem;
     yield* fs.makeDirectory("dist/tags", { recursive: true });
@@ -291,6 +300,7 @@ const buildBlog = (options: { watch: boolean }) =>
     yield* Effect.all([
       step("🎨 Generating SVG color CSS...", generateSvgCss(allColors)),
       step("📦 Copying assets...", copyAssets),
+      step("✨ Bundling browser scripts...", buildBrowserScripts),
       step("🔍 Generating 404 page...", generateNotFoundPage(siteCfg)),
     ], { concurrency: "unbounded" });
 

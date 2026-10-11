@@ -101,7 +101,7 @@ Content...`;
 
     const metadata = Effect.runSync(parseMetadata(typstContent));
 
-    expect(metadata.tags).toEqual([""]);
+    expect(metadata.tags).toEqual([]);
   });
 
   it('should ignore non-comment lines', () => {
@@ -142,5 +142,26 @@ Some content.`;
 Some content without a heading.`;
 
     expect(extractTitleFromTypst(content)).toBeNull();
+  });
+
+  it('rejects malformed or impossible publication and update dates', () => {
+    for (const value of ['not-a-date', '2026-02-30', '2026-13-01', '2026-6-1']) {
+      expect(() => Effect.runSync(parseMetadata(`// date: ${value}\n= Post`))).toThrow('Invalid date');
+      expect(() => Effect.runSync(parseMetadata(`// date: 2026-06-01\n// updated: ${value}\n= Post`))).toThrow('Invalid update date');
+    }
+  });
+
+  it('merges, deduplicates, and sorts updates independently of metadata order', () => {
+    const metadata = Effect.runSync(parseMetadata(`\n//date: 2026-06-01, 2026-06-03\n//updated: 2026-06-02, 2026-06-03\n//tags: maths, , maths, notes\n= Post`));
+    expect(metadata.date).toEqual(new Date('2026-06-01'));
+    expect(metadata.updated).toEqual([new Date('2026-06-02'), new Date('2026-06-03')]);
+    expect(metadata.tags).toEqual(['maths', 'notes']);
+  });
+
+  it('rejects malformed booleans and tags that escape their output directory', () => {
+    expect(() => Effect.runSync(parseMetadata('// date: 2026-06-01\n// draft: yes'))).toThrow('Expected true or false');
+    for (const tag of ['../blog', '..', 'a/b', 'a\\b']) {
+      expect(() => Effect.runSync(parseMetadata(`// date: 2026-06-01\n// tags: ${tag}`))).toThrow('Tags must not contain');
+    }
   });
 });

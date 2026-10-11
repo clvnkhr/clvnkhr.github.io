@@ -30,16 +30,21 @@ jobs:
 
       - name: Install Typst CLI
         run: |
-          curl -L https://github.com/typst/typst/releases/latest/download/typst-x86_64-unknown-linux-musl.tar.xz -o typst.tar.xz
+          set -euo pipefail
+          typst_version=$(bun -e 'console.log(require("./package.json").engines.typst)')
+          curl --fail --location "https://github.com/typst/typst/releases/download/v${typst_version}/typst-x86_64-unknown-linux-musl.tar.xz" -o typst.tar.xz
           tar -xf typst.tar.xz
           mv typst-x86_64-unknown-linux-musl/typst /usr/local/bin/typst
           rm -rf typst.tar.xz typst-x86_64-unknown-linux-musl
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Build
         run: bun run build
+
+      - name: Test
+        run: bun run test
 
       - name: Setup Pages
         uses: actions/configure-pages@v6
@@ -50,6 +55,7 @@ jobs:
           path: './dist'
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

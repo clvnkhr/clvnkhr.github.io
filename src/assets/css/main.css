@@ -1,6 +1,8 @@
 @import './fonts.css';
 
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+@source "../../components";
 
 @import "@catppuccin/tailwindcss/mocha.css";
 
@@ -11,7 +13,8 @@
 :root {
   --font-sans: 'Atkinson Hyperlegible Next', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Atkinson Hyperlegible Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  color-scheme: auto;
+  color-scheme: light dark;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --color-ctp-code-bg: color-mix(in srgb, var(--color-ctp-base), var(--color-ctp-surface0) 20%);
 }
 
@@ -56,9 +59,6 @@ math {
 .prose svg [stroke="#000000"] {
   stroke: var(--color-ctp-text);
 }
-
-
-
 .prose span[style*="display: block"] svg {
   display: block;
   margin-left: auto;
@@ -90,33 +90,33 @@ math {
 }
 
 .prose a {
-  color: var(--color-ctp-mauve) !important;
-  font-weight: normal !important;
-  text-decoration: none !important;
+  color: var(--color-ctp-mauve);
+  font-weight: normal;
+  text-decoration: none;
 }
 
 .prose a:hover {
-  opacity: 0.8 !important;
+  opacity: 0.8;
 }
 
 .prose blockquote {
-  font-style: normal !important;
-  font-weight: normal !important;
-  color: var(--ctp-text) !important;
+  font-style: normal;
+  font-weight: normal;
+  color: var(--color-ctp-text);
 }
 
 .prose blockquote p:first-of-type::before,
 .prose blockquote p:last-of-type::after {
-  content: none !important;
+  content: none;
 }
 
 .prose pre {
-  color: inherit !important;
-  background-color: var(--color-ctp-code-bg) !important;
+  color: inherit;
+  background-color: var(--color-ctp-code-bg);
 }
 
 .prose code {
-  color: inherit !important;
+  color: inherit;
 }
 
 .blog-tag-filter {
@@ -178,4 +178,217 @@ math {
 
 .tag-lavender {
   color: var(--color-ctp-lavender);
+}
+
+/* Keep interactive elements clear for keyboard navigation. */
+:focus-visible {
+  outline: 2px solid var(--color-ctp-mauve);
+  outline-offset: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-ctp-mauve);
+  color: var(--color-ctp-base);
+  transform: translateY(calc(-100% - 2rem));
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.site-header {
+  position: relative;
+}
+
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-ctp-mauve), var(--color-ctp-teal), transparent);
+  transform-origin: left;
+}
+
+.nav-link {
+  position: relative;
+  display: inline-block;
+  padding-block: 0.25rem;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  border-radius: 1rem;
+  background: linear-gradient(90deg, var(--color-ctp-mauve), var(--color-ctp-pink));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms var(--motion-ease);
+}
+
+.nav-link:is(:hover, :focus-visible)::after {
+  transform: scaleX(1);
+}
+
+.home-intro {
+  position: relative;
+  isolation: isolate;
+}
+
+.home-intro::before {
+  content: '';
+  position: absolute;
+  inset: -2rem 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 25%, color-mix(in srgb, var(--color-ctp-mauve), transparent 91%), transparent 65%);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .hero-title {
+    background: linear-gradient(110deg, var(--color-ctp-mauve) 25%, var(--color-ctp-pink) 45%, var(--color-ctp-lavender) 60%, var(--color-ctp-mauve) 80%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+}
+
+@media (forced-colors: active) {
+  .hero-title {
+    background: none;
+    color: CanvasText;
+  }
+}
+
+.surface-card {
+  position: relative;
+  transition: transform 280ms var(--motion-ease), border-color 220ms ease, box-shadow 280ms ease;
+}
+
+.surface-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px 1rem auto;
+  height: 2px;
+  border-radius: 1rem;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--color-ctp-mauve), var(--color-ctp-teal));
+  opacity: 0;
+  transform: scaleX(0.65);
+  transition: opacity 220ms ease, transform 280ms var(--motion-ease);
+}
+
+.surface-card:focus-within {
+  border-color: var(--color-ctp-mauve);
+  z-index: 1;
+}
+
+.surface-card:has(details[open]) {
+  z-index: 2;
+}
+
+.surface-card:focus-within::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .surface-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-ctp-mauve);
+    box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--color-ctp-mauve), transparent 45%);
+  }
+
+  .surface-card:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+.tag-link {
+  border-radius: 999px;
+  transition: background-color 180ms ease, transform 220ms var(--motion-ease);
+}
+
+.tag-link:is(:hover, :focus-visible) {
+  background: color-mix(in srgb, currentColor, transparent 92%);
+}
+
+.update-dates > summary {
+  list-style: none;
+  text-decoration: underline dotted;
+  text-underline-offset: 0.25em;
+}
+
+.update-dates > summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page-content {
+    animation: content-enter 480ms var(--motion-ease) backwards;
+  }
+
+  .site-header::after {
+    animation: accent-reveal 900ms var(--motion-ease) backwards;
+  }
+
+  .hero-title {
+    animation: title-sheen 1600ms var(--motion-ease) backwards;
+  }
+
+  .stagger-list > * {
+    animation: content-enter 520ms var(--motion-ease) var(--enter-delay, 0ms) backwards;
+  }
+
+  .stagger-list > :nth-child(2) { --enter-delay: 60ms; }
+  .stagger-list > :nth-child(3) { --enter-delay: 120ms; }
+  .stagger-list > :nth-child(4) { --enter-delay: 180ms; }
+  .stagger-list > :nth-child(5) { --enter-delay: 240ms; }
+  .stagger-list > :nth-child(n + 6) { --enter-delay: 300ms; }
+
+  .stagger-list.is-filtering > * {
+    animation: none;
+  }
+
+  [data-back-to-top]:is(:hover, :focus-visible) svg {
+    transform: translateY(-3px);
+  }
+
+  [data-back-to-top] svg {
+    transition: transform 220ms var(--motion-ease);
+  }
+
+  @keyframes content-enter {
+    from { opacity: 0; translate: 0 12px; }
+    to { opacity: 1; translate: 0 0; }
+  }
+
+  @keyframes accent-reveal {
+    from { transform: scaleX(0); opacity: 0; }
+    to { transform: scaleX(1); opacity: 1; }
+  }
+
+  @keyframes title-sheen {
+    from { background-position: 100% 50%; }
+    to { background-position: 0% 50%; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0s !important;
+  }
+
+  .surface-card:hover {
+    transform: none;
+  }
 }

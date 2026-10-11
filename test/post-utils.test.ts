@@ -63,6 +63,9 @@ describe('Post Utils', () => {
   });
 
   describe('extractTitleFromHtml', () => {
+    it('handles headings containing newlines', () => {
+      expect(extractTitleFromHtml('<h1>First\n<strong>Post</strong></h1>')).toBe('First\nPost');
+    });
     it('should extract title from h1 tag', () => {
       const html = '<div><h1>My Post Title</h1><p>Content</p></div>';
       expect(extractTitleFromHtml(html)).toBe('My Post Title');
@@ -93,6 +96,9 @@ describe('Post Utils', () => {
   });
 
   describe('stripFirstHeading', () => {
+    it('removes the full heading when its content spans multiple lines', () => {
+      expect(stripFirstHeading('<h1>First\nPost</h1><p>Content</p>')).toBe('<p>Content</p>');
+    });
     it('should remove the first h1 tag and its content', () => {
       const html = '<div><h1>Title</h1><p>Content</p></div>';
       expect(stripFirstHeading(html)).toBe('<div><p>Content</p></div>');

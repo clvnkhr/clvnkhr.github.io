@@ -6,6 +6,7 @@ export interface MatchResult {
 export function matchScore(query: string, text: string): MatchResult {
   const q = query.toLowerCase();
   const t = text.toLowerCase();
+  if (q.length === 0) return { matched: true, score: 2 };
   let qi = 0;
   for (let ti = 0; ti < t.length && qi < q.length; ti++) {
     if (q[qi] === t[ti]) qi++;

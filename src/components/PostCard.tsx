@@ -1,5 +1,5 @@
 import type { Post } from '../types/post';
-import { getTagColorClass } from '../utils/tags';
+import { getTagColorClass, getTagHref } from '../utils/tags';
 import { formatDate } from '../utils/date';
 import { getPostBlurb } from '../utils/post';
 import { UpdateDatesTooltip } from './UpdateDatesTooltip';
@@ -10,9 +10,9 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <article className="border border-ctp-surface1 rounded-lg p-6 hover:border-ctp-mauve transition-colors">
-      <div className="flex items-center gap-4 mb-3">
-        <time className="text-ctp-subtext0 text-sm">
+    <article className="surface-card border border-ctp-surface1 rounded-lg p-6">
+      <div className="flex flex-wrap items-center gap-4 mb-3">
+        <time dateTime={post.date.toISOString()} className="text-ctp-subtext0 text-sm">
           {formatDate(post.date)}
         </time>
         <UpdateDatesTooltip
@@ -37,7 +37,7 @@ export function PostCard({ post }: PostCardProps) {
       {post.tags && post.tags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {post.tags.map((tag: string) => (
-            <a key={tag} href={`/tags/${tag}`} className={`px-3 py-1 text-sm transition-colors ${getTagColorClass(tag)}`}>
+            <a key={tag} href={getTagHref(tag)} className={`tag-link px-3 py-1 text-sm ${getTagColorClass(tag)}`}>
               {tag}
             </a>
           ))}

@@ -30,34 +30,14 @@ describe('Theme System', () => {
   });
 
   it('should not have hardcoded mocha class on body', async () => {
-    // Read a sample post HTML file
-    const postFiles = await fs.readdir(distDir);
-    const postDir = postFiles.find(dir => dir.match(/^\d{4}\/\d{2}\/\d{2}\//));
-
-    if (!postDir) {
-      // Skip if no posts exist
-      expect(true).toBe(true);
-      return;
-    }
-
-    const postHtml = await fs.readFile(join(distDir, postDir, 'index.html'), 'utf-8');
+    const postHtml = await fs.readFile(join(distDir, 'blog/2026/01/02/hello-typst/index.html'), 'utf-8');
 
     expect(postHtml).not.toContain('class="mocha');
     expect(postHtml).not.toContain('className="mocha"');
   });
 
   it('should use conditional dark prose variant', async () => {
-    // Read a sample post HTML file
-    const postFiles = await fs.readdir(distDir);
-    const postDir = postFiles.find(dir => dir.match(/^\d{4}\/\d{2}\/\d{2}\//));
-
-    if (!postDir) {
-      // Skip if no posts exist
-      expect(true).toBe(true);
-      return;
-    }
-
-    const postHtml = await fs.readFile(join(distDir, postDir, 'index.html'), 'utf-8');
+    const postHtml = await fs.readFile(join(distDir, 'blog/2026/01/02/hello-typst/index.html'), 'utf-8');
 
     // Should have conditional dark variant
     expect(postHtml).toContain('prose dark:prose-invert');

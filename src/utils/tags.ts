@@ -1,3 +1,7 @@
+export function getTagHref(tagName: string): string {
+  return `/tags/${encodeURIComponent(tagName)}/`;
+}
+
 export function getTagColorClass(tagName: string): string {
   const colors = [
     'pink', 'mauve', 'red', 'maroon',

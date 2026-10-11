@@ -13,10 +13,11 @@ export function Footer({ site = defaultSite, showBackToTop = true }: FooterProps
         <div className="flex flex-wrap justify-between items-center gap-6">
           {showBackToTop && (
             <button
+              type="button"
               data-back-to-top
               className="text-sm text-ctp-subtext0 hover:text-ctp-mauve transition-colors flex items-center gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
               </svg>
               Back to top
