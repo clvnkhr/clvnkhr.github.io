@@ -76,7 +76,7 @@ The animations are implemented in `src/assets/css/main.css`, using the existing 
 - Page content fades in with a 12-pixel upward entrance over 480 milliseconds.
 - List items enter over 520 milliseconds, staggered in 60-millisecond increments. The delay is capped at 300 milliseconds, including for longer post and tag lists.
 - The header's thin gradient accent draws across the page over 900 milliseconds.
-- The homepage title flies in over 800 milliseconds, with a gentle overshoot before settling and a single 1.6-second gradient sweep.
+- The homepage title types in letter by letter, 60 milliseconds apart. Each character has a quick teal-and-pink glitch effect, with a moving caret that flashes and disappears at the end. The whole sequence finishes in just over a second, while screen readers receive the complete name immediately.
 - Navigation underlines scale into view on hover or keyboard focus.
 - Cards lift by four pixels on devices with a fine pointer and hover support, with a mauve border and a subtle shadow. Keyboard focus also highlights the border.
 - Tag links gain a soft background, and the back-to-top arrow nudges upward on hover or focus.

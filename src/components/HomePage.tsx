@@ -3,6 +3,9 @@ import { site as defaultSite } from '../config/site';
 import type { SiteConfig } from '../config/site';
 import type { Post } from '../types/post';
 import { PostCard } from './PostCard';
+import type { CSSProperties } from 'react';
+
+type HeroLetterStyle = CSSProperties & { '--letter-delay': string };
 
 interface HomePageProps {
   newestPost?: Post;
@@ -15,7 +18,13 @@ export function HomePage({ newestPost, site = defaultSite }: HomePageProps) {
       <div className="max-w-4xl mx-auto px-4 py-16">
         <section className="text-center mb-16">
           <h1 className="hero-title text-5xl font-bold mb-6 text-ctp-mauve">
-            {site.title}
+            <span className="sr-only">{site.title}</span>
+            <span className="hero-typing" aria-hidden="true">
+              {Array.from(site.title).map((letter, index) => {
+                const style: HeroLetterStyle = { '--letter-delay': `${160 + index * 60}ms` };
+                return <span key={index} className="hero-letter" style={style}>{letter}</span>;
+              })}
+            </span>
           </h1>
           <p className="text-xl text-ctp-subtext0 max-w-2xl mx-auto mb-6">
             {site.description}

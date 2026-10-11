@@ -237,19 +237,19 @@ math {
   transform: scaleX(1);
 }
 
-@supports (background-clip: text) or (-webkit-background-clip: text) {
-  .hero-title {
-    background: linear-gradient(110deg, var(--color-ctp-mauve) 25%, var(--color-ctp-pink) 45%, var(--color-ctp-lavender) 60%, var(--color-ctp-mauve) 80%);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-  }
+.hero-typing {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero-letter {
+  position: relative;
+  display: inline-block;
+  white-space: pre;
 }
 
 @media (forced-colors: active) {
   .hero-title {
-    background: none;
     color: CanvasText;
   }
 }
@@ -304,9 +304,27 @@ math {
     animation: accent-reveal 900ms var(--motion-ease) backwards;
   }
 
-  .hero-title {
-    animation: title-enter 800ms var(--motion-ease) backwards,
-      title-sheen 1600ms var(--motion-ease) backwards;
+  .hero-letter {
+    animation: letter-type 220ms linear var(--letter-delay) backwards;
+  }
+
+  .hero-letter::after {
+    content: '';
+    position: absolute;
+    top: 0.12em;
+    left: calc(100% + 0.025em);
+    width: 0.045em;
+    height: 0.85em;
+    border-radius: 1px;
+    pointer-events: none;
+    background: var(--color-ctp-teal);
+    opacity: 0;
+    animation: typing-caret 60ms steps(1, end) var(--letter-delay);
+  }
+
+  .hero-letter:last-child::after {
+    animation-name: caret-finish;
+    animation-duration: 300ms;
   }
 
   .stagger-list > * {
@@ -341,15 +359,22 @@ math {
     to { transform: scaleX(1); opacity: 1; }
   }
 
-  @keyframes title-sheen {
-    from { background-position: 100% 50%; }
-    to { background-position: 0% 50%; }
+  @keyframes letter-type {
+    from { opacity: 0; transform: translateY(-0.06em); text-shadow: none; }
+    1% { opacity: 1; transform: translateY(-0.06em); text-shadow: -0.055em 0 var(--color-ctp-teal), 0.055em 0 var(--color-ctp-pink); }
+    25% { transform: translateX(0.025em); text-shadow: 0.04em 0 var(--color-ctp-teal), -0.04em 0 var(--color-ctp-pink); }
+    60% { transform: translateX(-0.015em); text-shadow: -0.02em 0 var(--color-ctp-teal), 0.02em 0 var(--color-ctp-pink); }
+    to { opacity: 1; transform: none; text-shadow: none; }
   }
 
-  @keyframes title-enter {
-    from { opacity: 0; transform: translate(-36px, 8px) scale(0.96); }
-    65% { opacity: 1; transform: translate(3px, 0) scale(1.01); }
-    to { opacity: 1; transform: translate(0, 0) scale(1); }
+  @keyframes typing-caret {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes caret-finish {
+    0%, 65% { opacity: 1; }
+    35%, 100% { opacity: 0; }
   }
 }
 
