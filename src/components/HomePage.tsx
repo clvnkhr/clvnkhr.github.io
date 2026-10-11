@@ -13,7 +13,7 @@ export function HomePage({ newestPost, site = defaultSite }: HomePageProps) {
   return (
     <Layout title={site.title} showBackToTop={false} site={site}>
       <div className="max-w-4xl mx-auto px-4 py-16">
-        <section className="home-intro text-center mb-16">
+        <section className="text-center mb-16">
           <h1 className="hero-title text-5xl font-bold mb-6 text-ctp-mauve">
             {site.title}
           </h1>

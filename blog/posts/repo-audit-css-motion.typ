@@ -76,10 +76,12 @@ The animations are implemented in `src/assets/css/main.css`, using the existing 
 - Page content fades in with a 12-pixel upward entrance over 480 milliseconds.
 - List items enter over 520 milliseconds, staggered in 60-millisecond increments. The delay is capped at 300 milliseconds, including for longer post and tag lists.
 - The header's thin gradient accent draws across the page over 900 milliseconds.
-- The homepage title has a single 1.6-second gradient sweep, with a soft static glow behind the introduction.
+- The homepage title flies in over 800 milliseconds, with a gentle overshoot before settling and a single 1.6-second gradient sweep.
 - Navigation underlines scale into view on hover or keyboard focus.
 - Cards lift by four pixels on devices with a fine pointer and hover support, with a mauve border and a subtle shadow. Keyboard focus also highlights the border.
 - Tag links gain a soft background, and the back-to-top arrow nudges upward on hover or focus.
+
+The introduction's background glow was removed after Safari rendered it with visible rectangular edges.
 
 There are no continuously looping animations. Filtering adds an `is-filtering` class that disables list entrances, so changing a search or checkbox does not keep replaying the reveal. Entrance animations use a backwards fill mode, allowing their animation styles to disappear when the entrance finishes.
 
@@ -118,4 +120,4 @@ Two theme tests had been looking for slash-containing post paths among the immed
 
 The production build, TypeScript checks, ESLint, workflow YAML parsing, and diff whitespace checks passed. Manual browser checks covered the desktop layout and a 375-pixel mobile viewport, search empty states, date search, show-all and hide-all filtering, independent tag pages, and fuzzy tag search. The inspected pages had no horizontal overflow or browser console errors. These were local checks, not a claim of exhaustive browser or accessibility testing.
 
-There is one version detail to keep explicit: the installed local CLI was Typst `0.15.1`, while `package.json` specifies `0.15.0`. Local builds passed with the existing version warning; the revised CI workflow selects `0.15.0`. The audit did not run a hosted GitHub Actions deployment or verify the build locally with that exact pinned Typst version.
+The build now pins Typst `0.15.1` in `package.json`, matching the installed CLI used for local verification. The GitHub Actions workflow reads that value when selecting its release. Local builds and tests passed with `0.15.1`; the original audit's verification was local and did not include a hosted GitHub Actions deployment.

@@ -121,7 +121,7 @@ function makeMockCommandExecutor(exitCode = 0, stderr = ''): CommandExecutor {
           return Effect.succeed(MOCK_TYPST_HTML);
         }
         if (cmd.args[0] === '--version') {
-          return Effect.succeed('typst 0.15.0');
+          return Effect.succeed('typst 0.15.1');
         }
       }
       if (cmd._tag === 'PipedCommand') {
@@ -174,7 +174,7 @@ describe('Build System Integration', () => {
 
     expect(logs.length).toBeGreaterThan(0);
     expect(logs.some(log => log.includes('Building blog'))).toBe(true);
-    expect(logs.some(log => log.includes('Typst version 0.15.0'))).toBe(true);
+    expect(logs.some(log => log.includes('Typst version 0.15.1'))).toBe(true);
   });
 });
 

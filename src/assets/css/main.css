@@ -237,21 +237,6 @@ math {
   transform: scaleX(1);
 }
 
-.home-intro {
-  position: relative;
-  isolation: isolate;
-}
-
-.home-intro::before {
-  content: '';
-  position: absolute;
-  inset: -3rem 0 auto;
-  height: 16rem;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(ellipse closest-side, color-mix(in srgb, var(--color-ctp-mauve), transparent 91%), transparent);
-}
-
 @supports (background-clip: text) or (-webkit-background-clip: text) {
   .hero-title {
     background: linear-gradient(110deg, var(--color-ctp-mauve) 25%, var(--color-ctp-pink) 45%, var(--color-ctp-lavender) 60%, var(--color-ctp-mauve) 80%);
@@ -320,7 +305,8 @@ math {
   }
 
   .hero-title {
-    animation: title-sheen 1600ms var(--motion-ease) backwards;
+    animation: title-enter 800ms var(--motion-ease) backwards,
+      title-sheen 1600ms var(--motion-ease) backwards;
   }
 
   .stagger-list > * {
@@ -358,6 +344,12 @@ math {
   @keyframes title-sheen {
     from { background-position: 100% 50%; }
     to { background-position: 0% 50%; }
+  }
+
+  @keyframes title-enter {
+    from { opacity: 0; transform: translate(-36px, 8px) scale(0.96); }
+    65% { opacity: 1; transform: translate(3px, 0) scale(1.01); }
+    to { opacity: 1; transform: translate(0, 0) scale(1); }
   }
 }
 
