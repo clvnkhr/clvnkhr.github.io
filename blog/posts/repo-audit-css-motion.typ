@@ -78,7 +78,7 @@ The animations are implemented in `src/assets/css/main.css`, using the existing 
 - The header's thin gradient accent draws across the page over 900 milliseconds.
 - The homepage title has a single 1.6-second gradient sweep, with a soft static glow behind the introduction.
 - Navigation underlines scale into view on hover or keyboard focus.
-- Cards lift by four pixels on devices with a fine pointer and hover support, revealing a gradient accent and a subtle shadow. Keyboard focus also reveals the accent.
+- Cards lift by four pixels on devices with a fine pointer and hover support, with a mauve border and a subtle shadow. Keyboard focus also highlights the border.
 - Tag links gain a soft background, and the back-to-top arrow nudges upward on hover or focus.
 
 There are no continuously looping animations. Filtering adds an `is-filtering` class that disables list entrances, so changing a search or checkbox does not keep replaying the reveal. Entrance animations use a backwards fill mode, allowing their animation styles to disappear when the entrance finishes.

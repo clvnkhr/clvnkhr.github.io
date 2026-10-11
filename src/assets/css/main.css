@@ -245,10 +245,11 @@ math {
 .home-intro::before {
   content: '';
   position: absolute;
-  inset: -2rem 0;
+  inset: -3rem 0 auto;
+  height: 16rem;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 25%, color-mix(in srgb, var(--color-ctp-mauve), transparent 91%), transparent 65%);
+  background: radial-gradient(ellipse closest-side, color-mix(in srgb, var(--color-ctp-mauve), transparent 91%), transparent);
 }
 
 @supports (background-clip: text) or (-webkit-background-clip: text) {
@@ -273,19 +274,6 @@ math {
   transition: transform 280ms var(--motion-ease), border-color 220ms ease, box-shadow 280ms ease;
 }
 
-.surface-card::before {
-  content: '';
-  position: absolute;
-  inset: -1px 1rem auto;
-  height: 2px;
-  border-radius: 1rem;
-  pointer-events: none;
-  background: linear-gradient(90deg, var(--color-ctp-mauve), var(--color-ctp-teal));
-  opacity: 0;
-  transform: scaleX(0.65);
-  transition: opacity 220ms ease, transform 280ms var(--motion-ease);
-}
-
 .surface-card:focus-within {
   border-color: var(--color-ctp-mauve);
   z-index: 1;
@@ -295,21 +283,11 @@ math {
   z-index: 2;
 }
 
-.surface-card:focus-within::before {
-  opacity: 1;
-  transform: scaleX(1);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .surface-card:hover {
     transform: translateY(-4px);
     border-color: var(--color-ctp-mauve);
     box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--color-ctp-mauve), transparent 45%);
-  }
-
-  .surface-card:hover::before {
-    opacity: 1;
-    transform: scaleX(1);
   }
 }
 
