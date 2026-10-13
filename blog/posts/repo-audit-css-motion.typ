@@ -84,7 +84,7 @@ The animations are implemented in `src/assets/css/main.css`, using the existing 
 
 The introduction's background glow was removed after Safari rendered it with visible rectangular edges.
 
-First opens and refreshes play the full entrance sequence. Following an internal link in the same tab uses a brief 140-millisecond page fade, with the title and list items immediately visible. Back and forward navigation also stays quiet. The navigation script consumes a short-lived marker for the clicked destination before CSS loads; modified clicks and links that open a new tab keep the full entrance in that new tab.
+First opens and refreshes play the full entrance sequence. Following an internal link in the same tab uses a brief 140-millisecond page fade, with list items immediately visible and no header reveal. The homepage's typing effect still plays on these visits. Back and forward navigation also uses the lighter entrance. The navigation script consumes a short-lived marker for the clicked destination before CSS loads; modified clicks and links that open a new tab keep the full entrance in that new tab.
 
 There are no continuously looping animations. Filtering adds an `is-filtering` class that disables list entrances, so changing a search or checkbox does not keep replaying the reveal. Entrance animations use a backwards fill mode, allowing their animation styles to disappear when the entrance finishes.
 

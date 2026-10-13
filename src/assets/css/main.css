@@ -346,14 +346,8 @@ math {
   }
 
   [data-page-motion="light"] .site-header::after,
-  [data-page-motion="light"] .hero-letter,
-  [data-page-motion="light"] .hero-letter::after,
   [data-page-motion="light"] .stagger-list > * {
     animation: none;
-  }
-
-  [data-page-motion="light"] .hero-letter::after {
-    content: none;
   }
 
   [data-back-to-top]:is(:hover, :focus-visible) svg {
