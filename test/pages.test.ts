@@ -112,4 +112,11 @@ describe('Page rendering', () => {
     expect(html).not.toContain('class="dark"');
     expect(html).not.toContain('* { color-scheme:');
   });
+
+  it('chooses page motion before loading the stylesheet to prevent full entrance flashes', () => {
+    const html = Effect.runSync(renderHomePage(site));
+    const bootstrap = html.indexOf('<script src="/assets/js/page-motion.js"></script>');
+    expect(bootstrap).toBeGreaterThan(-1);
+    expect(bootstrap).toBeLessThan(html.indexOf('<link rel="stylesheet"'));
+  });
 });

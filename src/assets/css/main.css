@@ -341,6 +341,21 @@ math {
     animation: none;
   }
 
+  [data-page-motion="light"] .page-content {
+    animation: content-fade 140ms ease-out backwards;
+  }
+
+  [data-page-motion="light"] .site-header::after,
+  [data-page-motion="light"] .hero-letter,
+  [data-page-motion="light"] .hero-letter::after,
+  [data-page-motion="light"] .stagger-list > * {
+    animation: none;
+  }
+
+  [data-page-motion="light"] .hero-letter::after {
+    content: none;
+  }
+
   [data-back-to-top]:is(:hover, :focus-visible) svg {
     transform: translateY(-3px);
   }
@@ -352,6 +367,11 @@ math {
   @keyframes content-enter {
     from { opacity: 0; translate: 0 12px; }
     to { opacity: 1; translate: 0 0; }
+  }
+
+  @keyframes content-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   @keyframes accent-reveal {

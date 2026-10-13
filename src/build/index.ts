@@ -179,6 +179,7 @@ const buildBrowserScripts = runNamed(
   Command.make(
     "bun", "build", "--target", "browser", "--format", "iife",
     "--outdir", "dist/assets/js",
+    "src/assets/js/page-motion.js",
     "src/assets/js/back-to-top.js",
     "src/assets/js/tag-search.js",
     "src/assets/js/blog-search.js",

@@ -1,4 +1,5 @@
 // date: 2026-10-11
+// updated: 2026-10-13
 // tags: blog, infrastructure, typescript, typst, css, accessibility, github-actions, ai-assisted
 // description: A repository audit covering shared search and card rendering, date handling, accessibility, build reliability, and CSS animations, with local validation results.
 
@@ -19,7 +20,7 @@ A new `SearchablePostList` component now owns the list wrappers, searchable attr
 
 There was another duplication between the browser scripts and their tests. `src/assets/js/blog-search.js` contained a handwritten mirror of the functions in `src/utils/blog-search.ts`. The tag-search script similarly repeated `fuzzyMatch`. Tests exercised the TypeScript helpers, while the browser ran the copied implementations.
 
-The browser scripts now import those helpers directly. A Bun build step bundles the three browser entry points into standalone scripts in `dist/assets/js`, including their shared TypeScript code. The existing deferred script tags load the bundles. ESLint now checks the browser scripts too; they were previously covered by the broad `src/assets/` ignore.
+The browser scripts now import those helpers directly. A Bun build step bundles the browser entry points into standalone scripts in `dist/assets/js`, including their shared TypeScript code. Search and back-to-top scripts load through deferred script tags; a small navigation script runs before the stylesheet to choose the entrance style. ESLint now checks the browser scripts too; they were previously covered by the broad `src/assets/` ignore.
 
 The scorer retains its field weights: title matches count four times as much as blurb or date matches, and tag matches count twice as much. An explicit empty-query case also prevents the empty-text calculation from producing `NaN`.
 
@@ -82,6 +83,8 @@ The animations are implemented in `src/assets/css/main.css`, using the existing 
 - Tag links gain a soft background, and the back-to-top arrow nudges upward on hover or focus.
 
 The introduction's background glow was removed after Safari rendered it with visible rectangular edges.
+
+First opens and refreshes play the full entrance sequence. Following an internal link in the same tab uses a brief 140-millisecond page fade, with the title and list items immediately visible. Back and forward navigation also stays quiet. The navigation script consumes a short-lived marker for the clicked destination before CSS loads; modified clicks and links that open a new tab keep the full entrance in that new tab.
 
 There are no continuously looping animations. Filtering adds an `is-filtering` class that disables list entrances, so changing a search or checkbox does not keep replaying the reveal. Entrance animations use a backwards fill mode, allowing their animation styles to disappear when the entrance finishes.
 
