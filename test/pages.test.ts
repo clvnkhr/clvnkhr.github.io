@@ -115,8 +115,26 @@ describe('Page rendering', () => {
 
   it('chooses page motion before loading the stylesheet to prevent full entrance flashes', () => {
     const html = Effect.runSync(renderHomePage(site));
-    const bootstrap = html.indexOf('<script src="/assets/js/page-motion.js"></script>');
+    const bootstrap = html.indexOf('<script src="/assets/js/page-motion.js');
     expect(bootstrap).toBeGreaterThan(-1);
     expect(bootstrap).toBeLessThan(html.indexOf('<link rel="stylesheet"'));
+  });
+
+  it('changes stylesheet and script URLs between deployments to avoid stale animations', () => {
+    const original = process.env.GITHUB_SHA;
+    try {
+      process.env.GITHUB_SHA = 'first-deployment';
+      const first = Effect.runSync(renderHomePage(site));
+      process.env.GITHUB_SHA = 'next-deployment';
+      const next = Effect.runSync(renderHomePage(site));
+
+      for (const asset of ['css/main.css', 'js/page-motion.js', 'js/back-to-top.js', 'js/tag-search.js', 'js/blog-search.js']) {
+        expect(first).toContain(`/assets/${asset}?v=first-deployment`);
+        expect(next).toContain(`/assets/${asset}?v=next-deployment`);
+      }
+    } finally {
+      if (original === undefined) delete process.env.GITHUB_SHA;
+      else process.env.GITHUB_SHA = original;
+    }
   });
 });

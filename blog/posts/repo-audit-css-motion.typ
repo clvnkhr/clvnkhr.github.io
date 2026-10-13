@@ -86,6 +86,8 @@ The introduction's background glow was removed after Safari rendered it with vis
 
 First opens and refreshes play the full entrance sequence. Following an internal link in the same tab uses a brief 140-millisecond page fade, with list items immediately visible and no header reveal. The homepage's typing effect still plays on these visits. Back and forward navigation also uses the lighter entrance. The navigation script consumes a short-lived marker for the clicked destination before CSS loads; modified clicks and links that open a new tab keep the full entrance in that new tab.
 
+Stylesheet and script URLs include the deployment's commit ID, so browsers fetch the updated assets when following a link to a newly deployed page. This prevents a cached stylesheet from masking an animation change.
+
 There are no continuously looping animations. Filtering adds an `is-filtering` class that disables list entrances, so changing a search or checkbox does not keep replaying the reveal. Entrance animations use a backwards fill mode, allowing their animation styles to disappear when the entrance finishes.
 
 Motion preferences are part of the implementation. Entrance keyframes are applied only within `prefers-reduced-motion: no-preference`. With reduced motion enabled, transitions become immediate, cards do not lift, and the back-to-top button scrolls instantly. The title also falls back to readable system-coloured text in forced-colour mode.
